@@ -1,0 +1,31 @@
+export const developmentSkills = [
+  'React',
+  'React Native',
+  'JavaScript',
+  'TypeScript',
+  'HTML/CSS/JS',
+  'Node.js',
+  'Express',
+  'Spring Boot',
+  'Java',
+  'Python',
+  'PostgreSQL',
+  'MongoDB',
+  'SQL',
+  'Git',
+  'Docker',
+  'JWT',
+  'BCrypt',
+  'Tailwind CSS',
+];
+
+export const artSkills = [
+  'Concept Art',
+  'Character Design',
+  'Digital Painting',
+  'Creature Design',
+  'Photoshop',
+  'Procreate',
+  'Illustration',
+  'Anatomy',
+];

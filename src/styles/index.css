@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply m-0 p-0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3f3f46;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+::-moz-selection {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+/* Mobile Responsiveness Fixes */
+@media (max-width: 640px) {
+  /* Reduce padding on mobile */
+  section {
+    @apply py-16 px-4;
+  }
+
+  /* Smaller section numbers */
+  .text-8xl {
+    @apply text-4xl;
+  }
+
+  /* Adjust section headers on mobile */
+  h2.tracking-\[0\.3em\] {
+    @apply text-xs tracking-[0.2em];
+  }
+
+  /* Adjust large text on mobile */
+  .text-2xl {
+    @apply text-lg;
+  }
+
+  .text-xl {
+    @apply text-base;
+  }
+
+  /* Fix grid layouts on mobile - stack instead of grid */
+  .lg\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Reduce max width containers on mobile */
+  .max-w-7xl, .max-w-6xl, .max-w-5xl, .max-w-4xl {
+    @apply max-w-full;
+  }
+
+  /* Fix button padding on mobile */
+  button {
+    @apply px-6 py-3;
+  }
+
+  /* Fix project cards on mobile */
+  .grid-cols-3 {
+    @apply grid-cols-1;
+  }
+
+  .grid-cols-2 {
+    @apply grid-cols-1;
+  }
+
+  /* Reduce image sizes on mobile */
+  img {
+    @apply w-full h-auto;
+  }
+
+  /* Fix padding on bordered elements */
+  .border-2 {
+    @apply p-3;
+  }
+}
