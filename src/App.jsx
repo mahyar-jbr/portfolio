@@ -5,6 +5,7 @@ import AboutSection from './components/AboutSection.jsx';
 import WorkSection from './components/WorkSection.jsx';
 import ExperienceSection from './components/ExperienceSection.jsx';
 import SkillsSection from './components/SkillsSection.jsx';
+import GallerySection from './components/GallerySection.jsx';
 import ContactSection from './components/ContactSection.jsx';
 import ProjectModal from './components/ProjectModal.jsx';
 import Footer from './components/Footer.jsx';
@@ -30,6 +31,7 @@ export default function App() {
       />
       <ExperienceSection />
       <SkillsSection />
+      <GallerySection />
       <ContactSection />
       <Footer />
       <ProjectModal project={selectedProject} onClose={() => setSelectedProject(null)} />

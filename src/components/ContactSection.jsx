@@ -120,7 +120,7 @@ export default function ContactSection() {
               } : {}}
               transition={{ duration: 1, ease: [0.6, 0.01, 0.05, 0.95] }}
             >
-              05
+              06
             </motion.div>
             <div>
               <h2 className="text-sm tracking-[0.3em] text-zinc-300 uppercase mb-2 font-bold">Get In Touch</h2>

@@ -18,7 +18,8 @@ export default function NavBar({ scrollToSection }) {
     { label: 'Work', id: '#work', number: '02' },
     { label: 'Experience', id: '#experience', number: '03' },
     { label: 'Skills', id: '#skills', number: '04' },
-    { label: 'Contact', id: '#contact', number: '05' },
+    { label: 'Gallery', id: '#gallery', number: '05' },
+    { label: 'Contact', id: '#contact', number: '06' },
   ];
 
   const handleNavClick = (id) => {
