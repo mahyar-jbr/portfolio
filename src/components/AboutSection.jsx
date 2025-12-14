@@ -1,6 +1,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useRef, useState } from 'react';
+import { Download } from 'lucide-react';
 
 export default function AboutSection() {
   const [ref, inView] = useInView({
@@ -24,9 +25,9 @@ export default function AboutSection() {
 
 
   const stats = [
-    { value: "3+", label: "Major Projects", description: "Full-stack applications" },
+    { value: "4+", label: "Major Projects", description: "Full-stack applications" },
     { value: "2+", label: "Years of Experience", description: "Professional development" },
-    { value: "18+", label: "Technologies", description: "Languages & frameworks" },
+    { value: "25+", label: "Technologies", description: "Languages & frameworks" },
   ];
 
   const values = [
@@ -196,7 +197,133 @@ export default function AboutSection() {
                 Open to internship opportunities where I can contribute to meaningful
                 projects and grow alongside a strong team.
               </motion.p>
+
+              {/* Resume Download Button */}
+              <motion.a
+                href="/resume.pdf"
+                download
+                className="group inline-flex items-center gap-3 mt-6 px-6 py-4 border-2 border-white bg-black relative overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: 0.8, duration: 0.8 }}
+                whileHover={{ boxShadow: "0 0 30px rgba(255,255,255,0.3)" }}
+              >
+                <div className="absolute inset-0 bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
+                <Download className="w-5 h-5 text-white relative z-10 group-hover:text-black transition-colors duration-500" />
+                <span className="text-sm font-bold tracking-wider uppercase text-white relative z-10 group-hover:text-black transition-colors duration-500">
+                  Download Resume
+                </span>
+              </motion.a>
             </div>
+
+            {/* Education */}
+            <motion.div
+              className="mb-12"
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.8, duration: 0.8 }}
+            >
+              <div className="mb-8">
+                <motion.h4
+                  className="text-sm tracking-[0.3em] text-zinc-300 uppercase mb-3 font-bold"
+                  whileHover={{
+                    color: '#fff',
+                    textShadow: '0 0 15px rgba(255,255,255,0.2)'
+                  }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                >
+                  Education
+                </motion.h4>
+                <motion.div
+                  className="h-[2px] bg-gradient-to-r from-white to-transparent"
+                  initial={{ scaleX: 0 }}
+                  animate={inView ? { scaleX: 1 } : {}}
+                  transition={{ delay: 0.9, duration: 0.8 }}
+                  style={{ transformOrigin: 'left', width: '120px' }}
+                />
+              </div>
+
+              <motion.div
+                className="group relative cursor-default"
+                initial={{ opacity: 0, x: -20 }}
+                animate={inView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 1, duration: 0.6 }}
+                whileHover={{ x: 8 }}
+              >
+                {/* Background glow on hover */}
+                <motion.div
+                  className="absolute -inset-4 bg-white/5 rounded-lg -z-10"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileHover={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3 }}
+                />
+
+                {/* Animated left border system */}
+                <div className="relative pl-6 py-4">
+                  {/* Base border */}
+                  <div className="absolute left-0 top-0 h-full w-[2px] bg-zinc-800" />
+
+                  {/* Animated white border that grows */}
+                  <motion.div
+                    className="absolute left-0 top-0 w-[2px] bg-white"
+                    initial={{ height: 0 }}
+                    whileHover={{ height: '100%' }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    style={{ transformOrigin: 'top' }}
+                  />
+
+                  {/* Corner accent - top */}
+                  <motion.div
+                    className="absolute left-0 top-0 w-4 h-4 border-l-2 border-t-2 border-transparent"
+                    animate={{
+                      borderColor: 'rgba(255,255,255,0.0)'
+                    }}
+                    whileHover={{
+                      borderColor: 'rgba(255,255,255,0.5)',
+                      x: -4,
+                      y: -4
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+
+                  {/* Corner accent - bottom */}
+                  <motion.div
+                    className="absolute left-0 bottom-0 w-4 h-4 border-l-2 border-b-2 border-transparent"
+                    animate={{
+                      borderColor: 'rgba(255,255,255,0.0)'
+                    }}
+                    whileHover={{
+                      borderColor: 'rgba(255,255,255,0.5)',
+                      x: -4,
+                      y: 4
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+
+                  {/* Content */}
+                  <div className="relative">
+                    <motion.div
+                      className="text-xl font-bold text-white mb-2 flex items-center gap-3"
+                      whileHover={{
+                        textShadow: '0 0 10px rgba(255,255,255,0.2)'
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      Honours BSc, Computer Science
+                      <motion.div
+                        className="w-0 h-[2px] bg-gradient-to-r from-white to-transparent group-hover:w-12 transition-all duration-300"
+                      />
+                    </motion.div>
+                    <div className="text-base text-zinc-400 group-hover:text-zinc-300 transition-colors duration-300 mb-1">
+                      York University
+                    </div>
+                    <div className="text-sm text-zinc-500 group-hover:text-zinc-400 transition-colors duration-300">
+                      Sept 2023 – Apr 2027 (Expected)
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
 
             {/* Core values with hover effects */}
             <motion.div

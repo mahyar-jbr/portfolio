@@ -1,22 +1,33 @@
 export const developmentSkills = [
-  'React',
-  'React Native',
+  // Languages
+  'Python',
   'JavaScript',
   'TypeScript',
-  'HTML/CSS/JS',
+  'Java',
+  'C',
+  'SQL',
+  'HTML/CSS',
+  // Frameworks
+  'React',
+  'React Native',
   'Node.js',
   'Express',
+  'FastAPI',
   'Spring Boot',
-  'Java',
-  'Python',
+  'pandas',
+  'NumPy',
+  // Databases
   'PostgreSQL',
   'MongoDB',
-  'SQL',
+  'MySQL',
+  // Tools
   'Git',
   'Docker',
-  'JWT',
-  'BCrypt',
-  'Tailwind CSS',
+  'Linux',
+  'Maven',
+  'Postman',
+  'Jupyter',
+  'Azure',
 ];
 
 export const artSkills = [

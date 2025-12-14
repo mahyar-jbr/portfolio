@@ -1,6 +1,6 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Code2, TrendingUp, Dog } from 'lucide-react';
+import { Code2, TrendingUp, Dog, Target } from 'lucide-react';
 
 export default function ExperienceSection() {
   const ref = useRef(null);
@@ -8,19 +8,6 @@ export default function ExperienceSection() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const experiences = [
-    {
-      company: 'Sepantech',
-      position: 'Software Engineer Intern',
-      period: 'Mar 2024 - Aug 2024',
-      location: 'Sweden · Remote',
-      description: 'Contributed as a Software Engineer Intern on a course management application for medical and physiotherapy professionals, now in use across Sweden.',
-      icon: Code2,
-      achievements: [
-        'Designed 6+ MySQL database tables and optimized 12+ queries by adding composite indexes, reducing average query response time by 30%',
-        'Developed 8+ backend API endpoints using Node.js for course management features including user authentication, enrollment processing, progress updates, and certificate generation',
-        'Collaborated with a cross-functional team of 3+ developers in an Agile environment, participating in code reviews and sprint planning to deliver features on schedule'
-      ]
-    },
     {
       company: 'Perfect Equation',
       position: 'Founder',
@@ -32,6 +19,32 @@ export default function ExperienceSection() {
         'Built and deployed websites using Wix and managed digital marketing campaigns',
         'Oversaw end-to-end operations from design to client engagement',
         'Leveraged technology to strengthen both business and technical skills'
+      ]
+    },
+    {
+      company: 'Nova Ventures',
+      position: 'Software Developer',
+      period: 'Sep 2024 - Present',
+      location: 'Toronto, ON',
+      description: 'Leading development of goalkeeper performance analytics platform using React/TypeScript frontend and Python/FastAPI backend, currently piloted with professional-level goalkeepers.',
+      icon: Target,
+      achievements: [
+        'Built real-time analytics dashboard featuring interactive goal heatmaps, shot distribution across 9 goal zones, and save rate trend analysis',
+        'Designed and implemented multi-factor 100-point scoring system analyzing reaction time, positioning, and diving patterns to generate personalized training recommendations',
+        'Architecting computer vision pipeline using OpenCV and YOLOv8 to automate shot detection and goalkeeper movement tracking from match footage'
+      ]
+    },
+    {
+      company: 'Sepantech',
+      position: 'Developer & Database Intern',
+      period: 'Mar 2024 - Aug 2024',
+      location: 'Sweden · Remote',
+      description: 'Contributed as a Software Engineer Intern on a course management application for medical and physiotherapy professionals, now in use across Sweden.',
+      icon: Code2,
+      achievements: [
+        'Designed 6+ MySQL database tables and optimized 12+ queries by adding composite indexes, reducing average query response time by 30%',
+        'Developed 8+ backend API endpoints using Node.js for course management features including user authentication, enrollment processing, progress updates, and certificate generation',
+        'Collaborated with a cross-functional team of 3+ developers in an Agile environment, participating in code reviews and sprint planning to deliver features on schedule'
       ]
     },
     {

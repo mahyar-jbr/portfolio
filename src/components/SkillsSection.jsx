@@ -1,6 +1,13 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { useState, useRef } from 'react';
+import {
+  SiPython, SiJavascript, SiTypescript, SiC, SiHtml5,
+  SiReact, SiNodedotjs, SiExpress, SiFastapi, SiSpringboot, SiPandas, SiNumpy,
+  SiPostgresql, SiMongodb, SiMysql,
+  SiGit, SiDocker, SiLinux, SiApachemaven, SiPostman, SiJupyter
+} from 'react-icons/si';
+import { FaJava, FaDatabase, FaCloud } from 'react-icons/fa';
 
 export default function SkillsSection() {
   const [ref, inView] = useInView({
@@ -18,32 +25,56 @@ export default function SkillsSection() {
 
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
 
-  // Categorized skills
+  // Skill icons mapping
+  const skillIcons = {
+    'Python': SiPython,
+    'JavaScript': SiJavascript,
+    'TypeScript': SiTypescript,
+    'Java': FaJava,
+    'C': SiC,
+    'SQL': FaDatabase,
+    'HTML/CSS': SiHtml5,
+    'React': SiReact,
+    'React Native': SiReact,
+    'Node.js': SiNodedotjs,
+    'Express': SiExpress,
+    'FastAPI': SiFastapi,
+    'Spring Boot': SiSpringboot,
+    'pandas': SiPandas,
+    'NumPy': SiNumpy,
+    'PostgreSQL': SiPostgresql,
+    'MongoDB': SiMongodb,
+    'MySQL': SiMysql,
+    'Git': SiGit,
+    'Docker': SiDocker,
+    'Linux': SiLinux,
+    'Maven': SiApachemaven,
+    'Postman': SiPostman,
+    'Jupyter': SiJupyter,
+    'Azure': FaCloud,
+  };
+
+  // Categorized skills matching resume
   const skillCategories = [
     {
       name: 'Languages',
       number: '01',
-      skills: ['JavaScript', 'TypeScript', 'Java', 'Python', 'C']
+      skills: ['Python', 'JavaScript', 'TypeScript', 'Java', 'C', 'SQL', 'HTML/CSS']
     },
     {
-      name: 'Frontend',
+      name: 'Frameworks',
       number: '02',
-      skills: ['React', 'React Native', 'HTML/CSS', 'Tailwind CSS']
+      skills: ['React', 'React Native', 'Node.js', 'Express', 'FastAPI', 'Spring Boot', 'pandas', 'NumPy']
     },
     {
-      name: 'Backend',
+      name: 'Databases',
       number: '03',
-      skills: ['Node.js', 'Express', 'Spring Boot']
+      skills: ['PostgreSQL', 'MongoDB', 'MySQL']
     },
     {
-      name: 'Database',
+      name: 'Tools',
       number: '04',
-      skills: ['PostgreSQL', 'MongoDB', 'MySQL', 'SQL']
-    },
-    {
-      name: 'Tools & Platforms',
-      number: '05',
-      skills: ['Git', 'Docker', 'Linux', 'Maven', 'Postman', 'Jupyter']
+      skills: ['Git', 'Docker', 'Linux', 'Maven', 'Postman', 'Jupyter', 'Azure']
     }
   ];
 
@@ -183,7 +214,7 @@ export default function SkillsSection() {
                   {/* Skills in a flowing layout */}
                   <div className="flex flex-wrap gap-3">
                     {category.skills.map((skill, skillIndex) => {
-                      const globalIndex = `${categoryIndex}-${skillIndex}`;
+                      const Icon = skillIcons[skill];
                       return (
                         <motion.div
                           key={skill}
@@ -195,22 +226,36 @@ export default function SkillsSection() {
                             type: "spring",
                             stiffness: 200
                           }}
-                          className="relative"
+                          className="relative group"
+                          onMouseEnter={() => setHoveredSkill(`${categoryIndex}-${skillIndex}`)}
+                          onMouseLeave={() => setHoveredSkill(null)}
                         >
-                          <div className="relative border-2 border-zinc-800 px-6 py-4 overflow-hidden">
-                            {/* Diagonal accent line */}
-                            <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-zinc-700 opacity-20" />
+                          <motion.div
+                            className="relative border-2 border-zinc-800 px-5 py-3 overflow-hidden flex items-center gap-3"
+                            animate={{
+                              borderColor: hoveredSkill === `${categoryIndex}-${skillIndex}` ? '#fff' : 'rgb(39, 39, 42)',
+                              backgroundColor: hoveredSkill === `${categoryIndex}-${skillIndex}` ? 'rgba(255,255,255,0.05)' : 'transparent'
+                            }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            {/* Icon */}
+                            {Icon && (
+                              <motion.div
+                                animate={{
+                                  color: hoveredSkill === `${categoryIndex}-${skillIndex}` ? '#fff' : 'rgb(113, 113, 122)',
+                                  scale: hoveredSkill === `${categoryIndex}-${skillIndex}` ? 1.1 : 1
+                                }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                <Icon className="w-5 h-5" />
+                              </motion.div>
+                            )}
 
                             {/* Skill name */}
                             <div className="relative font-bold text-sm tracking-wide text-white">
                               {skill}
                             </div>
-
-                            {/* Skill index number */}
-                            <div className="absolute bottom-1 left-2 text-[10px] font-black tracking-wider text-white/10">
-                              {String(skillIndex + 1).padStart(2, '0')}
-                            </div>
-                          </div>
+                          </motion.div>
                         </motion.div>
                       );
                     })}

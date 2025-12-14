@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Github, ArrowUpRight, Code2, Database, Zap } from 'lucide-react';
+import { Github, ArrowUpRight, Code2, Database, Zap, Calendar } from 'lucide-react';
 import { useState, useRef } from 'react';
 
 export default function WorkSection({ projects, onProjectSelect }) {
@@ -20,7 +20,7 @@ export default function WorkSection({ projects, onProjectSelect }) {
   const y1 = useTransform(scrollYProgress, [0, 1], [200, -200]);
   const y2 = useTransform(scrollYProgress, [0, 1], [-100, 100]);
 
-  const projectIcons = [Code2, Database, Zap];
+  const projectIcons = [Code2, Database, Calendar, Zap];
 
   return (
     <section id="work" ref={sectionRef} className="pt-16 pb-32 px-6 bg-black relative overflow-hidden">

@@ -740,6 +740,11 @@ export default function GallerySection() {
     threshold: 0.05,
   });
 
+  const [featuredRef, featuredInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
+
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -881,12 +886,13 @@ export default function GallerySection() {
           )}
 
           {/* Row 4: Featured Latest Work - Horizontal spotlight layout */}
+          <div ref={featuredRef}>
           {portraits.length > 3 && portraits.slice(3).map((artwork, index) => (
             <motion.div
               key={artwork.id}
-              initial={{ opacity: 0, y: 80 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.6 + index * 0.1, duration: 0.8, ease: [0.6, 0.01, 0.05, 0.95] }}
+              initial={{ opacity: 0, y: 40 }}
+              animate={featuredInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.05, duration: 0.4, ease: [0.6, 0.01, 0.05, 0.95] }}
               className="relative"
               onMouseEnter={() => setHoveredIndex(artwork.id)}
               onMouseLeave={() => setHoveredIndex(null)}
@@ -1024,6 +1030,7 @@ export default function GallerySection() {
               </motion.div>
             </motion.div>
           ))}
+          </div>
         </div>
 
         {/* Stats section */}

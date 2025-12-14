@@ -48,6 +48,22 @@ export const devProjects = [
   },
   {
     id: 3,
+    title: 'Dog Wash Booking System',
+    tech: ['React', 'FastAPI', 'Python', 'SQLAlchemy'],
+    description: 'Full-stack appointment scheduling platform for a pet grooming business with admin dashboard and customer booking wizard.',
+    highlights: [
+      'Developed full-stack appointment scheduling platform with React frontend and Python/FastAPI REST API',
+      'Built admin dashboard featuring interactive weekly calendar view, booking management, and real-time filtering across 2 service stations',
+      'Implemented double-booking prevention algorithm with time-slot collision detection supporting variable durations (30/60/90 min)',
+      'Created 5-step customer booking wizard with dynamic availability based on day-specific store hours and existing reservations',
+      'Collaborated in 3-person team delivering MVP within 1-week timeline using Git branching workflow'
+    ],
+    github: 'https://github.com/mahyar-jbr/dog-wash-booking',
+    images: [],
+    year: '2026'
+  },
+  {
+    id: 4,
     title: 'Hotel Booking Database System',
     tech: ['SQL', 'ER Modeling', 'Docker'],
     description: 'Normalized database system for hotel operations with advanced SQL queries and optimization.',
