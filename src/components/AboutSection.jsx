@@ -27,7 +27,7 @@ export default function AboutSection() {
   const stats = [
     { value: "4+", label: "Major Projects", description: "Full-stack applications" },
     { value: "2+", label: "Years of Experience", description: "Professional development" },
-    { value: "25+", label: "Technologies", description: "Languages & frameworks" },
+    { value: "35+", label: "Technologies", description: "Languages & frameworks" },
   ];
 
   const values = [

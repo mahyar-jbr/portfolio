@@ -4,10 +4,11 @@ import { useState, useRef } from 'react';
 import {
   SiPython, SiJavascript, SiTypescript, SiC, SiHtml5,
   SiReact, SiNodedotjs, SiExpress, SiFastapi, SiSpringboot, SiPandas, SiNumpy,
-  SiPostgresql, SiMongodb, SiMysql,
-  SiGit, SiDocker, SiLinux, SiApachemaven, SiPostman, SiJupyter
+  SiPostgresql, SiMongodb, SiMysql, SiSqlite,
+  SiGit, SiDocker, SiLinux, SiApachemaven, SiPostman, SiJupyter,
+  SiPrisma, SiSqlalchemy, SiPydantic, SiAxios, SiVercel, SiExpo, SiFigma
 } from 'react-icons/si';
-import { FaJava, FaDatabase, FaCloud } from 'react-icons/fa';
+import { FaJava, FaDatabase, FaServer } from 'react-icons/fa';
 
 export default function SkillsSection() {
   const [ref, inView] = useInView({
@@ -51,7 +52,16 @@ export default function SkillsSection() {
     'Maven': SiApachemaven,
     'Postman': SiPostman,
     'Jupyter': SiJupyter,
-    'Azure': FaCloud,
+    'Vercel': SiVercel,
+    'Expo': SiExpo,
+    'SQLite': SiSqlite,
+    'MS SQL Server': FaServer,
+    'Prisma': SiPrisma,
+    'SQLAlchemy': SiSqlalchemy,
+    'Pydantic': SiPydantic,
+    'BeautifulSoup4': SiPython,
+    'Axios': SiAxios,
+    'Figma': SiFigma,
   };
 
   // Categorized skills matching resume
@@ -69,12 +79,17 @@ export default function SkillsSection() {
     {
       name: 'Databases',
       number: '03',
-      skills: ['PostgreSQL', 'MongoDB', 'MySQL']
+      skills: ['PostgreSQL', 'MongoDB', 'MySQL', 'SQLite', 'MS SQL Server']
+    },
+    {
+      name: 'ORMs & Libraries',
+      number: '04',
+      skills: ['Prisma', 'SQLAlchemy', 'Pydantic', 'BeautifulSoup4', 'Axios']
     },
     {
       name: 'Tools',
-      number: '04',
-      skills: ['Git', 'Docker', 'Linux', 'Maven', 'Postman', 'Jupyter', 'Azure']
+      number: '05',
+      skills: ['Git', 'Docker', 'Linux', 'Maven', 'Postman', 'Jupyter', 'Vercel', 'Expo', 'Figma']
     }
   ];
 
@@ -204,8 +219,6 @@ export default function SkillsSection() {
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-zinc-600 tracking-widest uppercase">
                           <span>{category.skills.length} Skills</span>
-                          <span>•</span>
-                          <span>Proficient</span>
                         </div>
                       </div>
                     </div>

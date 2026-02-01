@@ -20,6 +20,14 @@ export const developmentSkills = [
   'PostgreSQL',
   'MongoDB',
   'MySQL',
+  'SQLite',
+  'MS SQL Server',
+  // ORMs & Libraries
+  'Prisma',
+  'SQLAlchemy',
+  'Pydantic',
+  'BeautifulSoup4',
+  'Axios',
   // Tools
   'Git',
   'Docker',
@@ -27,7 +35,9 @@ export const developmentSkills = [
   'Maven',
   'Postman',
   'Jupyter',
-  'Azure',
+  'Vercel',
+  'Expo',
+  'Figma',
 ];
 
 export const artSkills = [
