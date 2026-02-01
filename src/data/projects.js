@@ -48,6 +48,29 @@ export const devProjects = [
   },
   {
     id: 3,
+    title: 'School Management System',
+    tech: ['Python', 'FastAPI', 'SQLAlchemy', 'SQLite', 'React', 'Vite', 'jsPDF'],
+    description: 'Full-stack web app for managing students, teachers, courses, enrollments, and grades with real-time analytics and data export.',
+    highlights: [
+      'Built full-stack school management system with FastAPI REST API backend and React SPA frontend supporting complete CRUD for students, teachers, and courses',
+      'Designed relational enrollment and grading system with automatic GPA calculation on student profile pages',
+      'Implemented real-time dashboard with aggregate statistics including student/teacher counts and average grades',
+      'Built data export pipeline generating CSV files and styled PDF reports using jsPDF',
+      'Added search and filtering across all tables with form validation and inline error messages',
+      'Created dark/light theme toggle with toast notification system and responsive design',
+      'Backend provides auto-generated API documentation via Swagger UI and ReDoc'
+    ],
+    github: 'https://github.com/mahyar-jbr/school-management-api',
+    images: [
+      '/projects/school1.png',
+      '/projects/school2.png',
+      '/projects/school3.png',
+      '/projects/school4.png',
+    ],
+    year: '2026'
+  },
+  {
+    id: 4,
     title: 'Dog Wash Booking System',
     tech: ['React', 'FastAPI', 'Python', 'SQLAlchemy'],
     description: 'Full-stack appointment scheduling platform for a pet grooming business with admin dashboard and customer booking wizard.',
@@ -63,7 +86,7 @@ export const devProjects = [
     year: '2026'
   },
   {
-    id: 4,
+    id: 5,
     title: 'Hotel Booking Database System',
     tech: ['SQL', 'ER Modeling', 'Docker'],
     description: 'Normalized database system for hotel operations with advanced SQL queries and optimization.',

@@ -1,6 +1,6 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Github, ArrowUpRight, Code2, Database, Zap, Calendar } from 'lucide-react';
+import { Github, ArrowUpRight, Code2, Database, Zap, Calendar, GraduationCap } from 'lucide-react';
 import { useState, useRef } from 'react';
 
 export default function WorkSection({ projects, onProjectSelect }) {
@@ -20,7 +20,7 @@ export default function WorkSection({ projects, onProjectSelect }) {
   const y1 = useTransform(scrollYProgress, [0, 1], [200, -200]);
   const y2 = useTransform(scrollYProgress, [0, 1], [-100, 100]);
 
-  const projectIcons = [Code2, Database, Calendar, Zap];
+  const projectIcons = [Code2, Database, GraduationCap, Calendar, Zap];
 
   return (
     <section id="work" ref={sectionRef} className="pt-16 pb-32 px-6 bg-black relative overflow-hidden">
@@ -253,7 +253,7 @@ export default function WorkSection({ projects, onProjectSelect }) {
                     <div className="mb-8">
                       <div className="flex justify-center">
                         <div className={`grid gap-6 w-full ${
-                          project.id === 2 ? 'grid-cols-2 max-w-5xl' : 'grid-cols-3 max-w-6xl'
+                          (project.images?.length || 1) % 2 === 0 ? 'grid-cols-2 max-w-5xl' : 'grid-cols-3 max-w-6xl'
                         }`}>
                           {(project.images || [project.image]).map((img, imgIndex) => (
                             <motion.div
