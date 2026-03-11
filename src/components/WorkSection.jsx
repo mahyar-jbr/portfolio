@@ -335,6 +335,23 @@ export default function WorkSection({ projects, onProjectSelect }) {
 
                   {/* Action buttons */}
                   <div className="flex flex-wrap items-center gap-6">
+                    {project.liveDemo && (
+                      <motion.a
+                        href={project.liveDemo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative flex items-center gap-2 sm:gap-3 px-6 py-3 sm:px-10 sm:py-5 border-2 border-white bg-black overflow-hidden"
+                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ boxShadow: "0 0 30px rgba(255,255,255,0.3)" }}
+                      >
+                        <div className="absolute inset-0 bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
+                        <ArrowUpRight className="w-5 h-5 relative z-10 text-white group-hover:text-black transition-colors duration-500" />
+                        <span className="relative z-10 text-white group-hover:text-black transition-colors duration-500 font-bold tracking-wider uppercase text-xs sm:text-sm">Live Demo</span>
+                        <div className="absolute top-0 left-0 w-3 h-3 border-l-2 border-t-2 border-white opacity-0 group-hover:opacity-100 group-hover:-translate-x-1 group-hover:-translate-y-1 transition-all duration-500" />
+                        <div className="absolute bottom-0 right-0 w-3 h-3 border-r-2 border-b-2 border-white opacity-0 group-hover:opacity-100 group-hover:translate-x-1 group-hover:translate-y-1 transition-all duration-500" />
+                      </motion.a>
+                    )}
+
                     <motion.button
                       onClick={() => setExpandedProject(isExpanded ? null : index)}
                       className="group relative px-6 py-3 sm:px-10 sm:py-5 border-2 border-white bg-black overflow-hidden"

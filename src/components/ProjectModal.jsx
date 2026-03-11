@@ -134,6 +134,17 @@ export default function ProjectModal({ project, onClose }) {
 
           {/* Links */}
           <div className="flex gap-4">
+            {project.liveDemo && (
+              <a
+                href={project.liveDemo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-6 py-3 bg-white text-black rounded-lg font-medium hover:bg-zinc-200 transition-colors"
+              >
+                <ExternalLink className="w-5 h-5" />
+                Live Demo
+              </a>
+            )}
             {project.link && (
               <a
                 href={project.link}

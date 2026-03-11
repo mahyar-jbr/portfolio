@@ -1,5 +1,30 @@
 export const devProjects = [
   {
+    id: 2,
+    title: 'Pet AI Assistant',
+    tech: ['Python', 'FastAPI', 'MongoDB', 'React', 'Vite', 'Railway', 'Vercel'],
+    description: 'AI-powered dog food recommendation engine that generates personalized, scored food matches based on pet profiles. Live product deployed for in-store kiosk use across 3 pet store locations.',
+    highlights: [
+      'Built full-stack dog food recommendation app with React 19 + FastAPI + MongoDB, deployed on Railway + Vercel',
+      'Engineered 6-factor scoring algorithm validated against veterinary nutrition standards (AAFCO, NRC, WSAVA)',
+      '84 products across 3 brands with real-time pricing, allergen safety filtering, and personalized match scores',
+      'DoorDash-style product detail overlay with feeding calculator, nutrition visualization, and keyboard navigation',
+      'Production security: session auth, rate limiting, CSP headers, defense-in-depth allergen filtering, CORS hardening',
+      'Custom web scrapers using BeautifulSoup4 to extract and normalize product data from PetValu catalogs',
+      'Side-by-side comparison tool with cross-brand nutritional analysis',
+      'Deployed for in-store kiosk use across 3 pet store locations'
+    ],
+    github: 'https://github.com/mahyar-jbr/pet-ai-assistant',
+    liveDemo: 'https://pet-ai-assistant-seven.vercel.app',
+    images: [
+      '/projects/PAA1.png',
+      '/projects/PAA2.png',
+      '/projects/PAA3.png',
+      '/projects/PAA4.png',
+    ],
+    year: '2026'
+  },
+  {
     id: 1,
     title: 'WealthTrack',
     tech: ['React Native', 'Node.js', 'Express', 'TypeScript', 'PostgreSQL', 'JWT + BCrypt'],
@@ -19,30 +44,6 @@ export const devProjects = [
       '/projects/wealthtrack-dashboard.jpg', // Portfolio/Dashboard view
       '/projects/wealthtrack-asset.jpg', // Asset detail/Chart view
       '/projects/wealthtrack-add.jpg', // Add asset screen
-    ],
-    year: '2026'
-  },
-  {
-    id: 2,
-    title: 'Pet AI Assistant',
-    tech: ['Python', 'FastAPI', 'MongoDB', 'React', 'Vite'],
-    description: 'AI-powered application that generates personalized dog food recommendations based on pet profiles.',
-    highlights: [
-      'Built full-stack web application with React + Vite frontend and FastAPI backend supporting personalized pet nutrition recommendations',
-      'Engineered rule-based recommendation engine processing pet profiles (age, breed, weight, allergies, health goals) to match optimal nutrition products',
-      'Developed custom web scrapers using BeautifulSoup4 and lxml to extract dog food products from Orijen and PetValu catalogs with ingredient parsing',
-      'Implemented async MongoDB integration with Motor driver for high-performance data persistence and retrieval',
-      'Designed RESTful API with FastAPI featuring automatic Swagger documentation, request validation, and error handling',
-      'Created dynamic React UI with real-time allergy filtering, multi-criteria product comparison, and responsive card layouts',
-      'Built data processing pipeline normalizing scraped product data into structured schemas for efficient querying',
-      'Architected scalable backend foundation to support future ML-based recommendation system trained on nutritional data and user preferences'
-    ],
-    github: 'https://github.com/mahyar-jbr/pet-ai-assistant',
-    images: [
-      '/projects/PAA-form.png',
-      '/projects/PAA-recommendation.png',
-      '/projects/PAA-comp1.png',
-      '/projects/PAA-comp2.png',
     ],
     year: '2026'
   },
