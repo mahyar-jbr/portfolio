@@ -49,7 +49,7 @@ export default function AboutSection() {
     <section
       id="about"
       ref={sectionRef}
-      className="min-h-screen bg-black pt-32 pb-16 px-6 relative overflow-hidden"
+      className="min-h-screen bg-black pt-20 sm:pt-32 pb-16 px-4 sm:px-6 relative overflow-hidden"
       onMouseMove={handleSectionMouseMove}
     >
       {/* Animated background grid */}
@@ -99,11 +99,11 @@ export default function AboutSection() {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-24"
+          className="mb-12 sm:mb-24"
         >
-          <div className="flex items-center gap-6 mb-8">
+          <div className="flex items-center gap-3 sm:gap-6 mb-8">
             <motion.div
-              className="text-8xl font-black text-white/30"
+              className="text-5xl sm:text-8xl font-black text-white/30"
               initial={{ x: -100, opacity: 0 }}
               animate={inView ? {
                 x: 0,
@@ -127,14 +127,14 @@ export default function AboutSection() {
           </div>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-20 mb-32">
+        <div className="grid lg:grid-cols-2 gap-12 sm:gap-20 mb-16 sm:mb-32">
           {/* Left column - Story */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.2, duration: 0.8 }}
           >
-            <h3 className="text-5xl md:text-6xl lg:text-7xl font-black text-white mb-12 leading-[1.1]">
+            <h3 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white mb-8 sm:mb-12 leading-[1.1]">
               {["Designing", "systems", "that"].map((word, i) => (
                 <motion.span
                   key={i}
@@ -178,7 +178,7 @@ export default function AboutSection() {
 
             <div className="space-y-6 mb-12">
               <motion.p
-                className="text-xl text-zinc-400 leading-relaxed"
+                className="text-base sm:text-xl text-zinc-400 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.6, duration: 0.8 }}
@@ -189,7 +189,7 @@ export default function AboutSection() {
               </motion.p>
 
               <motion.p
-                className="text-xl text-zinc-400 leading-relaxed"
+                className="text-base sm:text-xl text-zinc-400 leading-relaxed"
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.7, duration: 0.8 }}
@@ -537,7 +537,7 @@ export default function AboutSection() {
             initial={{ opacity: 0, x: 50 }}
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ delay: 0.4, duration: 0.8 }}
-            className="flex flex-col justify-center space-y-16"
+            className="flex flex-col justify-center space-y-10 sm:space-y-16"
           >
             {stats.map((stat, i) => {
               const statRef = useRef(null);
@@ -645,7 +645,7 @@ export default function AboutSection() {
 
                 <div className="relative overflow-hidden">
                   {/* Animated number */}
-                  <div className="text-8xl md:text-9xl font-black text-white mb-4 leading-none cursor-default">
+                  <div className="text-5xl sm:text-8xl md:text-9xl font-black text-white mb-4 leading-none cursor-default">
                     {stat.value}
                   </div>
 

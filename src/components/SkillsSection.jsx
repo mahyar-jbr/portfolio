@@ -94,7 +94,7 @@ export default function SkillsSection() {
   ];
 
   return (
-    <section id="skills" ref={sectionRef} className="py-32 px-6 bg-black relative overflow-hidden">
+    <section id="skills" ref={sectionRef} className="py-16 sm:py-32 px-4 sm:px-6 bg-black relative overflow-hidden">
       {/* Animated background grid */}
       <div className="absolute inset-0 opacity-[0.02]">
         <div className="absolute inset-0" style={{
@@ -119,11 +119,11 @@ export default function SkillsSection() {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-32"
+          className="mb-16 sm:mb-32"
         >
-          <div className="flex items-center gap-6 mb-8">
+          <div className="flex items-center gap-3 sm:gap-6 mb-8">
             <motion.div
-              className="text-8xl font-black text-white/30"
+              className="text-5xl sm:text-8xl font-black text-white/30"
               initial={{ x: -100, opacity: 0 }}
               animate={inView ? {
                 x: 0,
@@ -147,7 +147,7 @@ export default function SkillsSection() {
           </div>
 
           <motion.p
-            className="text-2xl text-zinc-400 max-w-3xl"
+            className="text-lg sm:text-2xl text-zinc-400 max-w-3xl"
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.5, duration: 0.8 }}
@@ -161,7 +161,7 @@ export default function SkillsSection() {
           {/* Vertical line connector */}
           <div className="absolute left-12 top-0 bottom-0 w-[2px] bg-zinc-900 hidden lg:block" />
 
-          <div className="space-y-24">
+          <div className="space-y-12 sm:space-y-24">
             {skillCategories.map((category, categoryIndex) => (
               <motion.div
                 key={category.name}
@@ -187,7 +187,7 @@ export default function SkillsSection() {
                 <div className="lg:ml-32">
                   {/* Category header with unique design */}
                   <motion.div
-                    className="mb-8 relative border-2 p-6 overflow-hidden"
+                    className="mb-6 sm:mb-8 relative border-2 p-4 sm:p-6 overflow-hidden"
                     animate={{
                       borderColor: hoveredCategory === categoryIndex ? '#fff' : 'rgb(39, 39, 42)',
                       boxShadow: hoveredCategory === categoryIndex ? '0 0 40px rgba(255,255,255,0.15)' : '0 0 0px rgba(255,255,255,0)'
@@ -202,9 +202,9 @@ export default function SkillsSection() {
                       transition={{ duration: 0.5 }}
                     />
 
-                    <div className="relative z-10 flex items-center gap-6">
+                    <div className="relative z-10 flex items-center gap-3 sm:gap-6">
                       <motion.div
-                        className="text-6xl font-black text-white/10"
+                        className="text-4xl sm:text-6xl font-black text-white/10"
                         animate={{
                           textShadow: hoveredCategory === categoryIndex ? "0px 0px 25px rgba(255,255,255,0.3)" : "0px 0px 0px rgba(255,255,255,0)",
                           scale: hoveredCategory === categoryIndex ? 1.1 : 1
@@ -214,7 +214,7 @@ export default function SkillsSection() {
                         {category.number}
                       </motion.div>
                       <div>
-                        <h3 className="text-2xl tracking-[0.25em] text-white uppercase font-black mb-1">
+                        <h3 className="text-lg sm:text-2xl tracking-[0.15em] sm:tracking-[0.25em] text-white uppercase font-black mb-1">
                           {category.name}
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-zinc-600 tracking-widest uppercase">
@@ -244,7 +244,7 @@ export default function SkillsSection() {
                           onMouseLeave={() => setHoveredSkill(null)}
                         >
                           <motion.div
-                            className="relative border-2 border-zinc-800 px-5 py-3 overflow-hidden flex items-center gap-3"
+                            className="relative border-2 border-zinc-800 px-3 py-2 sm:px-5 sm:py-3 overflow-hidden flex items-center gap-2 sm:gap-3"
                             animate={{
                               borderColor: hoveredSkill === `${categoryIndex}-${skillIndex}` ? '#fff' : 'rgb(39, 39, 42)',
                               backgroundColor: hoveredSkill === `${categoryIndex}-${skillIndex}` ? 'rgba(255,255,255,0.05)' : 'transparent'

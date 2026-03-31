@@ -82,7 +82,7 @@ export default function ContactSection() {
   ];
 
   return (
-    <section id="contact" ref={sectionRef} className="py-32 px-6 bg-black relative overflow-hidden">
+    <section id="contact" ref={sectionRef} className="py-16 sm:py-32 px-4 sm:px-6 bg-black relative overflow-hidden">
       {/* Background elements */}
       <div className="absolute inset-0 opacity-[0.02]">
         <div className="absolute inset-0" style={{
@@ -107,11 +107,11 @@ export default function ContactSection() {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-32"
+          className="mb-16 sm:mb-32"
         >
-          <div className="flex items-center gap-6 mb-8">
+          <div className="flex items-center gap-3 sm:gap-6 mb-8">
             <motion.div
-              className="text-8xl font-black text-white/30"
+              className="text-5xl sm:text-8xl font-black text-white/30"
               initial={{ x: -100, opacity: 0 }}
               animate={inView ? {
                 x: 0,
@@ -135,7 +135,7 @@ export default function ContactSection() {
           </div>
 
           <motion.p
-            className="text-2xl text-zinc-400 max-w-3xl"
+            className="text-lg sm:text-2xl text-zinc-400 max-w-3xl"
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.5, duration: 0.8 }}
@@ -145,7 +145,7 @@ export default function ContactSection() {
         </motion.div>
 
         {/* Two column layout */}
-        <div className="grid lg:grid-cols-2 gap-16">
+        <div className="grid lg:grid-cols-2 gap-10 sm:gap-16">
           {/* Contact form - Left side */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -424,12 +424,12 @@ export default function ContactSection() {
                       onMouseEnter={() => setHoveredSocial(index)}
                       onMouseLeave={() => setHoveredSocial(null)}
                     >
-                      <div className="flex items-center gap-6 p-6 border-2 border-white bg-black relative overflow-hidden">
+                      <div className="flex items-center gap-4 sm:gap-6 p-4 sm:p-6 border-2 border-white bg-black relative overflow-hidden">
                         {/* Slide effect on hover */}
                         <div className="absolute inset-0 bg-white -translate-x-full group-hover:translate-x-0 transition-transform duration-500 ease-out" />
 
                         {/* Icon */}
-                        <div className="relative z-10 w-12 h-12 border-2 border-white group-hover:border-black flex items-center justify-center bg-black group-hover:bg-white transition-colors duration-500">
+                        <div className="relative z-10 w-10 h-10 sm:w-12 sm:h-12 border-2 border-white group-hover:border-black flex items-center justify-center bg-black group-hover:bg-white transition-colors duration-500 flex-shrink-0">
                           <Icon className="w-5 h-5 text-white group-hover:text-black transition-colors duration-500" />
                         </div>
 

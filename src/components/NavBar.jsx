@@ -42,7 +42,7 @@ export default function NavBar({ scrollToSection }) {
           : 'bg-transparent'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-12 md:px-3 py-4 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 py-4 relative">
         {/* Top decorative line */}
         <motion.div
           className="absolute top-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-zinc-800 to-transparent"
@@ -63,7 +63,7 @@ export default function NavBar({ scrollToSection }) {
             <motion.img
               src="/logo.png"
               alt="Mahyar Logo"
-              className="h-10 md:h-16 w-auto object-contain relative z-10"
+              className="h-8 sm:h-10 md:h-16 w-auto object-contain relative z-10"
               initial={{ opacity: 0, rotate: 0 }}
               animate={{
                 opacity: 1,

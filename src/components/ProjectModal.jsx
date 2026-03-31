@@ -1,5 +1,6 @@
 import { X, ExternalLink, Github, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
+import techIcons from '../data/techIcons';
 
 export default function ProjectModal({ project, onClose }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -24,10 +25,10 @@ export default function ProjectModal({ project, onClose }) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-zinc-950 border border-zinc-800 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-zinc-950 border border-zinc-800 rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto mx-2 sm:mx-0"
       >
         {/* Header */}
-        <div className="p-6 border-b border-zinc-800">
+        <div className="p-4 sm:p-6 border-b border-zinc-800">
           <button
             onClick={onClose}
             className="float-right text-zinc-400 hover:text-white transition-colors"
@@ -35,11 +36,11 @@ export default function ProjectModal({ project, onClose }) {
             <X className="w-6 h-6" />
           </button>
           <div className="text-sm text-zinc-500 mb-2">{project.tech}</div>
-          <h2 className="text-3xl font-bold">{project.title}</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold">{project.title}</h2>
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Description */}
           <div className="mb-6">
             <h3 className="text-xl font-bold mb-3">About</h3>
@@ -123,8 +124,9 @@ export default function ProjectModal({ project, onClose }) {
                 {project.tech.map((tech, index) => (
                   <span
                     key={index}
-                    className="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-lg text-sm text-zinc-300"
+                    className="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-lg text-sm text-zinc-300 flex items-center gap-1.5"
                   >
+                    {techIcons[tech] && (() => { const Icon = techIcons[tech]; return <Icon className="w-3.5 h-3.5" />; })()}
                     {tech}
                   </span>
                 ))}
@@ -133,13 +135,13 @@ export default function ProjectModal({ project, onClose }) {
           )}
 
           {/* Links */}
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-3 sm:gap-4">
             {project.liveDemo && (
               <a
                 href={project.liveDemo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-6 py-3 bg-white text-black rounded-lg font-medium hover:bg-zinc-200 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-white text-black rounded-lg font-medium hover:bg-zinc-200 transition-colors text-sm sm:text-base"
               >
                 <ExternalLink className="w-5 h-5" />
                 Live Demo
@@ -150,7 +152,7 @@ export default function ProjectModal({ project, onClose }) {
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-6 py-3 bg-white text-black rounded-lg font-medium hover:bg-zinc-200 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-white text-black rounded-lg font-medium hover:bg-zinc-200 transition-colors text-sm sm:text-base"
               >
                 <ExternalLink className="w-5 h-5" />
                 View Project
@@ -161,7 +163,7 @@ export default function ProjectModal({ project, onClose }) {
                 href={project.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-6 py-3 bg-zinc-900 border border-zinc-800 text-white rounded-lg font-medium hover:border-zinc-700 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 sm:px-6 sm:py-3 bg-zinc-900 border border-zinc-800 text-white rounded-lg font-medium hover:border-zinc-700 transition-colors text-sm sm:text-base"
               >
                 <Github className="w-5 h-5" />
                 Source Code

@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Github, ArrowUpRight, Code2, Database, Zap, Calendar, GraduationCap } from 'lucide-react';
 import { useState, useRef } from 'react';
+import techIcons from '../data/techIcons';
 
 export default function WorkSection({ projects, onProjectSelect }) {
   const [ref, inView] = useInView({
@@ -23,7 +24,7 @@ export default function WorkSection({ projects, onProjectSelect }) {
   const projectIcons = [Code2, Database, GraduationCap, Calendar, Zap];
 
   return (
-    <section id="work" ref={sectionRef} className="pt-16 pb-32 px-6 bg-black relative overflow-hidden">
+    <section id="work" ref={sectionRef} className="pt-16 pb-16 sm:pb-32 px-4 sm:px-6 bg-black relative overflow-hidden">
       {/* Animated background grid */}
       <div className="absolute inset-0 opacity-[0.015]">
         <div className="absolute inset-0" style={{
@@ -50,11 +51,11 @@ export default function WorkSection({ projects, onProjectSelect }) {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-32"
+          className="mb-16 sm:mb-32"
         >
-          <div className="flex items-center gap-6 mb-8">
+          <div className="flex items-center gap-3 sm:gap-6 mb-8">
             <motion.div
-              className="text-8xl font-black text-white/30"
+              className="text-5xl sm:text-8xl font-black text-white/30"
               initial={{ x: -100, opacity: 0 }}
               animate={inView ? {
                 x: 0,
@@ -78,7 +79,7 @@ export default function WorkSection({ projects, onProjectSelect }) {
           </div>
 
           <motion.p
-            className="text-2xl text-zinc-400 max-w-3xl"
+            className="text-lg sm:text-2xl text-zinc-400 max-w-3xl"
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.5, duration: 0.8 }}
@@ -89,7 +90,7 @@ export default function WorkSection({ projects, onProjectSelect }) {
         </motion.div>
 
         {/* Projects list */}
-        <div className="space-y-32">
+        <div className="space-y-16 sm:space-y-32">
           {projects.map((project, index) => {
             const Icon = projectIcons[index % projectIcons.length];
             const isExpanded = expandedProject === index;
@@ -113,7 +114,7 @@ export default function WorkSection({ projects, onProjectSelect }) {
                 />
 
                 <motion.div
-                  className="border p-8 md:p-12 relative overflow-hidden bg-black/50 backdrop-blur-sm"
+                  className="border p-4 sm:p-8 md:p-12 relative overflow-hidden bg-black/50 backdrop-blur-sm"
                   animate={{
                     borderColor: hoveredIndex === index ? 'rgba(255, 255, 255, 0.4)' : 'rgb(24, 24, 27)'
                   }}
@@ -136,11 +137,11 @@ export default function WorkSection({ projects, onProjectSelect }) {
                   />
 
                   {/* Project number and icon */}
-                  <div className="flex items-start justify-between mb-8">
-                    <div className="flex items-center gap-6">
+                  <div className="flex items-start justify-between mb-6 sm:mb-8">
+                    <div className="flex items-center gap-3 sm:gap-6">
                       {/* Massive project number */}
                       <motion.div
-                        className="text-9xl font-black text-white/20 leading-none"
+                        className="text-5xl sm:text-7xl md:text-9xl font-black text-white/20 leading-none"
                         animate={{
                           textShadow: hoveredIndex === index
                             ? "0px 0px 40px rgba(255,255,255,0.3)"
@@ -154,7 +155,7 @@ export default function WorkSection({ projects, onProjectSelect }) {
 
                       {/* Project icon with glow */}
                       <motion.div
-                        className="w-16 h-16 min-w-[4rem] min-h-[4rem] border-2 border-zinc-800 flex items-center justify-center relative overflow-hidden flex-shrink-0"
+                        className="w-10 h-10 sm:w-16 sm:h-16 min-w-[2.5rem] min-h-[2.5rem] sm:min-w-[4rem] sm:min-h-[4rem] border-2 border-zinc-800 flex items-center justify-center relative overflow-hidden flex-shrink-0"
                         whileHover={{ borderColor: '#fff', boxShadow: "0 0 30px rgba(255,255,255,0.3)" }}
                         transition={{ duration: 0.4 }}
                       >
@@ -163,13 +164,13 @@ export default function WorkSection({ projects, onProjectSelect }) {
                           whileHover={{ opacity: 0.1 }}
                           transition={{ duration: 0.3 }}
                         />
-                        <Icon className="w-8 h-8 min-w-[2rem] min-h-[2rem] text-zinc-600 relative z-10 flex-shrink-0" strokeWidth={1.5} />
+                        <Icon className="w-5 h-5 sm:w-8 sm:h-8 min-w-[1.25rem] min-h-[1.25rem] sm:min-w-[2rem] sm:min-h-[2rem] text-zinc-600 relative z-10 flex-shrink-0" strokeWidth={1.5} />
                       </motion.div>
                     </div>
 
                     {/* Year badge */}
                     <motion.div
-                      className="relative px-6 py-2 border-2 text-sm tracking-widest font-bold overflow-hidden"
+                      className="relative px-3 py-1 sm:px-6 sm:py-2 border-2 text-xs sm:text-sm tracking-widest font-bold overflow-hidden"
                       animate={{
                         borderColor: hoveredIndex === index ? '#fff' : 'rgb(39, 39, 42)',
                         color: hoveredIndex === index ? '#fff' : 'rgb(113, 113, 122)',
@@ -233,14 +234,17 @@ export default function WorkSection({ projects, onProjectSelect }) {
                           }}
                           transition={{ duration: 0.6, ease: "easeInOut" }}
                         />
-                        <span className="relative z-10 group-hover:text-white transition-colors duration-300">{tech}</span>
+                        <span className="relative z-10 group-hover:text-white transition-colors duration-300 flex items-center gap-1.5">
+                          {techIcons[tech] && (() => { const Icon = techIcons[tech]; return <Icon className="w-3.5 h-3.5" />; })()}
+                          {tech}
+                        </span>
                       </motion.div>
                     ))}
                   </div>
 
                   {/* Description */}
                   <motion.p
-                    className="text-xl text-zinc-400 leading-relaxed mb-8 max-w-4xl"
+                    className="text-base sm:text-xl text-zinc-400 leading-relaxed mb-6 sm:mb-8 max-w-4xl"
                     initial={{ opacity: 0.6 }}
                     animate={{ opacity: hoveredIndex === index ? 1 : 0.6 }}
                     transition={{ duration: 0.3 }}
@@ -252,8 +256,8 @@ export default function WorkSection({ projects, onProjectSelect }) {
                   {(project.images?.length > 0 || project.image) && (
                     <div className="mb-8">
                       <div className="flex justify-center">
-                        <div className={`grid gap-6 w-full ${
-                          (project.images?.length || 1) % 2 === 0 ? 'grid-cols-2 max-w-5xl' : 'grid-cols-3 max-w-6xl'
+                        <div className={`grid gap-3 sm:gap-6 w-full ${
+                          (project.images?.length || 1) % 2 === 0 ? 'grid-cols-1 sm:grid-cols-2 max-w-5xl' : 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 max-w-6xl'
                         }`}>
                           {(project.images || [project.image]).map((img, imgIndex) => (
                             <motion.div
@@ -334,7 +338,7 @@ export default function WorkSection({ projects, onProjectSelect }) {
                   </motion.div>
 
                   {/* Action buttons */}
-                  <div className="flex flex-wrap items-center gap-6">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-6">
                     {project.liveDemo && (
                       <motion.a
                         href={project.liveDemo}

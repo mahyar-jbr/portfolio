@@ -115,7 +115,7 @@ function ArtworkModal({ artwork, onClose }) {
           <div className="absolute bottom-0 right-0 w-20 h-20 border-r-2 border-b-2 border-white/10 z-20" />
 
           {/* Image/Video container */}
-          <div className="relative flex items-center justify-center p-8 min-h-[50vh]">
+          <div className="relative flex items-center justify-center p-3 sm:p-8 min-h-[40vh] sm:min-h-[50vh]">
             <AnimatePresence mode="wait">
               {isStoryProject ? (
                 // Story Project: Elegant single-image carousel
@@ -130,7 +130,7 @@ function ArtworkModal({ artwork, onClose }) {
                   {/* Previous button */}
                   <motion.button
                     onClick={(e) => { e.stopPropagation(); prevImage(); }}
-                    className="absolute left-0 md:left-4 z-20 w-12 h-12 flex items-center justify-center text-white/40 hover:text-white transition-colors"
+                    className="absolute left-0 md:left-4 z-20 w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center text-white/40 hover:text-white transition-colors"
                     whileHover={{ scale: 1.1, x: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -138,7 +138,7 @@ function ArtworkModal({ artwork, onClose }) {
                   </motion.button>
 
                   {/* Main image display */}
-                  <div className="relative mx-16 md:mx-24">
+                  <div className="relative mx-8 sm:mx-16 md:mx-24">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={currentImageIndex}
@@ -170,7 +170,7 @@ function ArtworkModal({ artwork, onClose }) {
                   {/* Next button */}
                   <motion.button
                     onClick={(e) => { e.stopPropagation(); nextImage(); }}
-                    className="absolute right-0 md:right-4 z-20 w-12 h-12 flex items-center justify-center text-white/40 hover:text-white transition-colors"
+                    className="absolute right-0 md:right-4 z-20 w-8 h-8 sm:w-12 sm:h-12 flex items-center justify-center text-white/40 hover:text-white transition-colors"
                     whileHover={{ scale: 1.1, x: 2 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -178,12 +178,12 @@ function ArtworkModal({ artwork, onClose }) {
                   </motion.button>
 
                   {/* Thumbnail strip */}
-                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-2 p-3 bg-black/60 backdrop-blur-sm border border-zinc-800">
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 flex gap-1.5 sm:gap-2 p-2 sm:p-3 bg-black/60 backdrop-blur-sm border border-zinc-800">
                     {artwork.images.map((img, idx) => (
                       <motion.button
                         key={img.id}
                         onClick={(e) => { e.stopPropagation(); setCurrentImageIndex(idx); }}
-                        className={`relative w-12 h-12 overflow-hidden border-2 transition-all duration-300 ${
+                        className={`relative w-8 h-8 sm:w-12 sm:h-12 overflow-hidden border-2 transition-all duration-300 ${
                           idx === currentImageIndex
                             ? 'border-white'
                             : 'border-zinc-700 hover:border-zinc-500'
@@ -262,19 +262,19 @@ function ArtworkModal({ artwork, onClose }) {
           </div>
 
           {/* Info bar */}
-          <div className="border-t-2 border-zinc-800 p-8">
+          <div className="border-t-2 border-zinc-800 p-4 sm:p-8">
             <div className="flex items-end justify-between flex-wrap gap-6">
               <div className="flex-1">
                 <div className="flex items-center gap-4 mb-2 flex-wrap">
                   <motion.span
-                    className="text-4xl font-black text-white/20"
+                    className="text-2xl sm:text-4xl font-black text-white/20"
                     animate={{ textShadow: "0px 0px 20px rgba(255,255,255,0.2)" }}
                   >
                     {isStoryProject
                       ? `${String(artwork.images[0]?.id).padStart(2, '0')}-${String(artwork.images[artwork.images.length - 1]?.id).padStart(2, '0')}`
                       : String(artwork.id).padStart(2, '0')}
                   </motion.span>
-                  <h3 className="text-2xl md:text-3xl font-black text-white tracking-wide">
+                  <h3 className="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-wide">
                     {artwork.title}
                   </h3>
                   {isStoryProject && (
@@ -764,7 +764,7 @@ export default function GallerySection() {
   const storyArtworks = artworks.filter(a => a.group === 'story');
 
   return (
-    <section id="gallery" ref={sectionRef} className="pt-16 pb-32 px-6 bg-black relative overflow-hidden">
+    <section id="gallery" ref={sectionRef} className="pt-16 pb-16 sm:pb-32 px-4 sm:px-6 bg-black relative overflow-hidden">
       {/* Animated background grid */}
       <div className="absolute inset-0 opacity-[0.015]">
         <div className="absolute inset-0" style={{
@@ -791,11 +791,11 @@ export default function GallerySection() {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-24"
+          className="mb-12 sm:mb-24"
         >
-          <div className="flex items-center gap-6 mb-8">
+          <div className="flex items-center gap-3 sm:gap-6 mb-8">
             <motion.div
-              className="text-8xl font-black text-white/30"
+              className="text-5xl sm:text-8xl font-black text-white/30"
               initial={{ x: -100, opacity: 0 }}
               animate={inView ? {
                 x: 0,
@@ -819,7 +819,7 @@ export default function GallerySection() {
           </div>
 
           <motion.p
-            className="text-2xl text-zinc-400 max-w-3xl"
+            className="text-lg sm:text-2xl text-zinc-400 max-w-3xl"
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.5, duration: 0.8 }}
@@ -939,7 +939,7 @@ export default function GallerySection() {
 
                     {/* Large number overlay */}
                     <motion.div
-                      className="absolute bottom-6 left-6 text-8xl font-black text-white/25 leading-none"
+                      className="absolute bottom-3 left-3 sm:bottom-6 sm:left-6 text-5xl sm:text-8xl font-black text-white/25 leading-none"
                       animate={{
                         textShadow: hoveredIndex === artwork.id ? "0px 0px 30px rgba(255,255,255,0.3)" : "0px 0px 0px rgba(255,255,255,0)",
                         color: hoveredIndex === artwork.id ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.25)"

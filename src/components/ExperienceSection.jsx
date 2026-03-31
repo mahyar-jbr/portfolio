@@ -50,18 +50,18 @@ export default function ExperienceSection() {
   ];
 
   return (
-    <section id="experience" ref={ref} className="relative min-h-screen py-32 px-8 overflow-hidden">
+    <section id="experience" ref={ref} className="relative min-h-screen py-16 sm:py-32 px-4 sm:px-8 overflow-hidden">
       {/* Section header */}
-      <div className="max-w-7xl mx-auto mb-20">
+      <div className="max-w-7xl mx-auto mb-12 sm:mb-20">
         <motion.div
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-6 mb-8">
+          <div className="flex items-center gap-3 sm:gap-6 mb-8">
             <motion.div
-              className="text-8xl font-black text-white/30"
+              className="text-5xl sm:text-8xl font-black text-white/30"
               initial={{ x: -100, opacity: 0 }}
               animate={inView ? {
                 x: 0,
@@ -124,7 +124,7 @@ export default function ExperienceSection() {
 
               {/* Experience card */}
               <motion.div
-                className="ml-12 border-2 p-8 relative overflow-hidden"
+                className="ml-6 sm:ml-12 border-2 p-4 sm:p-8 relative overflow-hidden"
                 animate={{
                   borderColor: hoveredIndex === index ? '#fff' : 'rgb(39, 39, 42)',
                   boxShadow: hoveredIndex === index ? "0 0 30px rgba(255,255,255,0.15)" : "0 0 0px rgba(255,255,255,0)"
@@ -153,7 +153,7 @@ export default function ExperienceSection() {
                         <exp.icon className="w-5 h-5 text-white" />
                       </motion.div>
                       <motion.h3
-                        className="text-2xl font-black text-white"
+                        className="text-lg sm:text-2xl font-black text-white"
                         animate={{
                           textShadow: hoveredIndex === index ? "0 0 20px rgba(255,255,255,0.3)" : "0 0 0px rgba(255,255,255,0)"
                         }}
@@ -162,12 +162,12 @@ export default function ExperienceSection() {
                         {exp.position}
                       </motion.h3>
                     </div>
-                    <p className="text-lg text-zinc-400 font-bold tracking-wide">{exp.company}</p>
+                    <p className="text-base sm:text-lg text-zinc-400 font-bold tracking-wide">{exp.company}</p>
                     <p className="text-sm text-zinc-500 mt-1">{exp.location}</p>
                   </div>
 
                   <motion.div
-                    className="px-6 py-2 border-2 text-sm tracking-widest font-bold"
+                    className="px-3 py-1 sm:px-6 sm:py-2 border-2 text-xs sm:text-sm tracking-widest font-bold"
                     animate={{
                       borderColor: hoveredIndex === index ? '#fff' : 'rgb(39, 39, 42)',
                       color: hoveredIndex === index ? '#fff' : 'rgb(113, 113, 122)',
@@ -180,7 +180,7 @@ export default function ExperienceSection() {
                 </div>
 
                 {/* Description */}
-                <p className="text-lg text-zinc-400 mb-6 leading-relaxed">{exp.description}</p>
+                <p className="text-sm sm:text-lg text-zinc-400 mb-4 sm:mb-6 leading-relaxed">{exp.description}</p>
 
                 {/* Achievements */}
                 <div className="space-y-3">

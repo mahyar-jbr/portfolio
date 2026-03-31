@@ -55,9 +55,9 @@ export default function Footer() {
         }}
       />
 
-      <div className="max-w-7xl mx-auto px-6 py-20 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 relative z-10">
         {/* Main footer content - Horizontal layout */}
-        <div className="grid lg:grid-cols-3 gap-16 mb-16">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-10 sm:gap-16 mb-12 sm:mb-16">
           {/* Brand Column */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -93,7 +93,7 @@ export default function Footer() {
                 <motion.img
                   src="/logo.png"
                   alt="Mahyar Logo"
-                  className="h-20 w-auto object-contain relative z-10"
+                  className="h-14 sm:h-20 w-auto object-contain relative z-10"
                   initial={{ opacity: 0, rotate: 0 }}
                   animate={{ opacity: 1 }}
                   whileHover={{
@@ -124,7 +124,7 @@ export default function Footer() {
 
               {/* Text */}
               <div>
-                <div className="text-white font-black text-4xl tracking-tighter leading-none mb-1 group-hover:text-shadow-glow transition-all duration-300">
+                <div className="text-white font-black text-2xl sm:text-4xl tracking-tighter leading-none mb-1 group-hover:text-shadow-glow transition-all duration-300">
                   MAHYAR
                 </div>
                 <div className="text-zinc-600 text-xs tracking-[0.3em] uppercase group-hover:text-zinc-500 transition-colors duration-300">
