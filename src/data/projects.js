@@ -1,26 +1,24 @@
 export const devProjects = [
   {
     id: 2,
-    title: 'Pet AI Assistant',
-    tech: ['Python', 'FastAPI', 'MongoDB', 'React', 'Vite', 'Railway', 'Vercel'],
-    description: 'AI-powered dog food recommendation engine that generates personalized, scored food matches based on pet profiles. Live product deployed for in-store kiosk use across 3 pet store locations.',
+    title: 'BowlWise',
+    tech: ['Python', 'FastAPI', 'MongoDB', 'React', 'Vite', 'Docker', 'GitHub Actions', 'Railway', 'Vercel'],
+    description: 'Personalized dog food recommendation engine that generates scored food matches based on pet profiles. Live product deployed for in-store use across 2 PetValu locations.',
     highlights: [
-      'Built full-stack dog food recommendation app with React 19 + FastAPI + MongoDB, deployed on Railway + Vercel',
-      'Engineered 6-factor scoring algorithm validated against veterinary nutrition standards (AAFCO, NRC, WSAVA)',
-      '84 products across 3 brands with real-time pricing, allergen safety filtering, and personalized match scores',
-      'DoorDash-style product detail overlay with feeding calculator, nutrition visualization, and keyboard navigation',
-      'Production security: session auth, rate limiting, CSP headers, defense-in-depth allergen filtering, CORS hardening',
-      'Custom web scrapers using BeautifulSoup4 to extract and normalize product data from PetValu catalogs',
-      'Side-by-side comparison tool with cross-brand nutritional analysis',
-      'Deployed for in-store kiosk use across 3 pet store locations'
+      'Built and launched a dog food recommendation platform now live in 2 PetValu retail locations, helping pet owners find the best food for their dog\'s breed, allergies, and activity level from 150 products across 6 brands',
+      'Designed a 100-point scoring algorithm based on veterinary nutrition standards (AAFCO, NRC, WSAVA) that evaluates and ranks all 150 products per pet profile in under 10ms, automatically filtering out allergens',
+      'Developed 19 backend API endpoints with secure authentication, rate limiting, and 23 automated tests deployed through CI/CD with GitHub Actions and Docker',
+      'Built a custom data pipeline to extract and validate 32 nutritional data points per product from retailer websites where no public data feeds were available',
+      'Achieved full Canadian privacy law compliance (PIPEDA/CASL) and passed a 48-point security audit with 0 critical findings',
+      'Built a 7-step guided form wizard, DoorDash-style product overlay with feeding calculator, and side-by-side comparison tool in React',
+      'Achieved 95 Lighthouse performance score through code splitting, image compression, and CDN optimization'
     ],
-    github: 'https://github.com/mahyar-jbr/pet-ai-assistant',
-    liveDemo: 'https://pet-ai-assistant-seven.vercel.app',
+    liveDemo: 'https://bowlwise.app',
     images: [
-      '/projects/PAA1.png',
-      '/projects/PAA2.png',
-      '/projects/PAA3.png',
-      '/projects/PAA4.png',
+      '/projects/bowlwise1.png',
+      '/projects/bowlwise2.png',
+      '/projects/bowlwise3.png',
+      '/projects/bowlwise4.png',
     ],
     year: '2026'
   },

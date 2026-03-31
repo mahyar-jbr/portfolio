@@ -1,6 +1,6 @@
 import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
-import { Code2, TrendingUp, Dog, Target } from 'lucide-react';
+import { Code2, Dog, Target } from 'lucide-react';
 
 export default function ExperienceSection() {
   const ref = useRef(null);
@@ -8,19 +8,6 @@ export default function ExperienceSection() {
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const experiences = [
-    {
-      company: 'Perfect Equation',
-      position: 'Founder',
-      period: 'Jan 2025 - Present',
-      location: 'Toronto, ON · On-site',
-      description: 'Launched a digital brand and creative agency, building client websites, managing branding strategies, and experimenting with technology for business growth.',
-      icon: TrendingUp,
-      achievements: [
-        'Built and deployed websites using Wix and managed digital marketing campaigns',
-        'Oversaw end-to-end operations from design to client engagement',
-        'Leveraged technology to strengthen both business and technical skills'
-      ]
-    },
     {
       company: 'Nova Ventures',
       position: 'Software Developer Intern',
