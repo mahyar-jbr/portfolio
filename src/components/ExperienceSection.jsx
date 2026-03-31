@@ -23,15 +23,15 @@ export default function ExperienceSection() {
     },
     {
       company: 'Nova Ventures',
-      position: 'Software Developer',
-      period: 'Sep 2024 - Present',
+      position: 'Software Developer Intern',
+      period: 'May 2025 - Aug 2025',
       location: 'Toronto, ON',
-      description: 'Leading development of goalkeeper performance analytics platform using React/TypeScript frontend and Python/FastAPI backend, currently piloted with professional-level goalkeepers.',
+      description: 'Contributed to development of a goalkeeper performance analytics platform using React frontend and Python/FastAPI backend, built for competitive soccer teams.',
       icon: Target,
       achievements: [
-        'Built real-time analytics dashboard featuring interactive goal heatmaps, shot distribution across 9 goal zones, and save rate trend analysis',
-        'Designed and implemented multi-factor 100-point scoring system analyzing reaction time, positioning, and diving patterns to generate personalized training recommendations',
-        'Architecting computer vision pipeline using OpenCV and YOLOv8 to automate shot detection and goalkeeper movement tracking from match footage'
+        'Developed backend API endpoints using Python and FastAPI for a goalkeeper performance analytics platform used by competitive soccer teams',
+        'Parsed and cleaned match data from PDFs and spreadsheets sent by partner clubs, transforming raw stats into structured database tables for performance analysis',
+        'Developed interactive heatmap components in React that visualized save patterns by goal zone, helping coaches pinpoint areas for targeted training'
       ]
     },
     {
