@@ -1,10 +1,12 @@
 import HeroSection from '@/components/sections/HeroSection';
+import WorkSection from '@/components/sections/WorkSection';
 
 export default function Home() {
   return (
     <main className="relative min-h-screen bg-ink text-paper">
       <HeroSection />
-      {/* Remaining sections (Work, Experience, About, Skills, Gallery, Contact)
+      <WorkSection />
+      {/* Remaining sections (Experience, About, Skills, Gallery, Contact)
           are ported in subsequent steps. */}
     </main>
   );
