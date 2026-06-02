@@ -6,6 +6,11 @@ dist
 dist-ssr
 *.local
 
+# Next.js
+.next/
+next-env.d.ts
+out/
+
 # Logs
 logs
 *.log
