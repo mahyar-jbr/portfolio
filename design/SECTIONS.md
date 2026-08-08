@@ -1,8 +1,52 @@
 # Section Lineup — mahyar-portfolio.dev v2
 
-**Status:** LOCKED pending Mahyar's sign-off on §5 judgment calls.
+**Status:** LOCKED, amended 2026-08-08 (see §0).
 Supersedes `STRUCTURE.md` § "Information Architecture".
-**Date:** 2026-08-08. Graduation: April 2027.
+
+---
+
+## 0. AMENDMENT — the premise changed. Read this before anything below.
+
+The content tab established, direct from Mahyar, that **he is not job hunting.** He starts a
+1-year AI Solutions Engineer co-op at FGF in September 2026. His graduation date moved and is
+**unknown — publish no grad date anywhere.** The site's purpose is a credible professional
+presence, not conversion.
+
+Everything below §0 was researched against a "land an internship, the Winter 2027 window is
+closing" premise. Most of it survives — the evidence about what makes a portfolio *good* is
+independent of urgency — but these specific items are **VOID**:
+
+| Voided | Replacement |
+|---|---|
+| Hero **availability line** | Slot deleted. No "open to work", no urgency, no date |
+| Grad date above the fold | Nowhere. The eligibility-screening argument that justified it no longer applies. About keeps degree + school, no date |
+| Contact "names the exact ask" | There is no ask. Presence, not pitch |
+| §6.1 two-phase ship against a deadline | Moot — no deadline. Build it properly |
+| §3.1 availability copy | Deleted entirely |
+| Order by "verifiability decay" (§ Within Work) | Rebuilt on live demos that no longer exist — see below |
+
+**Project lineup replaced** (content tab, locked): `01 BowlWise · 02 MoneyMind ·
+03 Maridian · 04 Tactical DNA`. WealthTrack is CUT.
+
+**Every demo link is dead except BowlWise.** Maridian's deployment is gone — remove the
+`fgf-sentinel-web.vercel.app` URL everywhere. MoneyMind is not public yet. So Maridian and
+MoneyMind case studies must carry their weight on screenshots and diagrams; there is nothing
+to click.
+
+**Tactical DNA** is new — `github.com/mahyar-jbr/tactical-dna`, a research project (775
+passing networks, 42 teams, 44 features). It is `kind: 'research'`, not a product, so no demo
+framing. It gets a full route: it has real substance *and* a public repo, which makes it the
+most verifiable thing on the site — the opposite of the §6.3 problem.
+
+**Skills is reinstated as its own section (`04 Skills`).** The research cut it, but that
+verdict was calibrated for recruiter scanning, which is no longer the goal. Mahyar told the
+content tab to "leave skills like this for now" and the list lives in `content/site.ts`.
+Restraint still applies: text, no icons, no proficiency bars, no percentages.
+
+**Art credit correction:** "Nightmare" was exhibited at **Aurora City Hall**, not "Aurora Art
+Gallery" as `data/artwork.js` says.
+
+---
 
 Derived from a 6-lane research sweep (21+ acclaimed engineer portfolios and 3 peer
 AI-engineer portfolios fetched and DOM-inspected, hiring-side evidence, anti-pattern
@@ -22,37 +66,39 @@ NAV        Work · Experience · About · Art          [Résumé →]
 HERO       AI AGENT & FULL-STACK ENGINEER
            MAHYAR JABERI
            ONE mechanism sentence — leads with the deployment, not the stack
-           Availability line (see §3.1)
            [View work] [Résumé] [Email — click to copy]  · GitHub · LinkedIn
            → static rendered agent trace (see §3.2)
 
 01 WORK    BowlWise ───── one line + ≤6 chips + [Live ↗] [Case study →]
-           Maridian ───── one line + ≤6 chips + [Live demo ↗] [Case study →]
            MoneyMind ──── one line + ≤6 chips + [GitHub ↗] [Case study →]
-           WealthTrack ── one trailing sentence + [GitHub ↗]
+           Maridian ───── one line + ≤6 chips + [Case study →]     ← no live link
+           Tactical DNA ─ one line + ≤6 chips + [GitHub ↗] [Case study →]
 
 02 EXPERIENCE
            Nova Ventures — SWE Intern, Summer 2025 — 2 lines + chips
            Sepantech — App Dev & DB Intern, Summer 2024 — 2 lines + chips
            View full résumé (PDF) ↗
 
-03 ABOUT   4–5 sentences: Pet Valu → BowlWise origin · York / Apr 2027 ·
-           what he wants to build next
-           → 4 grouped text lines for stack vocabulary (no icons, no bars)
+03 ABOUT   4–5 sentences, opening on the Pet Valu retail floor.
+           Thesis: he builds things people actually use.
+           Degree + school, NO grad date.
 
-04 CONTACT One positioning line naming the exact ask
+04 SKILLS  Grouped text. No icons, no bars, no percentages.
+
+05 CONTACT One line — presence, not pitch
            email (copy + mailto) · LinkedIn · GitHub · Résumé
 ```
 
 ### Routes
 
-| Route | Contains | Data status |
+| Route | Contains | Clickable proof |
 |---|---|---|
-| `/work/bowlwise` | Problem → Approach → **Key Decisions** → Result · architecture diagram · in-store recording · 4 existing screenshots · private-repo explanation | **Missing from `caseStudies.js` — must be written** |
-| `/work/maridian` | + war-story block (the outage) + 6-agent topology diagram + explicit contribution scoping | `decisions[]` + `warStory` exist |
-| `/work/moneymind` | + streaming pipeline diagram + why-LangGraph / why-1024-dim | `decisions[]` exist |
-| `/art` | 6 units, `Nightmare` first, 4 timelapses, one framing sentence | exists; needs Godfall credit fix (§6.5) |
-| `/resume.pdf` | static, stable path, 4 entry points | exists |
+| `/work/bowlwise` | Problem → Approach → **Key Decisions** → Result · architecture diagram · in-store photo + recording · 4 existing screenshots · private-repo line | **live site** |
+| `/work/moneymind` | + streaming pipeline diagram + why-Voyage / why-ReAct / why-18-tools | repo |
+| `/work/maridian` | + war-story block (the outage) + agent topology diagram + contribution scoping | **none — screenshots + diagrams must carry it** |
+| `/work/tactical-dna` | research framing, not product. Method → findings. 775 networks · 42 teams · 44 features | repo |
+| `/art` | 6 units, `Nightmare` first (Aurora **City Hall**), 4 timelapses, one framing sentence | — |
+| `/resume.pdf` | static, stable path | — |
 
 **Mandatory on every case study: a named `Key Decisions` block.** Already specced in
 `design/CASE_STUDY.md` §04; the content already exists in `caseStudies.js`. All three

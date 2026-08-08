@@ -5,32 +5,49 @@ import { Slot, Lines, Chips, Btn, Media, SectionShell } from '@/components/wiref
 /* GREYBOX — case-study route. One shape for all three; per-project slots are
    toggled by the flags below. Structure per design/SECTIONS.md §1 + §6.7. */
 
+/* Order and framing locked by the content tab. Every live demo is dead except
+   BowlWise — Maridian's deployment is gone, so its case study has nothing
+   clickable and the screenshots + diagrams have to carry it. */
 const STUDIES = {
   bowlwise: {
     title: 'BowlWise',
+    kind: 'product',
     diagram: 'Architecture diagram',
     warStory: false,
     video: true, // §3.5 — the only video on the site
     screenshots: 4, // already in public/projects
     repoNote: 'Repo is private — needs an explicit explanation line (§6.3)',
-    next: { slug: 'maridian', title: 'Maridian' },
-  },
-  maridian: {
-    title: 'Maridian',
-    diagram: '6-agent topology diagram',
-    warStory: true, // the production outage
-    video: false, // has a live demo URL — link it, don't film it
-    screenshots: 0,
-    repoNote: 'Repo is private — publishing needs teammate consent (§5.4)',
     next: { slug: 'moneymind', title: 'MoneyMind' },
   },
   moneymind: {
     title: 'MoneyMind',
+    kind: 'product',
     diagram: 'Streaming pipeline diagram',
     warStory: false,
     video: false,
     screenshots: 0,
     repoNote: null, // public repo exists
+    next: { slug: 'maridian', title: 'Maridian' },
+  },
+  maridian: {
+    title: 'Maridian',
+    kind: 'product',
+    diagram: 'Agent topology diagram',
+    warStory: true, // the production outage
+    video: false,
+    screenshots: 0,
+    repoNote:
+      'No live demo and no public repo — the ONLY case study with nothing clickable. Screenshots + diagrams must carry it entirely.',
+    next: { slug: 'tactical-dna', title: 'Tactical DNA' },
+  },
+  'tactical-dna': {
+    title: 'Tactical DNA',
+    kind: 'research',
+    diagram: 'Method / feature-space diagram',
+    warStory: false,
+    video: false,
+    screenshots: 0,
+    repoNote: null, // public repo — the most verifiable thing on the site
     next: { slug: 'bowlwise', title: 'BowlWise' },
   },
 } as const;
@@ -49,6 +66,13 @@ export default async function CaseStudy({
   const { slug } = await params;
   if (!(slug in STUDIES)) notFound();
   const study = STUDIES[slug as Slug];
+
+  // Research reads as an investigation, not a product launch. Same shape,
+  // different framing — Question/Method/Findings rather than Problem/Approach/Result.
+  const isResearch = study.kind === 'research';
+  const L = isResearch
+    ? { one: 'Question', two: 'Method', four: 'Findings' }
+    : { one: 'Problem', two: 'Approach', four: 'Result' };
 
   return (
     <article className="px-6 py-16 sm:px-10">
@@ -91,15 +115,15 @@ export default async function CaseStudy({
       </div>
 
       <div className="mx-auto mt-4 max-w-4xl">
-        <SectionShell num="01" title="Problem" id="problem">
-          <Slot label="Problem — the user / business need, stated first">
+        <SectionShell num="01" title={L.one} id="problem">
+          <Slot label={`${L.one} — stated first, before any solution`}>
             <Lines count={3} />
           </Slot>
         </SectionShell>
 
-        <SectionShell num="02" title="Approach" id="approach">
+        <SectionShell num="02" title={L.two} id="approach">
           <div className="flex flex-col gap-6">
-            <Slot label="Approach">
+            <Slot label={L.two}>
               <Lines count={4} />
             </Slot>
             <Slot
@@ -142,9 +166,9 @@ export default async function CaseStudy({
           </SectionShell>
         )}
 
-        <SectionShell num={study.warStory ? '05' : '04'} title="Result" id="result">
+        <SectionShell num={study.warStory ? '05' : '04'} title={L.four} id="result">
           <div className="flex flex-col gap-6">
-            <Slot label="Result">
+            <Slot label={L.four}>
               <Lines count={2} />
             </Slot>
             <Slot label="Metrics — inside sentences, never a counter row">

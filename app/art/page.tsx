@@ -6,7 +6,8 @@ import { Slot, Lines, Media, SectionShell } from '@/components/wireframe/Box';
    last; appears nowhere in the homepage scroll (§4). */
 
 const STANDALONE = [
-  { title: 'Nightmare', credit: 'Aurora Art Gallery', timelapse: false },
+  // Aurora CITY HALL — data/artwork.js says "Aurora Art Gallery" and is wrong.
+  { title: 'Nightmare', credit: 'Aurora City Hall', timelapse: false },
   { title: 'What Remains', credit: null, timelapse: true },
   { title: 'Coronation', credit: null, timelapse: true },
   { title: 'The Pilgrim', credit: null, timelapse: true },

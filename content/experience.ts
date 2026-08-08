@@ -29,12 +29,11 @@ export const roles: Role[] = [
     context:
       'Three years on the retail floor, promoted to Assistant Manager — and the reason BowlWise exists.',
     bullets: [
-      // The only bullet worth having here. It converts a retail job from filler
+      // This bullet does the heavy lifting — it converts a retail job from filler
       // into the origin story of the strongest project on the site.
       'Built BowlWise for the stores I helped run — it now runs on customer-facing tablets in two locations.',
-      // TODO(Mahyar): 1–2 more bullets, in your words. What did being Assistant
-      // Manager actually involve — staff, scheduling, inventory, training? And what
-      // did watching customers pick dog food teach you that shaped BowlWise?
+      'Promoted from Animal Care Expert to Assistant Manager, leading a team on the floor and running the store under pressure.',
+      'Spent three years helping customers make a decision they rarely had enough information for — which became the problem BowlWise solves.',
     ],
   },
   {

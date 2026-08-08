@@ -9,7 +9,7 @@ export const artworks = [
     aspectRatio: 0.65,
     hasTimelapse: false,
     group: null,
-    exhibition: 'Aurora Art Gallery',
+    exhibition: 'Aurora City Hall',
     description: "The monsters we're taught to fear wear the same clothes we do.",
   },
   {

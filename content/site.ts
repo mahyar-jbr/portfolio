@@ -4,18 +4,20 @@ export const identity: Identity = {
   fullName: 'Mahyar Jaberi',
   roleTitle: 'AI Agent & Full-Stack Engineer',
 
-  // TODO(Mahyar): pick a tagline — candidates are in chat, none locked yet.
+  // LOCKED 2026-08-08.
   //
-  // The June line was: "I design and ship production multi-agent AI systems —
-  // live in stores, not just on GitHub."
+  // Replaced June's: "I design and ship production multi-agent AI systems — live in
+  // stores, not just on GitHub." Retired for two reasons. It was defensive — it argued
+  // his projects weren't toys, an argument he no longer needs to win. And it was
+  // subtly false: the thing that's "live in stores" is BowlWise, a full-stack
+  // recommendation platform, not a multi-agent system. It implied a production
+  // multi-agent deployment that does not exist.
   //
-  // Retired for two reasons. It's defensive — it argues your projects aren't toys,
-  // an argument you no longer need to win. And it's subtly false: the thing that's
-  // "live in stores" is BowlWise, which is a full-stack recommendation platform,
-  // not a multi-agent AI system. The sentence welds your one shipped product onto
-  // your agent work and implies a production multi-agent deployment that doesn't
-  // exist yet. That's exactly the kind of claim that unravels in an interview.
-  tagline: 'TODO — pending selection',
+  // This line is true of all four projects, oversells none, and the detour clause
+  // signals curiosity rather than resume-assembly — which suits a site whose job is
+  // credibility, not conversion.
+  tagline:
+    'I build AI agent systems and full-stack products — with occasional detours into football data.',
 
   location: 'Aurora, ON',
   email: 'jaberi.mahyar@gmail.com',
