@@ -303,6 +303,18 @@
     }
   }
 
+  .reveal-on-view {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+    transition:
+      opacity var(--dur-enter) var(--spring-enter),
+      transform var(--dur-enter) var(--spring-enter);
+  }
+  .reveal-on-view[data-shown='true'] {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
   @keyframes trace-ping {
     0% {
       transform: scale(0.9);
@@ -364,6 +376,11 @@
     animation: none !important;
     opacity: 1;
     transform: none;
+  }
+  .reveal-on-view {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

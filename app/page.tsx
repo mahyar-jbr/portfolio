@@ -1,25 +1,11 @@
 import Link from 'next/link';
 import { Slot, Lines, Chips, Btn, Media, SectionShell } from '@/components/wireframe/Box';
 import Hero from '@/components/sections/Hero';
+import Work from '@/components/sections/Work';
 
 /* GREYBOX — structure only, no content. Lineup per design/SECTIONS.md §1, as
    amended in §0: no availability line, no grad date, skills reinstated,
    WealthTrack out / Tactical DNA in. */
-
-const WORK = [
-  { name: 'BowlWise', actions: ['Live ↗', 'Case study →'], note: null },
-  { name: 'MoneyMind', actions: ['GitHub ↗', 'Case study →'], note: null },
-  {
-    name: 'Maridian',
-    actions: ['Case study →'],
-    note: 'Deployment is gone — nothing to click. Screenshots + diagrams have to carry this one.',
-  },
-  {
-    name: 'Tactical DNA',
-    actions: ['GitHub ↗', 'Case study →'],
-    note: 'Research, not a product — no demo framing. Public repo makes it the most verifiable thing on the site.',
-  },
-];
 
 const ROLES = [
   { org: 'Nova Ventures', role: 'SWE Intern · Summer 2025' },
@@ -31,29 +17,7 @@ export default function Home() {
     <>
       <Hero />
 
-      {/* ─────────────── 01 WORK ─────────────── */}
-      <SectionShell
-        num="01"
-        title="Work"
-        id="work"
-        note="ONE LINE per project — the non-negotiable condition attached to having case-study routes at all. Depth lives one click down, never in the scroll. Order locked by the content tab."
-      >
-        <div className="flex flex-col gap-10">
-          {WORK.map((p) => (
-            <Slot key={p.name} label={p.name} note={p.note ?? undefined}>
-              <div className="flex flex-col gap-4">
-                <Lines count={1} widths={['88%']} />
-                <Chips count={6} />
-                <div className="flex flex-wrap gap-3">
-                  {p.actions.map((a) => (
-                    <Btn key={a} label={a} ghost />
-                  ))}
-                </div>
-              </div>
-            </Slot>
-          ))}
-        </div>
-      </SectionShell>
+      <Work />
 
       {/* ─────────────── 02 EXPERIENCE ─────────────── */}
       <SectionShell
