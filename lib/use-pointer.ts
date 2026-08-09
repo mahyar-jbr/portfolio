@@ -66,27 +66,67 @@ export function usePointer<T extends HTMLElement>() {
   return { ref, onPointerMove, onPointerEnter, onPointerLeave };
 }
 
-/** True once the page has scrolled past `threshold`. Passive listener, rAF-gated. */
-export function useScrolled(threshold = 8) {
+/**
+ * Drives the nav chrome from scroll position and direction, via two data
+ * attributes on the element:
+ *   data-scrolled — past `scrolledAt`, so the material can thicken
+ *   data-hidden   — scrolling down past `hideAfter`; clears on any upward move
+ *
+ * Everything is written as attributes rather than state so a scroll never
+ * re-renders React, and reads are rAF-gated behind a passive listener so we
+ * touch layout once per frame at most.
+ *
+ * `delta` is the anti-jitter guard: direction only flips after a move that
+ * clears it, otherwise trackpad noise and scroll-anchoring make the bar
+ * flicker. `last` is deliberately only updated when the guard is cleared —
+ * updating it every frame means a slow scroll never accumulates enough
+ * difference to register at all.
+ */
+export function useNavChrome({
+  scrolledAt = 8,
+  hideAfter = 140,
+  delta = 6,
+}: { scrolledAt?: number; hideAfter?: number; delta?: number } = {}) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let frame = 0;
+    let last = window.scrollY;
+
     const read = () => {
       frame = 0;
       const el = ref.current;
-      if (el) el.dataset.scrolled = window.scrollY > threshold ? 'true' : 'false';
+      if (!el) return;
+      const y = window.scrollY;
+
+      el.dataset.scrolled = y > scrolledAt ? 'true' : 'false';
+
+      if (y <= hideAfter) {
+        // Near the top the bar always shows — hiding it here would just make
+        // the first scroll feel broken.
+        el.dataset.hidden = 'false';
+        last = y;
+        return;
+      }
+
+      const diff = y - last;
+      if (Math.abs(diff) > delta) {
+        el.dataset.hidden = diff > 0 ? 'true' : 'false';
+        last = y;
+      }
     };
+
     const onScroll = () => {
       if (!frame) frame = requestAnimationFrame(read);
     };
+
     read();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
       if (frame) cancelAnimationFrame(frame);
     };
-  }, [threshold]);
+  }, [scrolledAt, hideAfter, delta]);
 
   return ref;
 }

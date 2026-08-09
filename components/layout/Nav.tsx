@@ -1,10 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { usePointer, useScrolled } from '@/lib/use-pointer';
+import { usePointer, useNavChrome } from '@/lib/use-pointer';
 
-/* Nav per design/SECTIONS.md §3.3 — 4 items.
-   No Contact item, no wordmark lockup, no theme toggle, no scroll-progress bar.
+/* Nav per design/SECTIONS.md §3.3 — 4 items, nothing else.
+   No wordmark, no Contact item, no theme toggle, no scroll-progress bar.
+   The site is one page plus four routes; a logo that links home is redundant
+   when the whole capsule is four links and one of them is the top of the page.
 
    Résumé is REMOVED from the nav: public/resume.pdf is stale, and a prominent
    link to an out-of-date document is worse than no link. Restore it here when
@@ -35,39 +37,33 @@ const ITEMS = [
 ];
 
 export default function Nav() {
-  const scrolled = useScrolled(8);
+  const chrome = useNavChrome();
   const p = usePointer<HTMLElement>();
 
   return (
     <div className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 sm:top-6">
       <nav
         ref={(el) => {
-          scrolled.current = el;
+          chrome.current = el;
           p.ref.current = el;
         }}
         onPointerMove={p.onPointerMove}
         onPointerEnter={p.onPointerEnter}
         onPointerLeave={p.onPointerLeave}
         style={{ ['--pa' as string]: 0 }}
-        className="glass-island glass-rim sq pointer-events-auto relative flex w-full max-w-xl
-                   items-center justify-between gap-2 overflow-hidden rounded-pill
-                   py-2 pr-2 pl-4 sm:max-w-2xl sm:py-2.5 sm:pr-3 sm:pl-6"
+        className="glass-island glass-rim sq pointer-events-auto relative flex w-full max-w-md
+                   items-center justify-between gap-1 overflow-hidden rounded-pill
+                   px-2 py-2 sm:max-w-lg sm:gap-2 sm:px-3 sm:py-2.5"
       >
-        <Link
-          href="/"
-          className="btn-press sq -ml-1.5 shrink-0 rounded-pill px-2.5 py-2 font-mono text-[11px] tracking-[0.2em] text-ink uppercase hover:bg-[color-mix(in_srgb,var(--color-n-12)_6%,transparent)]"
-        >
-          MJ
-        </Link>
 
-        <div className="flex min-w-0 items-center gap-0.5 sm:gap-2">
+        <div className="flex min-w-0 flex-1 items-center justify-between gap-0.5 sm:gap-1">
           {ITEMS.map((item) => (
             <Link
               key={item.label}
               href={item.href}
               /* Translucent fill, not an opaque chip — so hover reads as part of
                  the material rather than a card sitting on top of it. */
-              className="btn-press sq rounded-pill px-2.5 py-2 text-[13px] whitespace-nowrap text-n-11
+              className="btn-press sq flex-1 rounded-pill px-3 py-2 text-center text-[13px] whitespace-nowrap text-n-11
                          hover:bg-[color-mix(in_srgb,var(--color-n-12)_6%,transparent)] hover:text-ink
                          sm:px-4 sm:py-2.5 sm:text-sm"
             >

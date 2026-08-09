@@ -355,10 +355,27 @@
   box-shadow:
     inset 0 1px 0 0 rgb(255 255 255 / 0.65),
     var(--shadow-float);
+  /* The transform lives on the capsule itself, never on its fixed wrapper:
+     several properties on an ANCESTOR of a backdrop-filtered element create a
+     backdrop root and silently flatten the glass. Transform is not one of them,
+     but will-change of one of them is — so the wrapper stays completely plain. */
+  transform: translate3d(0, 0, 0);
   transition:
+    transform var(--dur-enter) var(--spring-enter),
     background-color var(--dur-smooth) var(--spring-smooth),
     border-color var(--dur-smooth) var(--spring-smooth),
     box-shadow var(--dur-smooth) var(--spring-smooth);
+}
+
+/* Scrolling down retracts it past the top edge; any upward move brings it back.
+   Travel clears the capsule's own height plus its top offset so no sliver is
+   left peeking. Keyboard focus overrides the retraction — a nav you cannot tab
+   back to is a nav you have broken. */
+.glass-island[data-hidden='true'] {
+  transform: translate3d(0, calc(-100% - 2rem), 0);
+}
+.glass-island[data-hidden='true']:focus-within {
+  transform: translate3d(0, 0, 0);
 }
 
 /* Contracts once content is passing beneath: denser material, tighter padding,
@@ -372,6 +389,12 @@
   box-shadow:
     inset 0 1px 0 0 rgb(255 255 255 / 0.75),
     var(--shadow-float-lifted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-island[data-hidden='true'] {
+    transform: translate3d(0, 0, 0);
+  }
 }
 
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
