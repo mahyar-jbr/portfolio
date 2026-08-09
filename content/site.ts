@@ -31,6 +31,56 @@ export const identity: Identity = {
   ],
 };
 
+/**
+ * Hero.
+ *
+ * The credential line replaces the deleted availability slot — same position, but it
+ * states a fact instead of making a request, which is the whole shift from hunting to
+ * presence. It is also the only line above the fold that someone other than Mahyar can
+ * vouch for; everything else in a hero is self-assigned by definition.
+ */
+export const hero = {
+  eyebrow: 'AI Agent & Full-Stack Engineer',
+  name: 'Mahyar Jaberi',
+  tagline: identity.tagline,
+  credential: 'Incoming AI Solutions Engineer at FGF · September 2026',
+  // Swap "Incoming" for "AI Solutions Engineer at FGF" once he actually starts.
+
+  ctas: [
+    { label: 'View work', href: '#work' },
+    { label: 'Email', href: 'mailto:jaberi.mahyar@gmail.com' },
+    // Résumé pill stays pulled until public/resume.pdf is replaced — the current file
+    // is the June version and predates FGF entirely.
+  ],
+};
+
+/**
+ * The hero signature: a rendered agent trace.
+ *
+ * This is CONTENT, not decoration — the point is that it shows what a real agent call
+ * chain looks like, so it lives here rather than as strings inside a component.
+ *
+ * Every tool name below is real, taken from MoneyMind's agent and verified three ways
+ * in content/MoneyMindHackathon_PORTFOLIO_EXTRACT.md §3. It deliberately does NOT use
+ * the Maridian pipeline that design/SECTIONS.md §3.2 proposed — those four agent names
+ * (intake/classify/recommend/review) were invented by an earlier session and have never
+ * been confirmed against Maridian's source. A fabricated diagram is the one thing this
+ * particular site cannot open with.
+ *
+ * The result strings are illustrative of shape, not transcribed from a specific run —
+ * so present this as an example call chain, never as captured output.
+ */
+export const heroTrace = {
+  caption: 'An agent call chain from MoneyMind',
+  steps: [
+    { call: 'recall_memory("groceries")', result: '3 memories · vector match' },
+    { call: 'query_transactions(30d)', result: '47 rows' },
+    { call: 'get_spend_anomaly()', result: '+38% vs baseline' },
+    { call: 'propose_intervention()', result: 'awaiting user' },
+    { call: 'write_memory("bulking")', result: 'persisted' },
+  ],
+};
+
 export const meta: SiteMeta = {
   title: 'Mahyar Jaberi — AI Agent & Full-Stack Engineer',
   description:

@@ -1,7 +1,6 @@
 import AgentTrace from '@/components/hero/AgentTrace';
 import CopyEmail from '@/components/ui/CopyEmail';
-import { identity } from '@/content/site';
-import { roles } from '@/content/experience';
+import { identity, hero } from '@/content/site';
 
 /* Hero per design/SECTIONS.md §1, as amended in §0.
    Eyebrow · name · ONE mechanism sentence · CTAs · signature.
@@ -28,8 +27,6 @@ const Arrow = () => (
 );
 
 export default function Hero() {
-  const incoming = roles.find((r) => r.incoming);
-
   return (
     <section
       id="hero"
@@ -42,7 +39,7 @@ export default function Hero() {
             className="rise font-mono text-[11px] tracking-[0.2em] text-n-9 uppercase"
             style={{ animationDelay: '60ms' }}
           >
-            {identity.roleTitle}
+            {hero.eyebrow}
           </p>
 
           {/* name — LCP */}
@@ -70,30 +67,19 @@ export default function Hero() {
               letterSpacing: 'var(--tracking-20)',
             }}
           >
-            {identity.tagline}
+            {hero.tagline}
           </p>
 
-          {/* Status, not availability — a fact about where he is, with no ask
-              attached. */}
-          {incoming && (
-            <p
-              className="rise mt-6 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-n-10"
-              style={{ animationDelay: '460ms' }}
-            >
-              <span
-                aria-hidden="true"
-                className="h-1.5 w-1.5 rounded-full bg-olive"
-              />
-              <span>
-                Incoming{' '}
-                <span className="font-medium text-ink">{incoming.title}</span> at{' '}
-                <span className="font-medium text-ink">{incoming.company}</span>
-              </span>
-              <span className="font-mono text-[11px] text-n-9">
-                {incoming.period.split('–')[0].trim()}
-              </span>
-            </p>
-          )}
+          {/* Credential, not availability — it states a fact instead of making
+              a request, and it is the only line above the fold that someone
+              other than Mahyar can vouch for. */}
+          <p
+            className="rise mt-6 flex items-center gap-2.5 text-sm text-n-10"
+            style={{ animationDelay: '460ms' }}
+          >
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-olive" />
+            <span>{hero.credential}</span>
+          </p>
 
           {/* actions */}
           <div
@@ -134,7 +120,7 @@ export default function Hero() {
         <div className="rise lg:pl-4" style={{ animationDelay: '680ms' }}>
           <AgentTrace />
           <p className="mt-3 pl-1 font-mono text-[11px] leading-relaxed text-n-9">
-            MoneyMind&rsquo;s real pipeline — not a mock.
+            Real tool names from MoneyMind&rsquo;s agent. Results show shape, not a transcript.
           </p>
         </div>
       </div>

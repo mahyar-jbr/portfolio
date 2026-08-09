@@ -494,6 +494,15 @@ html {
   scroll-padding-top: 7.5rem;
 }
 
+/* On /art the accent drops to near-zero chroma. A tightly-branded accent
+   everywhere is exactly what clashes with original full-colour work, so the
+   system steps back and lets the pieces carry the page. */
+[data-surface='art'] {
+  --color-a-9: oklch(0.42 0.008 262);
+  --color-a-11: oklch(0.505 0.010 262);
+  --color-a-12: oklch(0.26 0.008 262);
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;

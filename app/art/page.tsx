@@ -1,92 +1,138 @@
+import Image from 'next/image';
 import Link from 'next/link';
-import { Slot, Lines, Media, SectionShell } from '@/components/wireframe/Box';
+import type { Metadata } from 'next';
+import Reveal from '@/components/ui/Reveal';
+import { intro, pieces, series } from '@/content/art';
 
-/* GREYBOX — /art. Six units, not ten: five titled standalone pieces plus one
-   five-panel series (design/SECTIONS.md §3.4). Reached from the nav, ordered
-   last; appears nowhere in the homepage scroll (§4). */
+export const metadata: Metadata = {
+  title: 'Art — Mahyar Jaberi',
+  description: 'Ink and digital work, 2022–2025.',
+};
 
-const STANDALONE = [
-  // Aurora CITY HALL — data/artwork.js says "Aurora Art Gallery" and is wrong.
-  { title: 'Nightmare', credit: 'Aurora City Hall', timelapse: false },
-  { title: 'What Remains', credit: null, timelapse: true },
-  { title: 'Coronation', credit: null, timelapse: true },
-  { title: 'The Pilgrim', credit: null, timelapse: true },
-  { title: 'Fracture', credit: null, timelapse: true },
-];
+/* /art — a sibling page, reached from the nav, ordered last.
+   It appears NOWHERE in the homepage scroll: of 18 acclaimed engineer sites
+   fetched during research, not one puts a non-code creative practice in the
+   main scroll, and the three that showcase one all chose a sibling page.
+
+   The accent drops to near-zero chroma on this page (see globals.css). A
+   tightly-branded accent is exactly what clashes with original full-colour
+   work, so the system gets out of the way here. */
 
 export default function Art() {
   return (
-    <div className="px-6 py-16 sm:px-10">
-      <div className="mx-auto max-w-5xl">
-        <Link
-          href="/"
-          className="font-mono text-[10px] tracking-widest text-n-9 uppercase hover:text-ink"
-        >
-          ← Home
-        </Link>
+    <div className="mx-auto max-w-5xl px-6 pt-6 pb-28 sm:px-10 sm:pt-10" data-surface="art">
+      <Link
+        href="/"
+        className="u-draw inline-block font-mono text-[11px] tracking-[0.16em] text-n-9 uppercase hover:text-ink"
+      >
+        ← Home
+      </Link>
 
-        <div className="mt-10 flex flex-col gap-6">
-          <Slot label="H1">
-            <Lines count={1} widths={['28%']} size="lg" />
-          </Slot>
-          <Slot
-            label="Framing sentence — ONE"
-            note="The page's whole job is to be self-evidently a practice, not a hobby. One line, then get out of the way."
-          >
-            <Lines count={1} widths={['72%']} />
-          </Slot>
-        </div>
+      <header className="mt-10 mb-16 sm:mb-20">
+        <h1
+          className="text-[clamp(2.5rem,7vw,4rem)] leading-[1.04] font-semibold text-ink"
+          style={{ letterSpacing: 'var(--tracking-48)' }}
+        >
+          Art
+        </h1>
+        <p
+          className="mt-5 max-w-2xl text-lg leading-relaxed text-n-10"
+          style={{ letterSpacing: 'var(--tracking-18)' }}
+        >
+          {intro}
+        </p>
+      </header>
+
+      <div className="grid gap-x-8 gap-y-16 sm:grid-cols-2">
+        {pieces.map((p, i) => (
+          <Reveal key={p.title} delay={(i % 2) * 70}>
+            <figure className="m-0">
+              <div
+                className="sq relative overflow-hidden rounded-lg border border-n-6 bg-n-3"
+                style={{ aspectRatio: String(p.aspect) }}
+              >
+                <Image
+                  src={p.image}
+                  alt={p.title}
+                  fill
+                  sizes="(max-width: 640px) 92vw, 46vw"
+                  className="object-cover"
+                  /* Only the first two are above the fold on any realistic
+                     viewport; the rest stay lazy so a 40MB gallery doesn't
+                     block the page. */
+                  priority={i < 2}
+                />
+              </div>
+
+              <figcaption className="mt-4">
+                <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <h2 className="text-lg font-medium text-ink">{p.title}</h2>
+                  <span className="font-mono text-[11px] text-n-9">
+                    {p.medium} · {p.year}
+                  </span>
+                  {p.timelapse && (
+                    <a
+                      href={p.timelapse}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      /* Process video is the authorship proof for digital work.
+                         Linked rather than embedded — the four timelapses total
+                         ~30MB and none of them should load unasked. */
+                      className="u-draw font-mono text-[11px] text-a-11"
+                    >
+                      ▶ process
+                    </a>
+                  )}
+                </div>
+                {p.exhibition && (
+                  <p className="mt-1.5 font-mono text-[11px] text-olive">
+                    {p.exhibition}
+                  </p>
+                )}
+                {p.note && (
+                  <p className="mt-2 text-[15px] leading-relaxed text-n-10 italic">
+                    {p.note}
+                  </p>
+                )}
+              </figcaption>
+            </figure>
+          </Reveal>
+        ))}
       </div>
 
-      <div className="mx-auto max-w-5xl">
-        <SectionShell
-          title="Pieces"
-          id="pieces"
-          note="Nightmare leads — institutional proof is the scarcer signal, and it is the only piece with an exhibition credit. The four timelapse pieces sit one row down so authorship proof is never more than one scroll away (§6.6)."
-        >
-          <div className="grid gap-6 sm:grid-cols-2">
-            {STANDALONE.map((p) => (
-              <Slot
-                key={p.title}
-                label={p.title}
-                note={
-                  p.credit
-                    ? `credit: ${p.credit}`
-                    : p.timelapse
-                      ? 'has process video — surface the affordance'
-                      : undefined
-                }
+      {/* One unit with five panels, not five entries. */}
+      <Reveal>
+        <section className="mt-20 border-t border-n-5 pt-14">
+          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h2 className="text-lg font-medium text-ink">{series.title}</h2>
+            <span className="font-mono text-[11px] text-n-9">
+              {series.medium} · {series.year} · five-panel series
+            </span>
+          </div>
+          {series.note && (
+            <p className="mt-2 max-w-xl text-[15px] leading-relaxed text-n-10 italic">
+              {series.note}
+            </p>
+          )}
+
+          <div className="mt-7 grid grid-cols-2 gap-4 sm:grid-cols-5">
+            {series.panels.map((src, i) => (
+              <div
+                key={src}
+                className="sq relative aspect-[3/4] overflow-hidden rounded-md border border-n-6 bg-n-3"
               >
-                <div className="flex flex-col gap-3">
-                  <Media label="artwork" ratio="aspect-[4/5]" />
-                  <div className="flex items-center justify-between">
-                    <Lines count={1} widths={['54%']} size="sm" />
-                    {p.timelapse && (
-                      <span className="font-mono text-[9px] tracking-widest text-n-9 uppercase">
-                        ▶ timelapse
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </Slot>
+                <Image
+                  src={src}
+                  alt={`${series.title}, panel ${i + 1}`}
+                  fill
+                  sizes="(max-width: 640px) 45vw, 19vw"
+                  className="object-cover"
+                />
+              </div>
             ))}
           </div>
-        </SectionShell>
-
-        <SectionShell
-          title="Godfall — series"
-          id="godfall"
-          note="ONE unit with five panels, not five entries. Drop the 'Grade 12 CPT Project' credit currently in data/artwork.js:106 — keep the medium and year (§6.5)."
-        >
-          <Slot label="Godfall — 5 panels">
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Media key={i} label={`${i + 1}`} ratio="aspect-[3/4]" />
-              ))}
-            </div>
-          </Slot>
-        </SectionShell>
-      </div>
+        </section>
+      </Reveal>
     </div>
   );
 }

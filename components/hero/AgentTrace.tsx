@@ -1,42 +1,33 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { heroTrace } from '@/content/site';
 
 /**
- * The hero signature: a real agent pipeline executing.
+ * The hero signature: an agent call chain, rendered.
  *
- * Every line is MoneyMind's ACTUAL stack, verified from its README and commit
- * history — voyage-3 at 1024 dimensions, Atlas vector search, a LangGraph ReAct
- * loop over 18 tools plus MCP, and chunked plain-text streaming out of Gemini
- * 2.5 Flash. A previous session invented a plausible six-agent breakdown for a
- * different project and it read perfectly and was fiction; nothing here is
- * reconstructed, so every line survives being asked about in an interview.
+ * Every tool name comes from content/site.ts and is real — taken from
+ * MoneyMind's agent and verified three ways in its extraction doc. It
+ * deliberately does NOT use the intake/classify/recommend/review pipeline
+ * design/SECTIONS.md §3.2 proposed: those agent names were invented by an
+ * earlier session and were never confirmed against Maridian's source.
  *
- * It animates because a pipeline executing IS the content — the sequencing
- * carries meaning. That's the bar it has to clear to earn motion at all: it
- * isn't a typewriter effect delaying text you wanted to read.
+ * Framing matters here. The content tab is explicit that the result strings are
+ * illustrative of SHAPE, not transcribed from a specific run — so this is
+ * labelled an example call chain and never "output", "captured", or "a run".
+ * Presenting synthesised results as a real trace is the one failure mode this
+ * whole site is built to avoid.
  *
- * Runs once, then rests. No infinite loop — an idle tab burning frames on
- * decoration is the opposite of the premium it's arguing for.
+ * It animates because sequencing is the information: a call chain resolving in
+ * order shows how an agent actually works. It runs once and rests — no loop,
+ * because an idle tab burning frames on decoration argues against the craft
+ * it's meant to demonstrate.
  */
 
-type Step = {
-  call: string;
-  detail: string;
-  /** Milliseconds this stage appears to take. Uneven on purpose — real traces are. */
-  ms: number;
-};
-
-const STEPS: Step[] = [
-  { call: 'memory.embed()', detail: 'voyage-3 · 1024-d', ms: 420 },
-  { call: 'atlas.vector_search()', detail: 'by meaning, not keyword', ms: 560 },
-  { call: 'langgraph.react()', detail: '18 tools + MCP', ms: 340 },
-  { call: 'tools.invoke()', detail: 'analyze_spending', ms: 620 },
-  { call: 'gemini.stream()', detail: 'chunked, not SSE', ms: 480 },
-];
+const STEP_MS = [420, 560, 340, 620, 480];
 
 export default function AgentTrace() {
-  // -1 = not started, i = stage i running, STEPS.length = finished
+  const steps = heroTrace.steps;
   const [active, setActive] = useState(-1);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -49,38 +40,35 @@ export default function AgentTrace() {
     clear();
     setActive(0);
     let at = 0;
-    STEPS.forEach((s, i) => {
-      at += s.ms;
+    steps.forEach((_, i) => {
+      at += STEP_MS[i % STEP_MS.length];
       timers.current.push(setTimeout(() => setActive(i + 1), at));
     });
-  }, [clear]);
+  }, [clear, steps]);
 
   useEffect(() => {
-    // Reduced motion gets the finished state immediately — the information is
-    // the point, the sequencing is the flourish.
     const reduced =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (reduced) {
-      setActive(STEPS.length);
+      setActive(steps.length);
       return;
     }
-    const kick = setTimeout(run, 620);
+    const kick = setTimeout(run, 640);
     return () => {
       clearTimeout(kick);
       clear();
     };
-  }, [run, clear]);
+  }, [run, clear, steps.length]);
 
-  const done = active >= STEPS.length;
+  const done = active >= steps.length;
 
   return (
-    <div className="sq relative rounded-lg border border-n-6 bg-n-2 shadow-e2">
-      {/* header */}
-      <div className="flex items-center justify-between border-b border-n-5 px-5 py-3">
-        <span className="font-mono text-[11px] tracking-[0.16em] text-n-9 uppercase">
-          MoneyMind · agent run
+    <figure className="sq m-0 rounded-lg border border-n-6 bg-n-2 shadow-e2">
+      <figcaption className="flex items-center justify-between border-b border-n-5 px-5 py-3">
+        <span className="font-mono text-[11px] tracking-[0.14em] text-n-9 uppercase">
+          {heroTrace.caption}
         </span>
         <button
           type="button"
@@ -89,19 +77,19 @@ export default function AgentTrace() {
         >
           replay
         </button>
-      </div>
+      </figcaption>
 
       <ol className="px-5 py-4">
-        {STEPS.map((s, i) => {
+        {steps.map((s, i) => {
           const state = active > i ? 'done' : active === i ? 'running' : 'idle';
           return (
             <li key={s.call} className="relative flex items-start gap-3 py-2.5">
-              {/* rail — a real connector, so the stages read as one pipeline
-                  rather than five unrelated rows */}
-              {i < STEPS.length - 1 && (
+              {/* A real connector, so the calls read as one chain rather than
+                  five unrelated rows. */}
+              {i < steps.length - 1 && (
                 <span
                   aria-hidden="true"
-                  className="absolute top-[1.6rem] left-[0.3rem] h-[calc(100%-0.6rem)] w-px origin-top bg-n-6 transition-transform"
+                  className="absolute top-[1.55rem] left-[0.3rem] h-[calc(100%-0.55rem)] w-px origin-top bg-n-6 transition-transform"
                   style={{
                     transform: `scaleY(${active > i ? 1 : 0})`,
                     transitionDuration: 'var(--dur-enter)',
@@ -112,40 +100,48 @@ export default function AgentTrace() {
 
               <Dot state={state} />
 
-              <div className="min-w-0 flex-1">
-                <div
-                  className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5 transition-[opacity,transform]"
+              <div
+                className="flex min-w-0 flex-1 flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 transition-[opacity,transform]"
+                style={{
+                  opacity: state === 'idle' ? 0.32 : 1,
+                  transform:
+                    state === 'idle' ? 'translate3d(0,2px,0)' : 'translate3d(0,0,0)',
+                  transitionDuration: 'var(--dur-enter)',
+                  transitionTimingFunction: 'var(--spring-enter)',
+                }}
+              >
+                <code
+                  className="font-mono text-[13px] transition-colors"
                   style={{
-                    opacity: state === 'idle' ? 0.34 : 1,
-                    transform:
-                      state === 'idle' ? 'translate3d(0,2px,0)' : 'translate3d(0,0,0)',
-                    transitionDuration: 'var(--dur-enter)',
-                    transitionTimingFunction: 'var(--spring-enter)',
+                    color:
+                      state === 'idle'
+                        ? 'var(--color-n-9)'
+                        : state === 'running'
+                          ? 'var(--color-a-11)'
+                          : 'var(--color-ink)',
+                    transitionDuration: 'var(--dur-hover)',
                   }}
                 >
-                  <code
-                    className="font-mono text-[13px] transition-colors"
-                    style={{
-                      color:
-                        state === 'idle'
-                          ? 'var(--color-n-9)'
-                          : state === 'running'
-                            ? 'var(--color-a-11)'
-                            : 'var(--color-ink)',
-                      transitionDuration: 'var(--dur-hover)',
-                    }}
-                  >
-                    {s.call}
-                  </code>
-                  <span className="font-mono text-[11px] text-n-9">{s.detail}</span>
-                </div>
+                  {s.call}
+                </code>
+                <span
+                  className="font-mono text-[11px] text-n-9 transition-opacity"
+                  style={{
+                    opacity: state === 'done' ? 1 : 0,
+                    transitionDuration: 'var(--dur-hover)',
+                  }}
+                >
+                  {s.result}
+                </span>
               </div>
             </li>
           );
         })}
       </ol>
 
-      <div className="flex items-center justify-between border-t border-n-5 px-5 py-3">
+      {/* "Example" is doing real work — these results show the shape of a
+          response, they are not a transcript. */}
+      <div className="border-t border-n-5 px-5 py-3">
         <span
           className="font-mono text-[11px] transition-colors"
           style={{
@@ -153,28 +149,21 @@ export default function AgentTrace() {
             transitionDuration: 'var(--dur-enter)',
           }}
         >
-          {done ? 'response streaming' : 'running…'}
-        </span>
-        <span className="font-mono text-[11px] text-n-9">
-          grounded in the user&rsquo;s own data
+          {done ? 'example chain complete' : 'resolving…'}
         </span>
       </div>
-    </div>
+    </figure>
   );
 }
 
-/* Idle = hollow, running = accent with a live ring, done = filled.
-   The ring only animates while a stage is genuinely in flight, so motion on
-   this page always means something is happening. */
 function Dot({ state }: { state: 'idle' | 'running' | 'done' }) {
   return (
-    <span className="relative mt-[0.3rem] flex h-[0.65rem] w-[0.65rem] shrink-0 items-center justify-center">
+    <span className="relative mt-[0.28rem] flex h-[0.65rem] w-[0.65rem] shrink-0 items-center justify-center">
       {state === 'running' && (
         <span
           className="absolute inset-0 rounded-full"
           style={{
             background: 'var(--color-a-9)',
-            opacity: 0.22,
             animation: 'trace-ping 1s var(--spring-smooth) infinite',
           }}
         />
@@ -182,12 +171,7 @@ function Dot({ state }: { state: 'idle' | 'running' | 'done' }) {
       <span
         className="relative h-[0.55rem] w-[0.55rem] rounded-full border transition-[background-color,border-color,transform]"
         style={{
-          backgroundColor:
-            state === 'idle'
-              ? 'transparent'
-              : state === 'running'
-                ? 'var(--color-a-9)'
-                : 'var(--color-a-9)',
+          backgroundColor: state === 'idle' ? 'transparent' : 'var(--color-a-9)',
           borderColor: state === 'idle' ? 'var(--color-n-7)' : 'var(--color-a-9)',
           transform: state === 'running' ? 'scale(1.12)' : 'scale(1)',
           transitionDuration: 'var(--dur-press)',

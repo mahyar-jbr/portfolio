@@ -128,34 +128,45 @@ OSS shelf · live "chat with my portfolio" RAG demo · Craft/Lab page · educati
 
 ## 3. Adjudicated calls
 
-### 3.1 Availability line
-Two of three proposals wrote "Open to **Summer 2026** internships." It is **August 2026** —
-that term is over. Staleness is the one failure mode with named-practitioner evidence that
-it actively costs you. The third proposal's fix was also wrong (Summer 2027 is a new-grad
-role, not a co-op term, because he graduates April 2027).
+### 3.1 Availability line — DELETED
 
-**Ship:**
-> Open to Winter 2027 (Jan–Apr) co-op — and new-grad SWE / AI engineering roles from May 2027. Toronto or remote.
+Nothing here. The section is retained only so the numbering doesn't shift and so
+nobody re-derives it.
 
-**Implementation:** one exported constant in `lib/`, consumed by hero and footer. No other
-date-bearing copy anywhere on the site.
+It previously carried finished, shippable copy ("Open to Winter 2027 (Jan–Apr) co-op — and
+new-grad SWE / AI engineering roles from May 2027"). That sentence was false twice over: he
+is not job hunting, and the April 2027 graduation it assumed has moved and is unknown. It
+has been deleted rather than overruled, because finished copy left sitting in a spec gets
+shipped by whoever reads the spec next.
 
-### 3.2 Hero signature — static agent trace, NOT the animated swarm
-The rendered trace is *content*, not decoration: it demonstrates he knows what a typed agent
-contract looks like. No backend, cannot break, cannot rot, ~0 KB of JS.
+The hero slot it occupied now carries `hero.credential` from `content/site.ts` — a fact
+rather than a request.
 
-**Do not build the canvas swarm for v1.** Highest time cost, zero precedent in 21 sites,
-against a closing recruiting cycle with nothing yet built. If ambient motion is added later
-it must clear a hard gate: <15 KB, pauses off-screen, static frame under
-`prefers-reduced-motion`, 60fps on mid-tier Android.
+### 3.2 Hero signature — static rendered call chain, NOT the animated swarm
+
+The rendered chain is *content*, not decoration: it shows what a real agent call chain
+looks like. No backend, nothing to break, ~0 KB of JS.
+
+**Do not build the canvas swarm.** Highest time cost, zero precedent in 21 sites.
+
+**The intake/classify/recommend/review trace previously specified here was INVENTED** by an
+earlier session as a guess at Maridian's agents, is flagged `VERIFY` in the old
+`data/caseStudies.js`, and was never checked against source. It has been deleted.
+
+The shipped chain is `heroTrace` in `content/site.ts`, built from MoneyMind's real tool
+names (verified three ways in its extract):
 
 ```
-1  INTAKE      ingest_defect()  →  DefectReport
-2  CLASSIFY    classify()       →  contract: DefectClass · schema: valid
-3  RECOMMEND   recommend_action()
-4  REVIEW      Reviewed by: Operator · Decision: approved
-5  DISPATCH    [ state persisted ]
+recall_memory("groceries")   →  3 memories · vector match
+query_transactions(30d)      →  47 rows
+get_spend_anomaly()          →  +38% vs baseline
+propose_intervention()       →  awaiting user
+write_memory("bulking")      →  persisted
 ```
+
+Caption it as an **example call chain**. The tool names are real; the result values are
+illustrative of shape and are **not captured output**. It must never be labelled a run, a
+trace capture, or output.
 
 ### 3.3 Nav
 `Work · Experience · About · Art`, as a floating glass capsule. The Résumé pill is pulled while the PDF is stale — restore it when the file is updated.
@@ -171,8 +182,11 @@ series is one entry with five panels.
 ### 3.5 Video
 Zero of three peer AI portfolios ship a `<video>`. BowlWise is the exception for a specific
 reason: PetValu will never yield a public URL, so without a recording "live in 2 stores" is
-an unbacked assertion. **One video, on `/work/bowlwise`.** Maridian has a live demo URL —
-link it, don't film it.
+an unbacked assertion. **One video, on `/work/bowlwise`.**
+
+~~Maridian has a live demo URL — link it, don't film it.~~ **VOID (§0):** that deploy is
+gone. Maridian has no live demo and no public repo, making it the only case study with
+nothing clickable — its screenshots and diagrams have to carry it alone.
 
 ### 3.6 Stack vocabulary
 Chips-per-project cannot express what he knows but hasn't shipped *on this site*. Both

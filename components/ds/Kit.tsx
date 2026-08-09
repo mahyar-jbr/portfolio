@@ -23,11 +23,7 @@ export function DSSection({
             {title}
           </h2>
         </div>
-        {note && (
-          <p className="mt-3 max-w-2xl leading-relaxed text-n-10">
-            {note}
-          </p>
-        )}
+        {note && <p className="mt-3 max-w-2xl leading-relaxed text-n-10">{note}</p>}
       </div>
       {children}
     </section>
