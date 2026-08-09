@@ -26,7 +26,15 @@ export default function CopyEmail({ email }: { email: string }) {
   }
 
   return (
-    <button
+    <>
+      {/* The visual confirmation is a transform, which a screen reader cannot
+          perceive — so the state change is announced separately. Live region
+          lives outside the button so the announcement is the change itself,
+          not a re-read of the whole control. */}
+      <span className="sr-only" role="status" aria-live="polite">
+        {copied ? 'Email address copied to clipboard' : ''}
+      </span>
+      <button
       type="button"
       onClick={copy}
       aria-label={`Copy email address ${email}`}
@@ -45,7 +53,6 @@ export default function CopyEmail({ email }: { email: string }) {
       </span>
 
       <span
-        aria-hidden="true"
         className="absolute inset-0 inline-flex items-center justify-center gap-2 text-olive transition-[opacity,transform]"
         style={{
           opacity: copied ? 1 : 0,
@@ -66,6 +73,7 @@ export default function CopyEmail({ email }: { email: string }) {
         </svg>
         <span className="text-[15px] font-medium">Copied</span>
       </span>
-    </button>
+      </button>
+    </>
   );
 }

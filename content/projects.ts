@@ -221,19 +221,89 @@ const moneymind: Project = {
   },
 };
 
-const maridian: Partial<Project> = {
+const maridian: Project = {
   slug: 'maridian',
   name: 'Maridian',
   kind: 'prototype',
-  depth: 'standard',
+  depth: 'deep',
   order: 3,
-  badges: ['TMLS 2026 Agentic AI Hackathon', 'Technical Lead'],
+
+  oneLiner:
+    'Six Claude agents that triage defects on a bakery production line and recommend what to do with the batch.',
+
+  badges: ['TMLS 2026 Agentic AI Hackathon', 'Team of 6', 'Built in 5 days'],
+
+  stack: ['Python', 'FastAPI', 'Pydantic', 'Claude Haiku 4.5', 'Anthropic SDK', 'SQLite', 'SSE', 'Next.js'],
+
   links: [
-    // Deploy is DEAD. The old fgf-sentinel-web.vercel.app link must not ship.
+    // NO LINKS. The Railway API is decommissioned and 404s; the Vercel frontend still
+    // loads but every fetch and the "Run AI Analysis" button hit that dead host, so a
+    // visitor gets a broken page. The old fgf-sentinel-web.vercel.app URL must not ship.
+    // Four real UI screenshots exist at web/public/pitch/shots/ — those carry this page.
   ],
-  // TODO: the six-agent breakdown in the old data/caseStudies.js was INVENTED by a
-  // previous session and never confirmed. It cannot be reused. Needs the real agents
-  // from the repo, and screenshots — with no live demo, imagery is the only proof.
+
+  problem:
+    'On a commercial bakery line, computer-vision cameras flag hundreds of defects per batch, and every one needs a human call: scrap it, downgrade it to B-grade, or repack it. The information required to make that call — current inventory, the customer’s contracted defect tolerance, whether there’s B-grade demand, what capacity is free — is scattered across systems. Operators make this decision dozens of times a shift, under time pressure, while also running equipment.',
+
+  approach:
+    'Six specialised agents run in a fixed sequence, each with its own prompt and its own small set of tools: Triage classifies the defect, Options finds the routes available under that customer’s contract, Scorer prices them, Decision commits and logs one, Batch Tracker checks the batch against its SLA, and Recovery Planner proposes a recovery action if the SLA is breached. There’s no agent framework — it’s the Anthropic SDK’s tool-use loop against Claude Haiku 4.5, with a hand-written orchestrator, and every stage streams its reasoning to the operator’s screen over SSE as it happens. Twelve tools read and write a fourteen-table factory database. One invariant is enforced in the type system rather than the prompt: a customer-facing email draft can never be auto-sent, only prepared for a human to approve.',
+
+  result:
+    'Built in five days by a team of six and demoed at the TMLS 2026 Agentic AI Hackathon, sponsored by FGF Brands. The system runs end to end — a flagged defect becomes a costed recommendation with a written audit trail in about half a minute. The backend has since been decommissioned, so what remains is the code, the screenshots, and the write-up.',
+
+  metrics: [
+    {
+      value: '6',
+      label: 'Agents, each with its own prompt and tools',
+      source: 'api/agents/ — Triage, Options, Scorer, Decision, Batch Tracker, Recovery Planner',
+    },
+    {
+      value: '21',
+      label: 'API endpoints across 3 routers',
+      source: 'Counted from @app/@router decorators in api/',
+    },
+    {
+      value: '14',
+      label: 'Database tables, 12 agent tools',
+      source: 'api/db/schema.sql (14 CREATE TABLE) and api/tools/ (12 specs, 11 agent-reachable)',
+    },
+    {
+      value: '5 days',
+      label: '245 commits, 6 people',
+      source: 'git log — 2026-05-25 to 2026-05-29',
+    },
+  ],
+
+  decisions: [
+    {
+      decision: 'Claude Haiku 4.5 instead of Sonnet',
+      why: 'Six agents run in sequence, so per-call latency compounds six times over before the operator sees an answer. Haiku’s faster calls and higher rate limits mattered more here than the extra reasoning depth of a larger model — the work is bounded lookups against a database, not open-ended analysis.',
+    },
+    {
+      decision: 'No agent framework — the Anthropic SDK tool-use loop directly',
+      why: 'RATIONALE NOT IN REPO — Mahyar to supply. The README states the fact and calls it interesting; nothing records the reasoning, and no commit shows a framework being tried and dropped.',
+    },
+    {
+      decision: 'A customer email draft can never auto-send',
+      why: 'It’s typed as a literal false in the shared contract, not left to a prompt to respect, and a test asserts it. The system can prepare the message to a customer about a quality failure; a person has to be the one who sends it. That boundary is what makes an operations team willing to switch it on at all.',
+    },
+    {
+      decision: 'A hard timeout around every agent stage',
+      why: 'A rate-limit retry inside any single agent sleeps for 15, 30, then 60 seconds — and with a sequential chain that would silently stall the entire pipeline with the stream still open. Wrapping each stage in a 45-second ceiling turns an indefinite hang into a degraded stage the operator can see.',
+    },
+  ],
+
+  contribution: {
+    role: 'Infrastructure lead and integrator',
+    teamSize: 6,
+    owned:
+      'The API contract the six of us built against, the operator and distributor portals, deployment, and integration — including the production outage below and all 24 pull-request merges. The agents, the tools and the database schema were written by teammates.',
+  },
+
+  warStory: {
+    title: 'Production down on Wednesday afternoon',
+    body: 'Every route started returning 502 in the middle of a build day. The Railway build log was green, which is what made it confusing — the failure only appeared in the runtime log, where the traceback stopped inside sqlite3.connect. Railway deploys with the root directory set to /api, so the database path we resolved relative to the source tree pointed above the container root; the file simply wasn’t there. The connection error propagated out of startup and killed the app before it could serve anything. I fixed it in three parts: resolve the database path from an environment variable first and fall back through two known locations, commit a seeded copy of the database inside the deploy root, and — the part I’d keep in any project — make startup non-fatal, so a database problem can degrade the app instead of taking down the health check with it.',
+  },
 };
 
 const tacticalDna: Project = {
@@ -321,8 +391,15 @@ const tacticalDna: Project = {
   },
 };
 
-export const projects = [bowlwise, moneymind, maridian, tacticalDna];
-export const completeProjects: Project[] = [bowlwise, moneymind, tacticalDna];
+/**
+ * All four are now written from verified extracts, so these are the same list.
+ * `completeProjects` derives from `projects` and sorts by `order` rather than being
+ * maintained by hand — it was hand-maintained while projects were landing one at a time,
+ * and Maridian was silently missing from it for exactly that reason.
+ */
+export const projects: Project[] = [bowlwise, moneymind, maridian, tacticalDna];
+
+export const completeProjects: Project[] = [...projects].sort((a, b) => a.order - b.order);
 
 /**
  * A NOTE ON "MULTI-AGENT" — read before writing any copy that uses the phrase.
@@ -337,7 +414,10 @@ export const completeProjects: Project[] = [bowlwise, moneymind, tacticalDna];
  *                 data/caseStudies.js was invented by a previous session.
  *   - Tactical DNA — research, no agents.
  *
- * So "multi-agent systems" is not currently supportable anywhere on this site. The
- * locked tagline deliberately says "AI agent systems". If Maridian's extract confirms
- * six real coordinated agents, this changes — until then it does not.
+ * RESOLVED 2026-08-08: Maridian's six agents are REAL — Triage, Options, Scorer,
+ * Decision, Batch Tracker, Recovery Planner, each a module with its own prompt file and
+ * tool wiring, chained by a hand-written sequential orchestrator. So "multi-agent" is
+ * now supportable, but ONLY about Maridian, and only alongside the contribution note:
+ * Mahyar did not write the agents. Never let the phrase migrate to MoneyMind (one
+ * agent), BowlWise (no AI), or to a general claim about him in the hero or About.
  */

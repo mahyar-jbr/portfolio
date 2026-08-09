@@ -81,10 +81,20 @@ export const heroTrace = {
   ],
 };
 
+/**
+ * SEO / social metadata.
+ *
+ * app/layout.tsx currently hardcodes its own title and description, which disagree
+ * with these. This object should be the single source — otherwise the tab title, the
+ * search result, and the link preview drift apart and nobody notices for months.
+ */
 export const meta: SiteMeta = {
   title: 'Mahyar Jaberi — AI Agent & Full-Stack Engineer',
+  // Was "Currently an AI Solutions Engineer at FGF" — corrected 2026-08-08. He starts
+  // in September; today he is not one. A description is the one string that gets
+  // scraped, cached and quoted back at you, so it cannot run ahead of the facts.
   description:
-    'I build AI agent systems and full-stack products. Currently an AI Solutions Engineer at FGF.',
+    'I build AI agent systems and full-stack products. Starting September 2026 as an AI Solutions Engineer at FGF.',
   ogImageAlt: 'Mahyar Jaberi — AI Agent & Full-Stack Engineer',
 };
 
@@ -105,14 +115,16 @@ export const contact = {
 };
 
 /**
- * Skills.
+ * Skills. Reviewed 2026-08-08 — Mahyar: "leave skills like this for now."
  *
- * TODO(Mahyar): this is the June resume set, unreviewed since. Two things to fix:
- *   1. Everything MoneyMind's README revealed is missing here — Voyage AI, Vertex
- *      AI, LangGraph ReAct, Clerk, Railway, MCP.
- *   2. Anything you've learned since June that isn't listed.
- * Cut anything you would not want to be interviewed on. A short list you can
- * defend beats a long one you can't.
+ * The June resume set, extended with what the project extracts actually proved he has
+ * used: Voyage AI and Vertex AI (MoneyMind), MCP (MoneyMind's read-only Mongo server),
+ * NetworkX / scikit-learn / XGBoost (Tactical DNA), Railway (both).
+ *
+ * Standing rule if this is ever revisited: everything here must be something he could
+ * be interviewed on. A short defensible list beats a long one. Note that "Anthropic
+ * Claude API" is now backed by Maridian's direct SDK tool-use loop, and will shortly be
+ * backed by the FGF role too.
  */
 export const skills: SkillGroup[] = [
   {

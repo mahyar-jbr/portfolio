@@ -24,6 +24,9 @@ export const roles: Role[] = [
   {
     company: 'Pet Valu',
     title: 'Animal Care Expert → Assistant Manager',
+    // TODO(verify): the end date is an INFERENCE — Mahyar confirmed he was still there
+    // through summer 2026, and the FGF co-op starts in September, so this assumes he
+    // leaves. If he stays on part-time, this should read "Aug 2023 – Present".
     period: 'Aug 2023 – Sept 2026',
     location: 'Ontario',
     context:
