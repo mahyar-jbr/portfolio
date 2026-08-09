@@ -269,6 +269,55 @@
     }
   }
 
+  /* ── Masked line reveal ───────────────────────────────────────────────────
+     Type rises from behind a clipped edge, so it reads as revealed rather than
+     flown in. Chosen over per-character stagger deliberately: character-level
+     animation on a name is both a cliché and slower to read, and a name is the
+     one thing on the page that must land instantly. */
+  .reveal {
+    display: block;
+    overflow: hidden;
+  }
+  .reveal > * {
+    display: block;
+    transform: translate3d(0, 108%, 0);
+    animation: reveal-rise var(--dur-enter) var(--spring-enter) forwards;
+  }
+  @keyframes reveal-rise {
+    to {
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  /* Everything else in the hero shares one entrance so the section arrives as a
+     unit — staggered by delay, never by a different curve. */
+  .rise {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+    animation: rise-in var(--dur-enter) var(--spring-enter) forwards;
+  }
+  @keyframes rise-in {
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes trace-ping {
+    0% {
+      transform: scale(0.9);
+      opacity: 0.28;
+    }
+    70% {
+      transform: scale(1.9);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1.9);
+      opacity: 0;
+    }
+  }
+
   /* ── Underline draw ───────────────────────────────────────────────────────
      Scales from the left on enter, and out to the RIGHT on leave, so the line
      travels rather than rewinding. */
@@ -307,6 +356,14 @@
   }
   .u-draw::after {
     transition: none;
+  }
+  /* Entrances become instant rather than absent — content still arrives, it
+     just doesn't travel. */
+  .reveal > *,
+  .rise {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
   }
 }
 

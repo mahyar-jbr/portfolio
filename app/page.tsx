@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Slot, Lines, Chips, Btn, Media, SectionShell } from '@/components/wireframe/Box';
+import Hero from '@/components/sections/Hero';
 
 /* GREYBOX — structure only, no content. Lineup per design/SECTIONS.md §1, as
    amended in §0: no availability line, no grad date, skills reinstated,
@@ -28,55 +29,7 @@ const ROLES = [
 export default function Home() {
   return (
     <>
-      {/* ─────────────── HERO ─────────────── */}
-      <section id="hero" className="flex min-h-[88vh] items-center px-6 py-20 sm:px-10">
-        <div className="mx-auto grid w-full max-w-6xl gap-12 lg:grid-cols-[1.15fr_1fr] lg:items-center">
-          <div className="flex flex-col gap-5">
-            <Slot label="Eyebrow — role">
-              <Lines count={1} widths={['58%']} size="sm" />
-            </Slot>
-
-            <Slot label="H1 — name" note="LCP element. Plain DOM text, two lines.">
-              <Lines count={2} widths={['70%', '55%']} size="lg" />
-            </Slot>
-
-            <Slot
-              label="Mechanism sentence"
-              note="ONE sentence. Leads with the deployment, not the stack. NO availability line — he is not hunting (§0)."
-            >
-              <Lines count={2} widths={['100%', '64%']} />
-            </Slot>
-
-            <Slot label="CTAs + socials">
-              <div className="flex flex-wrap items-center gap-3">
-                <Btn label="View work" />
-                <Btn label="Résumé" ghost />
-                <Btn label="Email — copy" ghost />
-                <span className="font-mono text-[10px] text-n-9">
-                  · GitHub · LinkedIn
-                </span>
-              </div>
-            </Slot>
-          </div>
-
-          <Slot
-            label="Signature — static agent trace"
-            note="Rendered content, not animation. ~0 KB JS. 5 numbered stages with real function names + contract state."
-          >
-            <div className="flex flex-col gap-3 pt-1">
-              {['INTAKE', 'CLASSIFY', 'RECOMMEND', 'REVIEW', 'DISPATCH'].map((stage, i) => (
-                <div key={stage} className="flex items-center gap-3">
-                  <span className="w-4 font-mono text-[10px] text-n-9">{i + 1}</span>
-                  <span className="w-24 font-mono text-[10px] tracking-widest text-n-9 uppercase">
-                    {stage}
-                  </span>
-                  <span className="h-2.5 flex-1 bg-n-5" />
-                </div>
-              ))}
-            </div>
-          </Slot>
-        </div>
-      </section>
+      <Hero />
 
       {/* ─────────────── 01 WORK ─────────────── */}
       <SectionShell
