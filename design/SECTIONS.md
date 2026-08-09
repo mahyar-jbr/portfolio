@@ -61,7 +61,7 @@ statistic. Only surviving claims inform this doc.
 ### Home `/` — one scroll, five sections
 
 ```
-NAV        Work · Experience · About · Art          [Résumé →]
+NAV        Work · Experience · About · Art     ← floating glass capsule
 
 HERO       AI AGENT & FULL-STACK ENGINEER
            MAHYAR JABERI
@@ -98,7 +98,7 @@ HERO       AI AGENT & FULL-STACK ENGINEER
 | `/work/maridian` | + war-story block (the outage) + agent topology diagram + contribution scoping | **none — screenshots + diagrams must carry it** |
 | `/work/tactical-dna` | research framing, not product. Method → findings. 775 networks · 42 teams · 44 features | repo |
 | `/art` | 6 units, `Nightmare` first (Aurora **City Hall**), 4 timelapses, one framing sentence | — |
-| `/resume.pdf` | static, stable path | — |
+| `/resume.pdf` | static, stable path | **STALE — unlinked from nav** |
 
 **Mandatory on every case study: a named `Key Decisions` block.** Already specced in
 `design/CASE_STUDY.md` §04; the content already exists in `caseStudies.js`. All three
@@ -115,7 +115,7 @@ independent proposals dropped it in favour of Problem/Approach/Result. Restored 
 | **Homepage stays ONE LINE per project** | Non-negotiable condition attached to having case-study routes at all. |
 | **WealthTrack = one trailing line** | Four cards where three are strong reads as padding. |
 | **Experience = exactly two rows** | NACE 2026 rates industry internship experience 4.3/5 — one of only two attributes clearing 4.0 of thirteen. Highest measured lever on the page. |
-| **Résumé surfaced without hunting** | 3 of 4 among the job-seeking subset of sites. |
+| ~~**Résumé surfaced without hunting**~~ | **SUSPENDED 2026-08-08** — `public/resume.pdf` is stale. A prominent link to an out-of-date résumé is worse than no link. Pulled from the nav; the Experience and Contact entry points hit the same file and need the same call once it is refreshed. |
 | **Availability line in the hero, not the footer** | delba.dev — job-seeking IC, closest situational analogue — puts it immediately after the heading. |
 | **Metrics inside sentences, never a counter row** | "2 PetValu stores / 20 endpoints / 61 tests" attached to the thing that earned them. |
 
@@ -158,7 +158,7 @@ it must clear a hard gate: <15 KB, pauses off-screen, static frame under
 ```
 
 ### 3.3 Nav
-`Work · Experience · About · Art` + visually distinct **Résumé** → `/resume.pdf`.
+`Work · Experience · About · Art`, as a floating glass capsule. The Résumé pill is pulled while the PDF is stale — restore it when the file is updated.
 No Contact item (hero carries email, footer is the scroll terminus). No wordmark, no theme
 toggle, no scroll-progress bar. Experience keeps its nav slot — it maps to the
 highest-measured hiring attribute on the page.

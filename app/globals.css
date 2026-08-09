@@ -324,42 +324,65 @@
   backdrop-filter: none;
 }
 
-/* Scroll-reactive nav. The blur radius CANNOT be tweened — animating a
-   backdrop-filter re-runs the convolution every frame — so the tiers are two
-   whole declarations swapped by a data attribute, with only the cheap
-   properties (background-color, border, shadow) transitioning between them.
-   Literal lengths, never var(), because Safari 18 can't resolve custom
-   properties inside backdrop-filter. */
-.glass-nav {
+/* ── Floating island nav ──────────────────────────────────────────────────────
+   A detached capsule with page content passing underneath it, which makes the
+   backdrop genuinely arbitrary — so the 0.72 alpha floor is load-bearing here
+   rather than precautionary.
+
+   The blur radius CANNOT be tweened: animating a backdrop-filter re-runs the
+   convolution every frame. So the two tiers are whole declarations swapped by a
+   data attribute, and only the cheap properties (background-color, box-shadow,
+   padding) transition between them. Literal lengths, never var(), because
+   Safari 18 cannot resolve custom properties inside backdrop-filter. */
+.glass-island {
   background-color: color-mix(in srgb, var(--color-bg) 72%, transparent);
-  -webkit-backdrop-filter: blur(12px) saturate(160%);
-  backdrop-filter: blur(12px) saturate(160%);
-  border-bottom: 1px solid transparent;
-  box-shadow: none;
+  -webkit-backdrop-filter: blur(14px) saturate(170%);
+  backdrop-filter: blur(14px) saturate(170%);
+  border: 1px solid color-mix(in srgb, var(--color-n-7) 42%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.6),
+    var(--shadow-e2);
   transition:
-    background-color var(--dur-enter) var(--spring-enter),
-    border-color var(--dur-enter) var(--spring-enter),
-    box-shadow var(--dur-enter) var(--spring-enter);
+    background-color var(--dur-layout) var(--spring-layout),
+    border-color var(--dur-layout) var(--spring-layout),
+    box-shadow var(--dur-layout) var(--spring-layout),
+    padding var(--dur-layout) var(--spring-layout);
 }
-.glass-nav[data-scrolled='true'] {
-  background-color: color-mix(in srgb, var(--color-bg) 86%, transparent);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  backdrop-filter: blur(24px) saturate(180%);
-  border-bottom-color: color-mix(in srgb, var(--color-n-7) 55%, transparent);
-  box-shadow: var(--shadow-e1);
+
+/* Contracts once content is passing beneath: denser material, tighter padding,
+   a real shadow. The capsule settles on the layout spring, so it reads as one
+   object adjusting rather than several properties animating. */
+.glass-island[data-scrolled='true'] {
+  background-color: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  backdrop-filter: blur(28px) saturate(190%);
+  border-color: color-mix(in srgb, var(--color-n-8) 55%, transparent);
+  box-shadow:
+    inset 0 1px 0 0 rgb(255 255 255 / 0.7),
+    var(--shadow-e3);
 }
+
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
-  .glass-nav,
-  .glass-nav[data-scrolled='true'] {
+  .glass-island,
+  .glass-island[data-scrolled='true'] {
     background-color: var(--color-bg);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+    border-color: var(--color-n-8);
   }
 }
-[data-transparency='off'] .glass-nav {
+[data-transparency='off'] .glass-island {
   background-color: var(--color-bg);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+}
+
+/* The island is fixed, so content needs somewhere to start. */
+body {
+  padding-top: 5.25rem;
+}
+html {
+  scroll-padding-top: 6.5rem;
 }
 
 @layer base {
