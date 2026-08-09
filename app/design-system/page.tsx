@@ -5,6 +5,7 @@ import TypeRamp from '@/components/ds/TypeRamp';
 import Surfaces from '@/components/ds/Surfaces';
 import MotionLab from '@/components/ds/MotionLab';
 import Portfolio from '@/components/ds/Portfolio';
+import Absent from '@/components/ds/Absent';
 import { DSSection } from '@/components/ds/Kit';
 
 export const metadata: Metadata = {
@@ -76,6 +77,14 @@ export default function DesignSystem() {
 
       <DSSection
         num="06"
+        title="Restraint"
+        note="What a system refuses is as load-bearing as what it ships."
+      >
+        <Absent />
+      </DSSection>
+
+      <DSSection
+        num="07"
         title="Portfolio components"
         note="The pieces this system exists to render."
       >

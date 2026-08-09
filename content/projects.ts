@@ -122,24 +122,103 @@ const bowlwise: Project = {
 // Awaiting extraction. Run content/PROJECT_EXTRACTION_PROMPT.md in each repo.
 // ---------------------------------------------------------------------------
 
-const moneymind: Partial<Project> = {
+const moneymind: Project = {
   slug: 'moneymind',
   name: 'MoneyMind',
   kind: 'prototype',
   depth: 'deep',
   order: 2,
+
   oneLiner:
     'A personal finance agent that remembers the user, not just their transactions.',
-  badges: ['Google Cloud Rapid Agent Hackathon', 'MongoDB Track', 'Architecture Lead'],
-  stack: ['Next.js', 'FastAPI', 'LangGraph', 'Gemini 2.5 Flash', 'Voyage AI', 'MongoDB Atlas', 'Clerk'],
+
+  badges: ['Google Cloud Rapid Agent Hackathon', 'MongoDB Track', 'Agent architecture'],
+
+  stack: [
+    'Next.js',
+    'FastAPI',
+    'LangGraph',
+    'Gemini 2.5 Flash',
+    'Vertex AI',
+    'Voyage AI',
+    'MongoDB Atlas',
+    'MCP',
+    'Clerk',
+    'Docker',
+  ],
+
   links: [
     { label: 'GitHub', href: 'https://github.com/mahyar-jbr/MoneyMind', status: 'live' },
-    // Production version being built with Kasra — add when it ships.
+    // DO NOT LINK money-mind-seven.vercel.app. The frontend still loads, but the
+    // Railway backend was torn down and 404s, so a visitor who signs in gets a broken
+    // app. Worse than no link. A production version is in progress with Kasra.
   ],
-  // TODO: fill from extract. Known from the README: LangGraph ReAct loop, 18 native
-  // tools + MongoDB MCP read tools, voyage-3 embeddings at 1024 dims with cosine
-  // search, Gemini 2.5 Flash on Vertex AI, async end-to-end on one event loop,
-  // 201 commits, 3 contributors. No placement or award is recorded — do not imply one.
+
+  problem:
+    'Every budgeting app remembers your transactions. None of them remember you. Telling Mint that you’re bulking this month, or that there’s a birthday party this week, is impossible — so the advice stays generic and the app stays passive, waiting for you to open it and read a pie chart you already understand.',
+
+  approach:
+    'A single agent with a memory of the person, not just the ledger. Behavioural observations are written as first-class "memories," embedded with Voyage AI at 1024 dimensions and retrieved by vector search on MongoDB Atlas, so the agent recalls context by meaning rather than keyword. It runs as a LangGraph ReAct loop over 18 purpose-built tools — memory, goals, budgets, interventions, analytics — plus read-only MongoDB access through MCP, and streams its answer back through three services on a single asyncio event loop. Statements arrive as CSV or PDF and are parsed by a separate Gemini multimodal pass.',
+
+  result:
+    'Built in 19 days for the Google Cloud Rapid Agent Hackathon on the MongoDB track, and verified end to end on live infrastructure before the code freeze — Clerk sign-in through to a real Gemini reply grounded in real Atlas data. I wrote 156 of the 201 commits and owned the agent layer, the deployment, and the streaming path across all three services.',
+
+  metrics: [
+    {
+      value: '18',
+      label: 'Agent tools, plus MCP',
+      source: 'Verified three ways: tool files, registrations, and _wrap_tool calls',
+    },
+    {
+      value: '372',
+      label: 'Test functions across 34 files',
+      source: 'grep over agent/tests + backend/tests (317 agent, 55 backend)',
+    },
+    {
+      value: '19',
+      label: 'Days from first commit to freeze',
+      source: 'git log — 2026-05-21 to 2026-06-08, 201 commits',
+    },
+    {
+      value: '78%',
+      label: 'Of commits mine',
+      source: 'git log author counts — 156 of 201',
+    },
+  ],
+
+  decisions: [
+    {
+      decision: 'Plain-text chunked streaming instead of SSE',
+      why: 'SSE buys named events, auto-reconnect and event IDs — none of which a single-turn response stream that closes when the agent finishes actually uses. The one place it earns its keep is statement ingest, which takes 5–30 seconds; there the progress events are the difference between a visible pipeline and a spinner the user assumes has hung.',
+    },
+    {
+      decision: 'Tools never call other tools',
+      why: 'LangGraph routing sees one tool call from the model, but a tool that calls another fans out into several database reads, each with its own user-scoping path and its own way to fail. Keeping the tool surface flat costs some duplicated helpers and buys an error surface you can actually reason about.',
+    },
+    {
+      decision: 'Embed memories manually rather than using Atlas auto-embedding',
+      why: 'Auto-embed was configured at the index but never wired to a source field, and discovering that late would have been fatal. Embedding on write costs about 200ms and makes the path explicit and testable.',
+    },
+    {
+      decision: 'Bucket spending anomalies in Python, not with Mongo $dateTrunc',
+      why: 'The Mongo aggregation would have been cleaner, but the mock driver the test suite runs on doesn’t implement $dateTrunc — so every affected test would have had to hit real Atlas at roughly 30 seconds a run instead of under one. Hermetic tests were worth the uglier query.',
+    },
+    {
+      decision: 'Read from the database before the graph runs, never inside the prompt builder',
+      why: 'This one came out of a bug. The prompt builder runs inside an already-running event loop, and the async Mongo driver binds cursors to the loop that created them — so a read from inside it fails with "future attached to a different loop" on the second message. Pre-fetching everything at the entry point and passing it through graph state made the prompt builder pure and the failure impossible.',
+    },
+  ],
+
+  contribution: {
+    role: 'Agent architecture and deployment',
+    teamSize: 3,
+    owned: 'The agent layer end to end — tools, LangGraph wiring, MCP integration, prompt — plus the container deploy and the streaming path across all three services',
+  },
+
+  warStory: {
+    title: 'We audited ourselves and found the demo was lying',
+    body: 'Five days before submission we ran a production-readiness audit on our own build. The first line of it reads: the intervention card is 100% mock theater — the headline feature is fake in the UI. Accept, Decline and Modify all rendered perfectly and persisted nothing; the handler was a literal no-op. It would have demoed beautifully and been false. We wired it to the real backend and cut a set of dashboard KPIs that were similarly decorative. Finding it ourselves, with the clock running, was worth more than shipping it unnoticed.',
+  },
 };
 
 const maridian: Partial<Project> = {
@@ -157,27 +236,108 @@ const maridian: Partial<Project> = {
   // from the repo, and screenshots — with no live demo, imagery is the only proof.
 };
 
-const tacticalDna: Partial<Project> = {
+const tacticalDna: Project = {
   slug: 'tactical-dna',
   name: 'Tactical DNA',
   kind: 'research',
   depth: 'standard',
   order: 4,
+
   oneLiner:
-    'What football passing networks reveal about coaches, tactical styles, and player roles.',
-  badges: ['Research', 'Information Networks course'],
-  stack: ['Python', 'NetworkX', 'scikit-learn', 'XGBoost', 'UMAP', 'pandas'],
+    'Testing whether a football coach leaves a measurable fingerprint on how their team passes. Mostly, they don’t — the roster does.',
+
+  badges: ['Research', 'EECS 4414 Information Networks', 'Solo'],
+
+  stack: ['Python', 'NetworkX', 'scikit-learn', 'XGBoost', 'UMAP', 'pandas', 'Plotly'],
+
   links: [
     { label: 'GitHub', href: 'https://github.com/mahyar-jbr/tactical-dna', status: 'live' },
   ],
-  // TODO: fill from extract. Known from the README: 775 passing networks across 42
-  // teams from StatsBomb open data, 44 structural features (8 global + 20 centrality
-  // + 16 motif), three inference problems. Lead the card on the FINDING, not the stack.
-  //
-  // The detail worth building around: season-grouped CV dropped accuracy from 0.358 to
-  // 0.250 and he reported it as temporal leakage rather than keeping the better number.
-  // Publishing the honest worse result is the strongest competence signal in the lineup.
+
+  problem:
+    'Football’s tactical vocabulary — possession football, gegenpressing, “a coach’s style” — gets argued about constantly and measured almost never. The research that does exist on passing networks is descriptive: it characterises one team, or a handful of matches, and stops there. I wanted a falsifiable version of the question instead. Does a coach impose a structural signature on how their team passes — one strong enough for a classifier to recover, and strong enough to follow them when they change clubs?',
+
+  approach:
+    'I built 775 directed weighted passing networks from StatsBomb open data: 517 Barcelona matches across eight coaching eras, 256 World Cup matches, and the two Bayern games available for Guardiola. Every network is cut at the first substitution by either side, so all eleven starters are still on the pitch and every graph has exactly eleven nodes — otherwise motif and centrality statistics drift with graph size and you end up measuring squad rotation instead of tactics. Each one is reduced to 44 structural features: 8 global, 20 centrality summary statistics, and 16 triadic-census motif fractions. Three problems run on top of that corpus — supervised coach classification, unsupervised clustering of match styles, and a player-role embedding — each evaluated two ways rather than one.',
+
+  result:
+    'A random forest recovered the coach at 0.358 accuracy against a 0.263 majority baseline. Then I re-ran it with season-grouped cross-validation, so matches from the same season could never land on both sides of a split — and accuracy fell to 0.250, essentially the baseline. The gain had been leakage: the model was substantially identifying the season, not the manager. The transfer test agreed. Guardiola’s Bayern networks were recovered 0 times out of 2. The honest conclusion is that the passing signature belongs to the club and its roster far more than to the coach — which is the opposite of my hypothesis, and the finding the report leads with. One result did survive: the player-role embedding recovered on-pitch position at 0.883 purity against a 0.295 random baseline. Where a player sits in the passing structure genuinely does describe what they do.',
+
+  metrics: [
+    {
+      value: '775',
+      label: 'Passing networks, 42 teams',
+      source: 'outputs/features_all.csv — 775 rows; 517 Barça + 256 World Cup + 2 Bayern',
+    },
+    {
+      value: '44',
+      label: 'Structural features per network',
+      source: '20 centrality + 16 motif + 8 global, per src/phase3_p1.py',
+    },
+    {
+      value: '0.358 → 0.250',
+      label: 'Coach accuracy once leakage was removed',
+      source: 'outputs/phase3_p1_results.csv — random CV vs season-grouped CV, 0.263 baseline',
+    },
+    {
+      value: '0.883',
+      label: 'Player-role position purity vs 0.295 random',
+      source: 'outputs/p3_position_purity.csv — 5-nearest-neighbour purity, 271 players',
+    },
+  ],
+
+  decisions: [
+    {
+      decision: 'Evaluate with season-grouped cross-validation, not just stratified random folds',
+      why: 'Random folds let matches from the same season sit on both sides of the split, so the classifier can partly answer "which season is this" instead of "which coach is this" and the score flatters itself. Grouping by season removes that path and gives a leakage-free lower bound. It cost me most of my headline result, which is exactly why it was worth running.',
+    },
+    {
+      decision: 'Cut every network at the first substitution and fix it at eleven nodes',
+      why: 'Motif counts and centrality statistics are sensitive to graph size, so networks of different node counts aren’t comparable — differences in squad rotation would show up looking like differences in tactics. Cutting at the first substitution by either team is the most conservative window where all the starters are still on.',
+    },
+    {
+      decision: 'Label the coach per match, not per season',
+      why: 'Barcelona changed manager mid-season in 2019/20. A per-season label would have mis-assigned 19 matches to the wrong coach — a small error in the ground truth that would have quietly corrupted every result built on it.',
+    },
+    {
+      decision: 'Treat edge distance as 1/weight',
+      why: 'In a passing network more passes means a stronger tie, so more passes should mean a shorter path. Feeding the raw weight in as distance would invert the meaning of every betweenness and path-length figure in the study.',
+    },
+    {
+      decision: 'Report both PCA and UMAP projections everywhere, never just one',
+      why: 'UMAP preserves local structure better but is harder to interpret and easier to over-read. Showing both keeps the reader honest about which patterns are real and which are artefacts of the projection.',
+    },
+  ],
+
+  contribution: {
+    role: 'Solo',
+    teamSize: 1,
+    owned: 'Data pipeline, network construction, feature engineering, all three analyses, and the presentation',
+  },
+
+  warStory: {
+    title: 'The one match that wouldn’t build',
+    body: 'The first full run reported 516 of 517 networks built. One match had failed, and the easy move was to accept 516 and move on — a 0.2% loss changes nothing statistically. I went after it anyway. StatsBomb’s lineup data for that fixture tagged only two players as starters, because the rest were recorded under a "Tactical Shift" event instead. The fix was to fall back to the Starting XI event, which is authoritative and always contains exactly eleven. The build log now records 517 of 517, with a column noting which source each network’s starters came from — 516 from lineups, one from the fallback. If I hadn’t chased it, I would never have learned that the lineup field can lie, which is the sort of thing that silently corrupts a whole corpus.',
+  },
 };
 
 export const projects = [bowlwise, moneymind, maridian, tacticalDna];
-export const completeProjects: Project[] = [bowlwise];
+export const completeProjects: Project[] = [bowlwise, moneymind, tacticalDna];
+
+/**
+ * A NOTE ON "MULTI-AGENT" — read before writing any copy that uses the phrase.
+ *
+ * Verified against source, the lineup contains exactly one agent system, and it is
+ * a single agent:
+ *   - BowlWise  — zero AI. A deterministic scoring function. No model in the request path.
+ *   - MoneyMind — ONE agent. A single create_react_agent call, no StateGraph, no
+ *                 sub-agents, no supervisor, no handoffs. Its own docs say so plainly:
+ *                 "Three layers. One agent."
+ *   - Maridian  — claims six agents. UNVERIFIED. The breakdown in the old
+ *                 data/caseStudies.js was invented by a previous session.
+ *   - Tactical DNA — research, no agents.
+ *
+ * So "multi-agent systems" is not currently supportable anywhere on this site. The
+ * locked tagline deliberately says "AI agent systems". If Maridian's extract confirms
+ * six real coordinated agents, this changes — until then it does not.
+ */

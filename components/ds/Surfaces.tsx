@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Label, Row } from './Kit';
+import Glass from '@/components/ui/Glass';
 
 const ELEVATIONS = [
   { n: 'e1', v: 'var(--shadow-e1)', use: 'resting card' },
@@ -21,7 +22,7 @@ export default function Surfaces() {
           {ELEVATIONS.map((e) => (
             <div
               key={e.n}
-              className="rounded-lg bg-n-2 p-5"
+              className="sq rounded-lg bg-n-2 p-5"
               style={{ boxShadow: e.v }}
             >
               <p className="font-mono text-xs font-semibold text-ink">
@@ -40,18 +41,20 @@ export default function Surfaces() {
       </Row>
 
       <Row>
-        <Label>Radii — 4 / 12 / 24 / 32 / pill</Label>
+        <Label>Radii — 10 / 14 / 18 / 26 / 36 / 44 / pill</Label>
         <div className="flex flex-wrap items-end gap-4">
           {[
-            ['sm', '4px'],
-            ['md', '12px'],
-            ['lg', '24px'],
-            ['xl', '32px'],
+            ['xs', '10px'],
+            ['sm', '14px'],
+            ['md', '18px'],
+            ['lg', '26px'],
+            ['xl', '36px'],
+            ['2xl', '44px'],
             ['pill', '1000px'],
           ].map(([n, v]) => (
             <div key={n} className="text-center">
               <div
-                className="h-20 w-20 border border-n-6 bg-n-3"
+                className="sq h-20 w-20 border border-n-6 bg-n-3"
                 style={{ borderRadius: v }}
               />
               <p className="mt-1.5 font-mono text-[10px] text-n-9">{n}</p>
@@ -59,9 +62,9 @@ export default function Surfaces() {
           ))}
         </div>
         <div className="mt-6 max-w-md rounded-lg border border-n-6 bg-n-2 p-3">
-          <div className="rounded-[calc(24px-12px)] border border-a-6 bg-a-2 p-3">
+          <div className="rounded-[calc(26px-12px)] border border-a-6 bg-a-2 p-3">
             <p className="font-mono text-[11px] text-a-12">
-              inner = max(0px, outer − padding) → 24 − 12 = 12
+              inner = max(0px, outer − padding) → 26 − 12 = 14
             </p>
           </div>
         </div>
@@ -108,7 +111,7 @@ export default function Surfaces() {
               'linear-gradient(115deg,#000 0%,#D0021B 28%,#0000FF 52%,#00FF00 74%,#FF00FF 100%)',
           }}
         >
-          <div className="glass glass-rim relative rounded-md p-6">
+          <Glass radius="rounded-lg" className="p-6">
             <p
               className="text-lg font-semibold text-ink"
               style={{ letterSpacing: 'var(--tracking-18)' }}
@@ -121,7 +124,7 @@ export default function Surfaces() {
               rather than picked because it looked nice over the hero — which is
               why it stays legible over the artwork on /art too.
             </p>
-          </div>
+          </Glass>
         </div>
 
         <div className="mt-5 grid gap-3 text-sm text-n-10 sm:grid-cols-3">
