@@ -1,6 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import '@fontsource-variable/inter';
+// The opsz entrypoint, NOT the bare package — the default export is the
+// wght-only cut (one axis), so headings would render Inter's 14px-optimised
+// outlines at display sizes. This carries opsz 14-32 for +24.7 KB.
+import '@fontsource-variable/inter/opsz.css';
+import '@fontsource-variable/geist-mono';
 import './globals.css';
+import Providers from './providers';
 import Nav from '@/components/layout/Nav';
 
 export const metadata: Metadata = {
@@ -9,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#000000',
+  themeColor: '#fcfcfa',
 };
 
 export default function RootLayout({
@@ -18,8 +23,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Nav />
-        {children}
+        <Providers>
+          <Nav />
+          {children}
+        </Providers>
       </body>
     </html>
   );

@@ -18,13 +18,13 @@ export function Slot({
 }) {
   return (
     <div
-      className={`relative border border-dashed border-neutral-700 px-4 pt-5 pb-4 ${className}`}
+      className={`relative border border-dashed border-n-7 px-4 pt-5 pb-4 ${className}`}
     >
-      <span className="absolute -top-2 left-3 bg-ink px-1.5 font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
+      <span className="absolute -top-2 left-3 bg-bg px-1.5 font-mono text-[10px] tracking-widest text-n-9 uppercase">
         {label}
       </span>
       {note && (
-        <p className="mb-3 font-mono text-[10px] leading-relaxed text-neutral-600">
+        <p className="mb-3 font-mono text-[10px] leading-relaxed text-n-9">
           {note}
         </p>
       )}
@@ -50,7 +50,7 @@ export function Lines({
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className={`${h} bg-neutral-800`}
+          className={`${h} bg-n-5`}
           style={{ width: widths?.[i] ?? fallback[i % fallback.length] }}
         />
       ))}
@@ -61,7 +61,7 @@ export function Lines({
 export function Chip({ w = 64 }: { w?: number }) {
   return (
     <span
-      className="inline-block h-6 border border-neutral-800 bg-neutral-900"
+      className="inline-block h-6 border border-n-6 bg-n-4"
       style={{ width: w }}
     />
   );
@@ -83,8 +83,8 @@ export function Btn({ label, ghost = false }: { label: string; ghost?: boolean }
     <span
       className={`inline-flex h-10 items-center px-4 font-mono text-[10px] tracking-widest uppercase ${
         ghost
-          ? 'border border-neutral-700 text-neutral-500'
-          : 'border-2 border-neutral-400 text-neutral-300'
+          ? 'border border-n-7 text-n-9'
+          : 'border-2 border-n-9 text-ink'
       }`}
     >
       {label}
@@ -104,10 +104,10 @@ export function Media({
 }) {
   return (
     <div
-      className={`relative flex items-center justify-center border border-neutral-800 bg-neutral-900/60 ${ratio} ${className}`}
+      className={`relative flex items-center justify-center border border-n-6 bg-n-3 ${ratio} ${className}`}
     >
       <svg
-        className="absolute inset-0 h-full w-full text-neutral-800"
+        className="absolute inset-0 h-full w-full text-n-6"
         preserveAspectRatio="none"
         viewBox="0 0 100 100"
         aria-hidden="true"
@@ -115,7 +115,7 @@ export function Media({
         <line x1="0" y1="0" x2="100" y2="100" stroke="currentColor" strokeWidth="0.5" />
         <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="0.5" />
       </svg>
-      <span className="relative font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
+      <span className="relative font-mono text-[10px] tracking-widest text-n-9 uppercase">
         {label}
       </span>
     </div>
@@ -137,21 +137,21 @@ export function SectionShell({
   children: ReactNode;
 }) {
   return (
-    <section id={id} className="border-t border-neutral-900 px-6 py-20 sm:px-10">
+    <section id={id} className="border-t border-n-6 px-6 py-20 sm:px-10">
       <div className="mx-auto max-w-6xl">
         <div className="mb-10 flex items-baseline gap-4">
           {num && (
-            <span className="font-mono text-xs tracking-widest text-neutral-600">
+            <span className="font-mono text-xs tracking-widest text-n-9">
               {num}
             </span>
           )}
-          <h2 className="font-mono text-xs tracking-[0.3em] text-neutral-400 uppercase">
+          <h2 className="font-mono text-xs tracking-[0.3em] text-n-10 uppercase">
             {title}
           </h2>
-          <span className="h-px flex-1 bg-neutral-900" />
+          <span className="h-px flex-1 bg-n-4" />
         </div>
         {note && (
-          <p className="mb-8 max-w-2xl font-mono text-[10px] leading-relaxed text-neutral-600">
+          <p className="mb-8 max-w-2xl font-mono text-[10px] leading-relaxed text-n-9">
             {note}
           </p>
         )}

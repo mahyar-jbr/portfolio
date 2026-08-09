@@ -52,7 +52,7 @@ export default function Home() {
                 <Btn label="View work" />
                 <Btn label="Résumé" ghost />
                 <Btn label="Email — copy" ghost />
-                <span className="font-mono text-[10px] text-neutral-600">
+                <span className="font-mono text-[10px] text-n-9">
                   · GitHub · LinkedIn
                 </span>
               </div>
@@ -66,11 +66,11 @@ export default function Home() {
             <div className="flex flex-col gap-3 pt-1">
               {['INTAKE', 'CLASSIFY', 'RECOMMEND', 'REVIEW', 'DISPATCH'].map((stage, i) => (
                 <div key={stage} className="flex items-center gap-3">
-                  <span className="w-4 font-mono text-[10px] text-neutral-700">{i + 1}</span>
-                  <span className="w-24 font-mono text-[10px] tracking-widest text-neutral-500 uppercase">
+                  <span className="w-4 font-mono text-[10px] text-n-9">{i + 1}</span>
+                  <span className="w-24 font-mono text-[10px] tracking-widest text-n-9 uppercase">
                     {stage}
                   </span>
-                  <span className="h-2.5 flex-1 bg-neutral-800" />
+                  <span className="h-2.5 flex-1 bg-n-5" />
                 </div>
               ))}
             </div>
@@ -180,9 +180,9 @@ export default function Home() {
       </SectionShell>
 
       {/* route index — greybox only, not shipped */}
-      <div className="border-t border-neutral-900 px-6 py-10 sm:px-10">
+      <div className="border-t border-n-6 px-6 py-10 sm:px-10">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-4">
-          <span className="font-mono text-[10px] tracking-widest text-neutral-700 uppercase">
+          <span className="font-mono text-[10px] tracking-widest text-n-9 uppercase">
             Routes (greybox nav — not shipped)
           </span>
           {[
@@ -195,7 +195,7 @@ export default function Home() {
             <Link
               key={h}
               href={h}
-              className="font-mono text-[10px] text-neutral-500 underline underline-offset-4 hover:text-neutral-200"
+              className="font-mono text-[10px] text-n-9 underline underline-offset-4 hover:text-ink"
             >
               {h}
             </Link>

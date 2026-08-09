@@ -79,7 +79,7 @@ export default async function CaseStudy({
       <div className="mx-auto max-w-4xl">
         <Link
           href="/#work"
-          className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase hover:text-neutral-200"
+          className="font-mono text-[10px] tracking-widest text-n-9 uppercase hover:text-ink"
         >
           ← Work
         </Link>
@@ -103,10 +103,10 @@ export default async function CaseStudy({
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               {['Role', 'Team', 'Context', 'Owned'].map((k) => (
                 <div key={k} className="flex flex-col gap-2">
-                  <span className="font-mono text-[10px] tracking-widest text-neutral-600 uppercase">
+                  <span className="font-mono text-[10px] tracking-widest text-n-9 uppercase">
                     {k}
                   </span>
-                  <div className="h-3 w-full bg-neutral-800" />
+                  <div className="h-3 w-full bg-n-5" />
                 </div>
               ))}
             </div>
@@ -175,8 +175,8 @@ export default async function CaseStudy({
               <div className="grid grid-cols-3 gap-4">
                 {[0, 1, 2].map((i) => (
                   <div key={i} className="flex flex-col gap-2">
-                    <div className="h-5 w-2/3 bg-neutral-800" />
-                    <div className="h-2 w-full bg-neutral-900" />
+                    <div className="h-5 w-2/3 bg-n-5" />
+                    <div className="h-2 w-full bg-n-4" />
                   </div>
                 ))}
               </div>
@@ -220,14 +220,14 @@ export default async function CaseStudy({
         )}
 
         {study.repoNote && (
-          <div className="border-t border-neutral-900 px-0 py-8">
+          <div className="border-t border-n-6 px-0 py-8">
             <Slot label="Repo availability" note={study.repoNote}>
               <Lines count={1} widths={['70%']} size="sm" />
             </Slot>
           </div>
         )}
 
-        <div className="border-t border-neutral-900 py-10">
+        <div className="border-t border-n-6 py-10">
           <Slot label={`Next → ${study.next.title}`}>
             <div className="flex gap-3">
               <Btn label={`${study.next.title} →`} ghost />

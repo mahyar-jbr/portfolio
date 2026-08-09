@@ -20,7 +20,7 @@ export default function Art() {
       <div className="mx-auto max-w-5xl">
         <Link
           href="/"
-          className="font-mono text-[10px] tracking-widest text-neutral-500 uppercase hover:text-neutral-200"
+          className="font-mono text-[10px] tracking-widest text-n-9 uppercase hover:text-ink"
         >
           ← Home
         </Link>
@@ -62,7 +62,7 @@ export default function Art() {
                   <div className="flex items-center justify-between">
                     <Lines count={1} widths={['54%']} size="sm" />
                     {p.timelapse && (
-                      <span className="font-mono text-[9px] tracking-widest text-neutral-600 uppercase">
+                      <span className="font-mono text-[9px] tracking-widest text-n-9 uppercase">
                         ▶ timelapse
                       </span>
                     )}
