@@ -890,8 +890,7 @@ a:hover > svg.site-out {
 }
 
 /* Card art that isn't a screenshot: a diagram in ink on the warm grey dot canvas
-   (kit: .fh + .graph), the frosted soon card's abstract bars (kit: .bars), or an
-   unfrosted soon card's own name on the plain raised ground. */
+   (kit: .fh + .graph), or the frosted soon card's abstract bars (kit: .bars). */
 .lu-card-art.art-canvas {
   background: var(--surface-raised);
   color: var(--ink);
@@ -917,25 +916,6 @@ a:hover > svg.site-out {
 }
 .art-bars i:last-child {
   opacity: 0.9;
-}
-/* The name in the hero's type (display 700, tracking -0.05em), sized to the card
-   and centred in the space above the caption. Faint, so it reads as ground, not
-   a second title. */
-.art-name {
-  position: absolute;
-  inset: 0 0 30%;
-  display: grid;
-  place-items: center;
-  container-type: inline-size;
-}
-.art-name span {
-  font-family: var(--font-display);
-  font-size: 19cqi;
-  line-height: 1;
-  font-weight: 700;
-  letter-spacing: -0.05em;
-  white-space: nowrap;
-  opacity: 0.08;
 }
 
 /* A soon card opens nothing, so it mustn't answer the pointer as if it would:

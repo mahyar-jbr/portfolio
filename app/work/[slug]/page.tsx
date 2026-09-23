@@ -5,8 +5,8 @@ import { pagedProjects } from '@/content/projects';
 import { identity } from '@/content/site';
 
 /* /work/<slug> — one page per project that has one (Lucent Handoff: routes).
-   Soon cards (MoneyMind, Realest) have no page by design: their slugs, like any
-   unknown slug, 404 rather than render. */
+   A soon card (MoneyMind) has no page by design: its slug, like any unknown
+   slug, 404s rather than render. */
 
 export const dynamicParams = false;
 

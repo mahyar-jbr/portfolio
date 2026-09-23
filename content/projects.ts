@@ -3,14 +3,22 @@ import type { BriefProject, CaseStudyProject, Project, SoonProject } from './typ
 /**
  * The projects on the site, in display order (`order`).
  *
- * BowlWise, Maridian and Tactical DNA are written from verified extracts — every
- * claim traces to a file:line citation in `content/sources/*_PORTFOLIO_EXTRACT.md`.
- * MoneyMind's card, Realest and Graph-Native Retrieval carry only what Mahyar has
- * stated, and no results.
+ * What each entry is written from:
+ *   - BowlWise: its verified extract, content/sources/BowlWise_PORTFOLIO_EXTRACT.md,
+ *     where every claim traces to a file:line citation.
+ *   - Realest, Maridian, Tactical DNA and Graph-Native Retrieval: each project's own
+ *     portfolio brief, copied to content/sources/<Name>_PORTFOLIO_BRIEF.md with
+ *     anything private or unreleased withheld, and every fact re-checked against the
+ *     project's repo and its live links on 2026-09-23. A `source:` comment names the
+ *     file in that project's repo that proves the field beside it.
+ *   - The MoneyMind card: only what Mahyar has stated. Its verified write-up,
+ *     `heldBack`, comes from content/sources/MoneyMindHackathon_PORTFOLIO_EXTRACT.md
+ *     and stays unrendered.
  *
  * Editorial standard: present the work as impressively as the facts allow, and
  * never further. On BowlWise that costs nothing — the verified numbers came back
- * larger than the ones the June draft was guessing at.
+ * larger than the ones the June draft was guessing at. A team project says only
+ * what Mahyar built himself, and names no teammate.
  */
 
 const bowlwise: CaseStudyProject = {
@@ -183,10 +191,6 @@ const bowlwise: CaseStudyProject = {
   },
 };
 
-// ---------------------------------------------------------------------------
-// Written from content/sources/*_PORTFOLIO_EXTRACT.md (content/sources/PROJECT_EXTRACTION_PROMPT.md).
-// ---------------------------------------------------------------------------
-
 // HELD BACK (2026-09-22). MoneyMind is becoming a co-founded product. Since
 // 2026-09-23 Mahyar shows it by name, but only as the "Coming soon" card
 // `moneymind` below: its screenshots, characters and details stay off every public
@@ -294,115 +298,165 @@ export const heldBack: CaseStudyProject = {
   },
 };
 
+/**
+ * Maridian: a team of five, five days. Written from Maridian_PORTFOLIO_BRIEF.md;
+ * `source:` paths are in the maridian-sentinel repo at b65cfcf. Rewritten
+ * 2026-09-23: the team is five, not six. The git identity `r <r@r>` that made it
+ * look like six is Mahyar (bc1b5be: "re-trigger Vercel deploy ... (was r@r)").
+ */
 const maridian: CaseStudyProject = {
   slug: 'maridian',
   name: 'Maridian',
   kind: 'prototype',
   page: 'case-study',
-  depth: 'deep',
+  depth: 'standard',
   order: 4,
+  // source: git log, first commit 4b28ece 2026-05-25, last b65cfcf 2026-05-29
   year: '2026',
+  // source: git log 2026-05-25 to 2026-05-29; CONTRIBUTORS.md:3 "built in five days"
   status: { label: 'Built in 5 days', kind: 'hackathon' },
+  // source: api/agents/orchestrator.py:3 (the six agents); front/line-portal.html (the line operator portal)
   cardLine: 'Six agents triaging defects on a bakery line',
   facts: [
-    { label: 'Event', value: 'TMLS 2026 Agentic AI Hackathon' },
-    { label: 'Team', value: '6 people' },
+    // source: README.md:145, CONTRIBUTORS.md:3 and the repo description all use this form of the name
+    { label: 'Event', value: 'TMLS Agentic Hackathon 2026' },
+    // source: CONTRIBUTORS.md:3 "a team of five" and its five rows; LICENSE:4-5 (five names)
+    { label: 'Team', value: '5 people' },
   ],
 
-  // Cut from `approach`: the six agents, in the order they run, as three beats.
   steps: [
     {
-      title: 'Classify the defect',
-      body: 'Triage classifies what the camera flagged. Options finds the routes that customer’s contract allows.',
+      title: 'Run the analysis',
+      // source: front/line-detail.html:811 (Run AI Analysis), :2041-2043 (POST /problems/{id}/analyze/stream);
+      // api/routers/production.py:353-412 (the defect event comes from the batch's highest-confidence QC row)
+      body: 'The operator opens a flagged line and runs the analysis; the API builds a defect event from that batch’s QC data.',
     },
     {
-      title: 'Price it and decide',
-      body: 'Scorer prices each route. Decision commits one and logs why, streaming its reasoning to the operator as it goes.',
+      title: 'Six agents reason',
+      // source: api/agents/orchestrator.py:1-4, 121-232; Recovery Planner runs only on a breach (:214-215)
+      body: 'Triage, Options, Scorer and Decision pick an action; Batch Tracker checks the SLA; Recovery Planner runs only on a breach.',
     },
     {
-      title: 'Check the batch',
-      body: 'Batch Tracker checks the batch against its SLA, and Recovery Planner proposes a recovery if it was breached.',
+      title: 'A person decides',
+      // source: api/routers/production.py:425 (text/event-stream), :463-469 (accepted or overridden);
+      // api/contracts.py:93 `ready_to_send: Literal[False]`; front/line-detail.html:1979 (Send to customer disabled).
+      // "Each agent's steps", not "live reasoning": orchestrator.py:84-118 drains each agent, then yields its events.
+      body: 'Each agent’s steps stream to the screen over SSE; the operator accepts or overrides, and customer emails stay drafts.',
     },
   ],
 
-  oneLiner:
-    'Six Claude agents that triage defects on a bakery production line and recommend what to do with the batch.',
+  // Real screenshots of the team's line operator portal (front/), from a local run on
+  // 2026-09-23 with customers shown as the placeholders "Customer A–F". The screens are
+  // Mahyar's redesign (bbecba2). The first is also the card: cropped to exactly 4:3, its
+  // right edge falls between "Show technical detail" and the Re-run button.
+  shots: [
+    {
+      // source: portfolio-assets/01-agent-reasoning.png, cropped to (0, 0, 1180, 885)
+      src: '/work/maridian/agent-run.png',
+      width: 1180,
+      height: 885,
+      alt: 'Maridian’s line operator portal on LINE-3: an Escalate recommendation marked pending, its written reasoning, and the agent reasoning panel with the Triage and Options steps.',
+      caption: 'One run on LINE-3: the recommendation, its reasoning, and each agent’s steps.',
+    },
+    {
+      // source: portfolio-assets/02-sla-breach-recovery.png, cropped to (554, 766, 1394, 1179);
+      // the draft UI is front/line-detail.html:1976-1980. Same shape as the next shot, so the pair sits level.
+      src: '/work/maridian/breach-draft.png',
+      width: 840,
+      height: 413,
+      alt: 'A partial-shipment recovery proposal above a customer fulfillment draft marked “Draft · pending account manager”, with the Send to customer button disabled.',
+      caption: 'On an SLA breach, the customer update is only a draft; a person has to send it.',
+    },
+    {
+      // source: portfolio-assets/03-production-lines.png, cropped to (140, 88, 1300, 660)
+      src: '/work/maridian/production-lines.png',
+      width: 1160,
+      height: 572,
+      alt: 'The Production Lines overview: 2 of 7 lines running, 5 needing action, 12 active problems and 4 SLA breaches, with each line’s product, defect rate and status.',
+      caption: 'The overview: every line’s defect rate and SLA status.',
+    },
+  ],
 
-  badges: ['TMLS 2026 Agentic AI Hackathon', 'Team of 6', 'Built in 5 days'],
+  // source: api/agents/orchestrator.py:3; api/agents/runtime.py:27 (claude-haiku-4-5-20251001);
+  // api/routers/production.py:463-469 (the operator accepts or overrides)
+  oneLiner: 'Six Claude agents that recommend what to do with a flagged bakery defect, for line operators.',
 
-  stack: ['Python', 'FastAPI', 'Pydantic', 'Claude Haiku 4.5', 'Anthropic SDK', 'SQLite', 'SSE', 'Next.js'],
+  badges: ['TMLS Agentic Hackathon 2026', 'Team of 5', 'Built in 5 days'],
+
+  // source: api/agents/runtime.py:27; api/requirements.txt:1, 4; api/runtime.txt:1 (python-3.11.9);
+  // api/db/schema.sql; api/routers/production.py:425 (SSE); front/*.html (plain HTML, CSS and JS);
+  // api/Procfile:1 (Railway). Not Next.js: web/ only redirects to the static pitch page.
+  stack: [
+    'Claude Haiku 4.5',
+    'Anthropic SDK',
+    'Python',
+    'FastAPI',
+    'SQLite',
+    'Server-sent events',
+    'JavaScript',
+    'Railway',
+  ],
 
   links: [
-    // NO LINKS. The Railway API is decommissioned and 404s; the Vercel frontend still
-    // loads but every fetch and the "Run AI Analysis" button hit that dead host, so a
-    // visitor gets a broken page. The old fgf-sentinel-web.vercel.app URL must not ship.
-    // Four real UI screenshots exist at web/public/pitch/shots/ — those carry this page.
+    // Public, 200 signed out (checked 2026-09-23). The repo's old name, TMLS_hacketon-, redirects here.
+    { label: 'GitHub', href: 'https://github.com/mahyar-jbr/maridian-sentinel', status: 'live' },
+    // NO LIVE LINK. Checked 2026-09-23: the Railway API 404s ("Application not found"), so the
+    // Vercel portals show "Unable to load lines". The pitch page at fgf-sentinel-web.vercel.app
+    // still loads, but every demo button on it leads to those dead portals, and it carries the
+    // project's old name. That URL must not ship.
   ],
 
+  // source: docs/fgf-sentinel-briefing.html:867, the team's own problem statement, nearly verbatim
   problem:
-    'On a commercial bakery line, computer-vision cameras flag hundreds of defects per batch, and every one needs a human call: scrap it, downgrade it to B-grade, or repack it. The information required to make that call — current inventory, the customer’s contracted defect tolerance, whether there’s B-grade demand, what capacity is free — is scattered across systems. Operators make this decision dozens of times a shift, under time pressure, while also running equipment.',
+    'Cameras on a bakery line can flag defects at line speed, but what happens after the flag is still manual. A QA technician pulls the unit, classifies it, checks specs, phones a coordinator, works out the recovery value and picks an outcome.',
 
+  // source: api/agents/orchestrator.py:121-232 (fixed order); api/agents/runtime.py:199-289 (a hand-written
+  // tool-use loop; no agent framework in api/requirements.txt); api/db/schema.sql (seeded SQLite)
   approach:
-    'Six specialised agents run in a fixed sequence, each with its own prompt and its own small set of tools: Triage classifies the defect, Options finds the routes available under that customer’s contract, Scorer prices them, Decision commits and logs one, Batch Tracker checks the batch against its SLA, and Recovery Planner proposes a recovery action if the SLA is breached. There’s no agent framework — it’s the Anthropic SDK’s tool-use loop against Claude Haiku 4.5, with a hand-written orchestrator, and every stage streams its reasoning to the operator’s screen over SSE as it happens. Twelve tools read and write a fourteen-table factory database. One invariant is enforced in the type system rather than the prompt: a customer-facing email draft can never be auto-sent, only prepared for a human to approve.',
+    'Six agents run in a fixed order, each a Claude tool-use loop over a seeded SQLite database, with no agent framework. They recommend; the operator decides.',
 
+  // source: CONTRIBUTORS.md:21 "Fri: live demo at TMLS 2026"; docs/internal/BACKLOG.md:5 "Demo: Friday May 29";
+  // the Railway API 404s and the portal shows "Unable to load lines" (checked 2026-09-23)
   result:
-    'Built in five days by a team of six and demoed at the TMLS 2026 Agentic AI Hackathon, sponsored by FGF Brands. The system runs end to end — a flagged defect becomes a costed recommendation with a written audit trail in about half a minute. The backend has since been decommissioned, so what remains is the code, the screenshots, and the write-up.',
+    'We demoed it live at the TMLS Agentic Hackathon 2026 on May 29. The hosted API is gone now, so the demo no longer loads; the code is on GitHub.',
 
   metrics: [
     {
-      value: '6',
-      label: 'Agents, each with its own prompt and tools',
-      source: 'api/agents/ — Triage, Options, Scorer, Decision, Batch Tracker, Recovery Planner',
+      value: '32.6 s',
+      label: 'One full analysis, all six agents',
+      source:
+        'The UI timer in portfolio-assets/01-agent-reasoning.png (front/line-detail.html:2034, 2076-2078), a local run on 2026-09-23 that breached, so all six ran; the team logged 30–40 s a run in 87848c8',
     },
     {
-      value: '21',
-      label: 'API endpoints across 3 routers',
-      source: 'Counted from @app/@router decorators in api/',
+      value: '11',
+      label: 'Tools the agents call, over 14 tables',
+      source: 'api/tools/: 12 tool specs, 11 imported by api/agents/*.py; api/db/schema.sql: 14 CREATE TABLE',
     },
     {
-      value: '14',
-      label: 'Database tables, 12 agent tools',
-      source: 'api/db/schema.sql (14 CREATE TABLE) and api/tools/ (12 specs, 11 agent-reachable)',
-    },
-    {
-      value: '5 days',
-      label: '245 commits, 6 people',
-      source: 'git log — 2026-05-25 to 2026-05-29',
-    },
-  ],
-
-  decisions: [
-    {
-      decision: 'Claude Haiku 4.5 instead of Sonnet',
-      why: 'Six agents run in sequence, so per-call latency compounds six times over before the operator sees an answer. Haiku’s faster calls and higher rate limits mattered more here than the extra reasoning depth of a larger model — the work is bounded lookups against a database, not open-ended analysis.',
-    },
-    {
-      decision: 'No agent framework — the Anthropic SDK tool-use loop directly',
-      why: 'RATIONALE NOT IN REPO — Mahyar to supply. The README states the fact and calls it interesting; nothing records the reasoning, and no commit shows a framework being tried and dropped.',
-    },
-    {
-      decision: 'A customer email draft can never auto-send',
-      why: 'It’s typed as a literal false in the shared contract, not left to a prompt to respect, and a test asserts it. The system can prepare the message to a customer about a quality failure; a person has to be the one who sends it. That boundary is what makes an operations team willing to switch it on at all.',
-    },
-    {
-      decision: 'A hard timeout around every agent stage',
-      why: 'A rate-limit retry inside any single agent sleeps for 15, 30, then 60 seconds — and with a sequential chain that would silently stall the entire pipeline with the stream still open. Wrapping each stage in a 45-second ceiling turns an indefinite hang into a degraded stage the operator can see.',
+      value: '245',
+      label: 'Commits in 5 days, team of 5',
+      source: 'git rev-list --count HEAD, 4b28ece (2026-05-25) to b65cfcf (2026-05-29); team per CONTRIBUTORS.md:3',
     },
   ],
 
   contribution: {
-    role: 'Infrastructure lead and integrator',
-    teamSize: 6,
+    // source: CONTRIBUTORS.md:9 "Infrastructure Lead · Coordinator"
+    role: 'Infrastructure lead and coordinator',
+    teamSize: 5,
+    // source: dd3898a (Mahyar: the monorepo, and the contract whose `ready_to_send: Literal[False]` is now
+    // api/contracts.py:93); docs/internal/BACKLOG.md:164-165 (Vercel and Railway deploys, owner Mahyar);
+    // bbecba2 (Mahyar's redesign of the screens shown; git blame gives him 1,897 of 2,143 lines of
+    // front/line-detail.html). "Redesigned", not "built": a teammate made the first version.
     owned:
-      'The API contract the six of us built against, the operator and distributor portals, deployment, and integration — including the production outage below and all 24 pull-request merges. The agents, the tools and the database schema were written by teammates.',
-  },
-
-  warStory: {
-    title: 'Production down on Wednesday afternoon',
-    body: 'Every route started returning 502 in the middle of a build day. The Railway build log was green, which is what made it confusing — the failure only appeared in the runtime log, where the traceback stopped inside sqlite3.connect. Railway deploys with the root directory set to /api, so the database path we resolved relative to the source tree pointed above the container root; the file simply wasn’t there. The connection error propagated out of startup and killed the app before it could serve anything. I fixed it in three parts: resolve the database path from an environment variable first and fall back through two known locations, commit a seeded copy of the database inside the deploy root, and — the part I’d keep in any project — make startup non-fatal, so a database problem can degrade the app instead of taking down the health check with it.',
+      'I set up the monorepo, the Vercel and Railway deploys, and the API contract, where a customer email draft can never be marked ready to send. I also redesigned the operator portal shown here; teammates built the agents, tools and database.',
   },
 };
 
+/**
+ * Tactical DNA: solo coursework. Written from TacticalDNA_PORTFOLIO_BRIEF.md;
+ * `source:` paths are in the tactical-dna repo at b300747, and FR is its
+ * final-report.pdf. Figures are the three decimals Mahyar published (README.md:226-235).
+ */
 const tacticalDna: CaseStudyProject = {
   slug: 'tactical-dna',
   name: 'Tactical DNA',
@@ -410,103 +464,132 @@ const tacticalDna: CaseStudyProject = {
   page: 'case-study',
   depth: 'standard',
   order: 6,
-  // Source files dated 2026-05-13 to 2026-06-09 (TacticalDNA extract §git).
+  // source: FR p.2 "Submitted, Spring 2026"; git log (both commits 2026-06-09)
   year: '2026',
   status: { label: 'Research', kind: 'research' },
+  // source: FR p.1 §1, the central hypothesis
   cardLine: 'Does a coach leave a fingerprint on passing?',
+  // source: README.md:3; FR p.1
   facts: [{ label: 'Course', value: 'EECS 4414 Information Networks' }],
 
-  // Cut from `approach`.
+  // One match traced through the pipeline; the lead shot is the same match.
   steps: [
     {
-      title: 'Build the networks',
-      body: '775 passing networks from StatsBomb open data, each cut at the first substitution so every graph has exactly eleven nodes.',
+      title: 'Build the graph',
+      // source: outputs/phase1_build_log.csv, match 69299 (2010-11-29, 11 nodes, 296 passes, first sub minute 45)
+      body: 'Barcelona 5–0 Real Madrid, 29 November 2010: 296 completed passes between the eleven starters, up to the first substitution in minute 45.',
     },
     {
-      title: 'Describe the structure',
-      body: '44 features per network: global statistics, centrality summaries and triadic-census motif fractions.',
+      title: 'Measure it',
+      // source: src/phase3_p1.py feature_columns() (5 centralities x 4 statistics, 16 triad fractions, 8 global)
+      body: '44 features: 8 global, 20 centrality and 16 three-player motif fractions.',
     },
     {
-      title: 'Test it two ways',
-      body: 'Coach classification, style clustering and a player-role embedding, each evaluated two ways rather than one.',
+      title: 'Use it three ways',
+      // source: outputs/features_all.csv (69299 is Guardiola's: a ground-truth label, not a prediction);
+      // outputs/p2_embedding_coords.csv (cluster 1, "Possession" in src/deck_template.py:492);
+      // outputs/p3_appearances.jsonl and outputs/player_roles.csv (all eleven starters profiled)
+      body: 'Labelled Guardiola for the coach models, placed in the possession cluster, and counted in all eleven starters’ role profiles.',
     },
   ],
 
+  shots: [
+    {
+      // source: portfolio-assets/04-clasico-passing-network.png (= outputs/example_network.png), cropped to
+      // x 68, y 121, 1480 x 1110: drops the matplotlib title and colour bar, exactly 4:3 for the card
+      src: '/work/tactical-dna/clasico-network.png',
+      width: 1480,
+      height: 1110,
+      alt: 'Barcelona’s passing network from the 5–0 Clásico: eleven player nodes joined by arrows, with Xavi the largest node, at the centre',
+      // source: the figure's own title (src/summarize_phase2.py:158-162)
+      caption: 'Barcelona 5–0 Real Madrid, 2010: nodes sized and coloured by PageRank.',
+    },
+    {
+      // source: portfolio-assets/01-coach-id-results.png (deck slide 7), cropped to x 72, y 40, 1280 x 700:
+      // drops the deck's counter, dots and progress bar
+      src: '/work/tactical-dna/coach-id-results.png',
+      width: 1280,
+      height: 700,
+      alt: 'Slide “A modest signal, and an honest catch”: coach-identification accuracy for four models under random and leakage-free folds, beside a confusion matrix for eight Barcelona coaches',
+      caption: 'Coach identification under random and season-grouped folds, with the confusion matrix.',
+    },
+    {
+      // source: portfolio-assets/03-player-role-search.png (deck slide 10), the same crop as the slide above;
+      // src/build_viz.py:86-92 (ten nearest neighbours, self dropped)
+      src: '/work/tactical-dna/player-role-search.png',
+      width: 1280,
+      height: 700,
+      alt: 'Slide “Type a player, watch its structural twins light up”: Xavi typed into the search box, his nearest neighbours ringed on a map of players coloured by position',
+      caption: 'The deck’s live search: a player’s ten nearest structural neighbours light up.',
+    },
+  ],
+
+  // source: FR p.1 §1 ("applications in opponent scouting, recruitment"; the central hypothesis)
   oneLiner:
-    'Testing whether a football coach leaves a measurable fingerprint on how their team passes. Mostly, they don’t — the roster does.',
+    'Passing-network analysis for football scouting: does a coach leave a measurable fingerprint on how a team passes?',
 
   badges: ['Research', 'EECS 4414 Information Networks', 'Solo'],
 
+  // source: src/features.py:43; src/phase3_p1.py:45-56; src/problem3_roles.py:326; requirements.txt:3;
+  // src/build_viz.py:29
   stack: ['Python', 'NetworkX', 'scikit-learn', 'XGBoost', 'UMAP', 'pandas', 'Plotly'],
 
   links: [
     { label: 'GitHub', href: 'https://github.com/mahyar-jbr/tactical-dna', status: 'live' },
+    // NOT YET: the GitHub Pages deck (outputs/viz/presentation.html). On a desktop it all works
+    // (checked 2026-09-23); on phones it doesn't: iPhone taps don't advance the slides and the text
+    // renders at about 6px, and Android crops every slide on both sides. Slide 6 also says
+    // "50-dim fingerprint" where the code has 44. Link it once those are fixed.
   ],
 
+  // source: FR p.1 abstract ("debated qualitatively but rarely measured") and §1 ("most studies are
+  // descriptive"; the hypothesis, "strong enough to be recovered by a classifier")
   problem:
-    'Football’s tactical vocabulary — possession football, gegenpressing, “a coach’s style” — gets argued about constantly and measured almost never. The research that does exist on passing networks is descriptive: it characterises one team, or a handful of matches, and stops there. I wanted a falsifiable version of the question instead. Does a coach impose a structural signature on how their team passes — one strong enough for a classifier to recover, and strong enough to follow them when they change clubs?',
+    'Coaches, pundits and fans talk about “possession football” or “gegenpressing”, but rarely measure it. Most passing-network studies describe one team or a few matches; I tested whether a coach leaves a signature on passing that a classifier can recover.',
 
+  // source: outputs/features_all.csv (775 rows); FR p.1 abstract (directed weighted graphs of completed passes);
+  // src/sb_cache.py:26. Naming StatsBomb credits the data, which its licence requires (README.md:110-112).
   approach:
-    'I built 775 directed weighted passing networks from StatsBomb open data: 517 Barcelona matches across eight coaching eras, 256 World Cup matches, and the two Bayern games available for Guardiola. Every network is cut at the first substitution by either side, so all eleven starters are still on the pitch and every graph has exactly eleven nodes — otherwise motif and centrality statistics drift with graph size and you end up measuring squad rotation instead of tactics. Each one is reduced to 44 structural features: 8 global, 20 centrality summary statistics, and 16 triadic-census motif fractions. Three problems run on top of that corpus — supervised coach classification, unsupervised clustering of match styles, and a player-role embedding — each evaluated two ways rather than one.',
+    'I turned StatsBomb open data into 775 passing networks, one per team per match: players are nodes, and each edge counts one player’s completed passes to another. One match, traced step by step:',
 
+  // source: FR p.1-2 ("Submitted, Spring 2026"); deck slide 7 ("collapses it to 0.250", src/deck_template.py:432-455);
+  // FR abstract ("largely bound to the club and its roster rather than to the coach"; roles recover position
+  // "strongly")
   result:
-    'A random forest recovered the coach at 0.358 accuracy against a 0.263 majority baseline. Then I re-ran it with season-grouped cross-validation, so matches from the same season could never land on both sides of a split — and accuracy fell to 0.250, essentially the baseline. The gain had been leakage: the model was substantially identifying the season, not the manager. The transfer test agreed. Guardiola’s Bayern networks were recovered 0 times out of 2. The honest conclusion is that the passing signature belongs to the club and its roster far more than to the coach — which is the opposite of my hypothesis, and the finding the report leads with. One result did survive: the player-role embedding recovered on-pitch position at 0.883 purity against a 0.295 random baseline. Where a player sits in the passing structure genuinely does describe what they do.',
+    'Submitted as my EECS 4414 final project in 2026, with the code and report public on GitHub. The coach signal collapsed once whole seasons were held out, so the report ties passing structure to the club and its roster rather than the coach; the player-role result held up.',
 
   metrics: [
     {
       value: '775',
-      label: 'Passing networks, 42 teams',
-      source: 'outputs/features_all.csv — 775 rows; 517 Barça + 256 World Cup + 2 Bayern',
-    },
-    {
-      value: '44',
-      label: 'Structural features per network',
-      source: '20 centrality + 16 motif + 8 global, per src/phase3_p1.py',
+      label: 'Passing networks from 42 teams',
+      source: 'outputs/features_all.csv: 775 rows (517 Barcelona, 256 World Cup, 2 Bayern), 42 distinct teams',
     },
     {
       value: '0.358 → 0.250',
-      label: 'Coach accuracy once leakage was removed',
-      source: 'outputs/phase3_p1_results.csv — random CV vs season-grouped CV, 0.263 baseline',
+      label: 'Random-forest coach accuracy, random vs season-grouped folds (0.263 majority baseline)',
+      source: 'outputs/phase3_p1_results.csv: 0.35780 and 0.24984; majority baseline 0.26306 = 136/517',
     },
     {
       value: '0.883',
-      label: 'Player-role position purity vs 0.295 random',
-      source: 'outputs/p3_position_purity.csv — 5-nearest-neighbour purity, 271 players',
+      label: 'Position purity among each player’s 5 nearest neighbours (0.295 random)',
+      source: 'outputs/p3_position_purity.csv row 2: 1,196 of 1,355 slots (271 players x 5)',
     },
   ],
 
   decisions: [
     {
-      decision: 'Evaluate with season-grouped cross-validation, not just stratified random folds',
-      why: 'Random folds let matches from the same season sit on both sides of the split, so the classifier can partly answer "which season is this" instead of "which coach is this" and the score flatters itself. Grouping by season removes that path and gives a leakage-free lower bound. It cost me most of my headline result, which is exactly why it was worth running.',
-    },
-    {
-      decision: 'Cut every network at the first substitution and fix it at eleven nodes',
-      why: 'Motif counts and centrality statistics are sensitive to graph size, so networks of different node counts aren’t comparable — differences in squad rotation would show up looking like differences in tactics. Cutting at the first substitution by either team is the most conservative window where all the starters are still on.',
-    },
-    {
-      decision: 'Label the coach per match, not per season',
-      why: 'Barcelona changed manager mid-season in 2019/20. A per-season label would have mis-assigned 19 matches to the wrong coach — a small error in the ground truth that would have quietly corrupted every result built on it.',
-    },
-    {
-      decision: 'Treat edge distance as 1/weight',
-      why: 'In a passing network more passes means a stronger tie, so more passes should mean a shorter path. Feeding the raw weight in as distance would invert the meaning of every betweenness and path-length figure in the study.',
-    },
-    {
-      decision: 'Report both PCA and UMAP projections everywhere, never just one',
-      why: 'UMAP preserves local structure better but is harder to interpret and easier to over-read. Showing both keeps the reader honest about which patterns are real and which are artefacts of the projection.',
+      decision: 'Score the coach models on season-grouped folds too',
+      // source: src/phase3_p1.py:248-252, the reason as the code records it
+      why: 'Each coach held contiguous seasons and rosters change yearly, so random folds let same-season matches leak across the split, partly measuring which season instead of which coach.',
     },
   ],
 
+  // Solo: `role` fills the summary row and no "My role" section renders.
+  // source: git shortlog (one author); FR p.1 (one author)
   contribution: {
     role: 'Solo',
     teamSize: 1,
-    owned: 'Data pipeline, network construction, feature engineering, all three analyses, and the presentation',
-  },
-
-  warStory: {
-    title: 'The one match that wouldn’t build',
-    body: 'The first full run reported 516 of 517 networks built. One match had failed, and the easy move was to accept 516 and move on — a 0.2% loss changes nothing statistically. I went after it anyway. StatsBomb’s lineup data for that fixture tagged only two players as starters, because the rest were recorded under a "Tactical Shift" event instead. The fix was to fall back to the Starting XI event, which is authoritative and always contains exactly eleven. The build log now records 517 of 517, with a column noting which source each network’s starters came from — 516 from lineups, one from the fallback. If I hadn’t chased it, I would never have learned that the lineup field can lie, which is the sort of thing that silently corrupts a whole corpus.',
+    owned: 'Data pipeline, network construction, feature engineering, all three analyses, the report and the presentation',
   },
 };
 
@@ -529,47 +612,185 @@ const moneymind: SoonProject = {
 };
 
 /**
- * A prototype whose details Mahyar will send (2026-09-23). Until then the card is
- * its name and a status, nothing else: no line, no year, no stack, no claims.
+ * Realest: a team of four, built in a day. Written from Realest_PORTFOLIO_BRIEF.md;
+ * `source:` paths are in the realest repo (AamelAI/realest, main at a980bf2).
  */
-const realest: SoonProject = {
+const realest: CaseStudyProject = {
   slug: 'realest',
   name: 'Realest',
   kind: 'prototype',
-  page: 'none',
+  page: 'case-study',
+  depth: 'standard',
   order: 3,
-  status: { label: 'Details soon', kind: 'soon' },
+  // source: git log, 2026-09-12 02:51 to 2026-09-13 01:04 (-0400)
+  year: '2026',
+  // source: README.md:25 "Built in a day by AAMEL at Agents, Everywhere"
+  status: { label: 'Built in a day', kind: 'hackathon' },
+  // source: README.md:6-8, 43 ("Realest makes those calls for you")
+  cardLine: 'Calls listing agents so renters don’t have to',
+  // The product's own icon, byte-identical to web/app/icon.svg (the live page's, commit d2591da)
+  mark: '/work/realest/mark.svg',
+  facts: [
+    // source: README.md:25 "Agents, Everywhere: Bots, Channels & More · Toronto · 12 September 2026"
+    { label: 'Event', value: 'Agents, Everywhere: Bots, Channels & More' },
+    // source: TODO.md:43 ("all four have pulled it"); git shortlog (four people)
+    { label: 'Team', value: '4 people' },
+  ],
+
+  // The loop in the order it runs.
+  steps: [
+    {
+      title: 'Say what you want',
+      // source: server/main.py:361-403 (/agent/preferences ranks; SHORTLIST_SIZE = 4 at :49);
+      // 104 = the rentals.ca rows scripts/scrape_rentals.py keeps (124 scraped), recounted 2026-09-23
+      body: 'The renter phones in and describes the place. The backend ranks 104 Toronto listings and keeps four.',
+    },
+    {
+      title: 'Call every listing at once',
+      // source: server/calls.py:336-379 (fan_out: asyncio.gather, one call per listing);
+      // agent/listing-prompt.txt:1 "Identify yourself as an AI in your FIRST sentence, always."
+      body: 'On “call them”, one outbound call per listing goes out in parallel, each opening by saying it is an AI.',
+    },
+    {
+      title: 'Re-rank on the answers',
+      // source: server/calls.py:583-600 (transcript to CallOutcome, structured output); server/listings.py:41-47,
+      // 148-216 (real rent is listed rent plus add-ons; a leased unit sinks); web/components/Listings.tsx:137-146
+      body: 'Each transcript becomes a typed outcome. Real rent replaces listed rent, leased units sink, and the cards slide into place.',
+    },
+  ],
+
+  // Real screenshots of the page a renter watches. The names on them (Nadia, Dana, Raj,
+  // Mark, Priya) are made up (scripts/scrape_rentals.py:94-97); the listings are public.
+  shots: [
+    {
+      // source: portfolio-assets/realest-loop.png (= docs/media/realest-loop.png, README.md:56-59), not cropped.
+      // Its gutters are transparent, so they take the page's ground in either theme. The card shows its top 4:3.
+      src: '/work/realest/three-states.png',
+      width: 1680,
+      height: 1456,
+      alt: 'The shortlist in three states: four Toronto listings reordered after the renter says parking matters most, all four on the phone at once, then rewritten from the calls as booked, no answer, over budget and leased',
+      caption: 'One demo session: reordered by “parking matters most”, four calls in flight, then rewritten from the answers.',
+    },
+    {
+      // source: portfolio-assets/02-detail-sheet.png, cropped to x 280-1160, y 40-870. The demo board's own
+      // state (web/lib/mock.ts): a visitor who opens the demo board sees the same sheet.
+      src: '/work/realest/detail-sheet.png',
+      width: 880,
+      height: 830,
+      alt: 'The detail sheet for 322 Dupont Street: $3,470 a month, the listed $3,290 struck through with +$180/mo, and what the agent said: over the $3,400 budget, parking $180',
+      caption: 'Listed at $3,290, really $3,470 once the $180 parking is in.',
+    },
+  ],
+
+  // source: README.md:3-8
+  oneLiner:
+    'A voice agent that phones Toronto listing agents for renters and re-ranks their shortlist while they watch.',
+
+  badges: ['AI Tinkerers hackathon', 'Team of 4', 'Built in a day'],
+
+  // source: server/voice/elevenlabs.py:19-23; server/calls.py:233-236 (Twilio); server/calls.py:583-600 and
+  // server/chat.py:36-41 (OpenAI); pyproject.toml (Python 3.12, FastAPI); web/package.json (Next.js 15, React 19, TS)
+  stack: ['ElevenLabs', 'Twilio', 'OpenAI', 'Python', 'FastAPI', 'Next.js', 'React', 'TypeScript'],
+
+  links: [
+    // Checked 2026-09-23 in Chromium and WebKit at 390px and 1280px: 200, no failed requests
+    // or console errors, and a tapped card opens its detail sheet. It is the static template
+    // board (web/app/page.tsx: "Static mock data, polling off"), so it outlives the backend;
+    // "Demo board" so nobody takes it for a live session. Never link /s/<id>: without a
+    // phone call it is an empty "Connecting" board.
+    { label: 'Demo board', href: 'https://realest-kohl.vercel.app', status: 'live' },
+    // Public: 200 signed out; the GitHub API says visibility "public".
+    { label: 'GitHub', href: 'https://github.com/AamelAI/realest', status: 'live' },
+    // Not the YouTube demo the README links: it is on a teammate's own channel, and this
+    // page would label it "Live".
+  ],
+
+  // source: README.md:41; docs/SUBMISSION.md:9
+  problem:
+    'Toronto rental listings are often wrong: already leased, parking extra, pet policy unknown. The only way to know is to phone every listing agent yourself and play voicemail tag.',
+
+  // source: README.md:49 (the link is texted at pickup); README.md:108, 177 (one session store, two channels);
+  // server/main.py:120-133 (/api/state); web/lib/usePolling.ts:31-34 (intervalMs = 1200)
+  approach:
+    'While the renter talks to the agent, a page texted to their phone shows the shortlist. The agent writes to one session; the page reads it every 1.2 seconds.',
+
+  // source: README.md:25 (event, Toronto, date); docs/SUBMISSION.md:82 ("for AI Tinkerers"); README.md:67,
+  // 302, 310 (real calls on the day, each to a teammate's phone); README.md:23, 303 (the recorded demo is
+  // scripted); the demo board checked 2026-09-23
+  result:
+    'Built in a day at Agents, Everywhere, an AI Tinkerers hackathon in Toronto. Real calls worked on the day, to teammates playing listing agents; the recorded demo uses scripted ones, and the demo board is still online.',
+
+  metrics: [
+    {
+      value: '104',
+      label: 'Real Toronto rentals, ranked on every brief',
+      source:
+        'scripts/scrape_rentals.py: 124 rows from rentals.ca, 104 kept once MIN_RENT drops room shares; README.md:304',
+    },
+    {
+      value: '4',
+      label: 'Listing agents called at once, one per card',
+      source: 'SHORTLIST_SIZE = 4 (server/main.py:49); asyncio.gather in fan_out (server/calls.py:336-379)',
+    },
+  ],
+
+  contribution: {
+    // source: TODO.md:29, Mahyar's D3 lane ("Data + the page — listings, rank(), the live surface")
+    role: 'Ranker and live page',
+    teamSize: 4,
+    // source: git blame server/listings.py (commit 48c6c22) and web/components (Listings, DetailSheet, Money,
+    // CallsPanel: all his); commits 812c7ed, 09e718f, 2b64d47, 90a8e1f; 48c6c22 "Vercel project live"
+    owned:
+      'I wrote the ranker that orders every shortlist and built the page the renter watches: the sliding reorder, the rent corrections and the detail sheet. I also deployed it on Vercel.',
+  },
 };
 
 /**
- * Directed studies, started Fall 2026. Facts from the Lucent kit's experience list,
- * which Mahyar wrote. No results yet, so it gets a brief page, not a case study —
- * and nothing here may claim an outcome until one exists.
+ * Directed studies, Fall 2026. Written from GraphRetrieval_PORTFOLIO_BRIEF.md;
+ * `source:` paths are in the project's private repo. No results yet, so it gets a
+ * brief page, not a case study, and nothing here may claim an outcome until one exists.
  */
 const graphRag: BriefProject = {
   // Renamed from "Graph RAG for FHIR" (2026-09-23); the slug stays so links hold.
   slug: 'graph-rag-fhir',
+  // source: README.md:1
   name: 'Graph-Native Retrieval for Clinical LLM Agents',
   kind: 'research',
   page: 'brief',
   order: 5,
+  // source: git log (first commit 2026-09-23)
   year: '2026',
+  // source: code/src/ holds only .gitkeep; there is no results/
   status: { label: 'In progress', kind: 'progress' },
+  // source: CLAUDE.md:3-4
   cardLine: 'Directed studies, York Data Mining Lab',
-  // The name says what it is, the facts row where, and `building` what; the lede is
-  // the question the work asks. No outcome until there is one. Also the page's meta
-  // description.
-  lede: 'Does an agent answering clinical questions do better when it can follow the references between FHIR records?',
-  role: 'Directed studies, EECS 4070',
+  // What it is and what it asks, without repeating the title; no outcome. Also the
+  // page's meta description. source: README.md:6-8
+  lede: 'Giving AI agents a way to follow the links between a patient’s FHIR records, and measuring whether it helps.',
+  // source: CLAUDE.md:4 ("Student: Mahyar Jaberi"); git log (one author)
+  role: 'Student researcher (solo)',
   facts: [
+    // source: README.md:3
+    { label: 'Course', value: 'EECS 4070 Directed Studies' },
+    // source: CLAUDE.md:4
     { label: 'Lab', value: 'York Data Mining Lab' },
+    // source: README.md:4
     { label: 'Supervisor', value: 'Prof. Manos Papagelis' },
-    { label: 'Timeline', value: 'Fall 2026 – Winter 2027' },
+    // source: README.md:3 and CLAUDE.md:3 ("Fall 2026"). Was "Fall 2026 – Winter 2027", from the
+    // Lucent kit; the repo names only the Fall 2026 term.
+    { label: 'Timeline', value: 'Fall 2026' },
   ],
   building: [
-    'A graph traversal tool over FHIR references, for clinical LLM agents.',
+    // source: CLAUDE.md:14-15 (the research question); code/FHIR-AgentBench/tools/resource_tools.py:12-47
+    // (the benchmark's tools fetch every record of a type, or one record by ID)
+    'A tool that follows the links between FHIR records in one call, instead of the agent fetching each linked record itself.',
+    // source: CLAUDE.md:14-15, :40 (same model, judge, prompts, server and split). Not "against published
+    // baselines": that model retires on Oct 23, 2026, so published numbers are reference points (:35-36, :55).
     // U+2011, a non-breaking hyphen: the benchmark's name never splits across lines.
-    'An evaluation on FHIR\u2011AgentBench, measured against published baselines.',
+    'A test on FHIR‑AgentBench: the same agent, model, judge and questions, run with and without the tool.',
+    // source: notes/log/2026-09-23.md:10 (pinned at bbb42909), :13 (all files match SHA256SUMS.txt; 928,935
+    // resources, 100 of them Patient), recounted 2026-09-23. Dated on purpose: update it after the first run.
+    'As of September 2026: the benchmark is pinned and the data, 928,935 FHIR records for 100 patients, is checksum-verified. No results yet.',
   ],
 };
 
@@ -600,11 +821,15 @@ export const pagedProjects = projects.filter(
  *   - Maridian  — claims six agents. UNVERIFIED. The breakdown in the old
  *                 data/caseStudies.js was invented by a previous session.
  *   - Tactical DNA — research, no agents.
+ *   - Realest   — (added 2026-09-23) two ElevenLabs voice agents: one answers the
+ *                 renter, the other places each call to a listing. Teammates built
+ *                 them; Mahyar built the ranker and the page.
  *
  * RESOLVED 2026-08-08: Maridian's six agents are REAL — Triage, Options, Scorer,
  * Decision, Batch Tracker, Recovery Planner, each a module with its own prompt file and
  * tool wiring, chained by a hand-written sequential orchestrator. So "multi-agent" is
  * now supportable, but ONLY about Maridian, and only alongside the contribution note:
  * Mahyar did not write the agents. Never let the phrase migrate to MoneyMind (one
- * agent), BowlWise (no AI), or to a general claim about him in the hero or About.
+ * agent), BowlWise (no AI), Realest (voice agents he didn't write), or to a general
+ * claim about him in the hero or About.
  */
