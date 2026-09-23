@@ -296,8 +296,9 @@ img {
 /* ---- The pinned, scripted form ---- */
 @media (prefers-reduced-motion: no-preference) and (min-height: 600px) {
   .sigma .hero-stage {
-    /* one screen of formula, then the scroll the morph plays over */
-    height: calc(100svh + 110svh);
+    /* one screen, then the scroll the opening plays over: morph 110 + hold 40 +
+       zoom 90 (components/hero/timeline.ts — keep in step) */
+    height: calc(100svh + 240svh);
   }
   .sigma .hero-sticky {
     position: sticky;
@@ -326,7 +327,8 @@ img {
     left: 50%;
     margin-top: var(--space-6);
     translate: -50% calc((1 - var(--r)) * 16px);
-    opacity: var(--r);
+    /* rises in with the name; leaves first when the M starts to open (--q) */
+    opacity: calc(var(--r) * (1 - clamp(0, var(--q, 0) / 0.18, 1)));
     pointer-events: none;
   }
   .sigma .is-landed .hero-below {
@@ -350,7 +352,8 @@ img {
   /* the name writes itself once the M has nearly arrived, left to right */
   .sigma .hero-l {
     --lf: clamp(0, (var(--p, 0) - 0.54 - var(--i) * 0.02) / 0.14, 1);
-    opacity: var(--lf);
+    /* …and steps aside when the M starts to open, leaving the M alone */
+    opacity: calc(var(--lf) * (1 - clamp(0, (var(--q, 0) - 0.02) / 0.16, 1)));
     filter: blur(calc((1 - var(--lf)) * 6px));
     transform: translateY(calc((1 - var(--lf)) * 0.12em));
   }
@@ -372,7 +375,10 @@ img {
   }
   .sigma .is-live[data-sigma-at='name'] .hero-m {
     visibility: visible;
+    /* the ink M hands over to the M filled with the photo (ThroughTheM) */
+    opacity: calc(1 - clamp(0, (var(--q, 0) - 0.06) / 0.14, 1));
   }
+
 
 
   /* The nav keeps quiet while the opening is on screen: no name until the
@@ -396,6 +402,117 @@ img {
   .sigma .hero-sticky {
     grid-template-rows: 20fr auto 80fr;
   }
+}
+
+/* ---------- About (components/sections/About.tsx) ----------
+   A portrait, his paragraph, what he's into, and a strip of more photos, on the
+   kit's page primitives. Photo frames are styled like the kit's shots. */
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(32px, 5vw, 72px);
+  align-items: start;
+}
+.about-portrait {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--fill-muted);
+  box-shadow: var(--shadow-glass);
+}
+.about-portrait img {
+  object-fit: cover;
+}
+/* while the opening's photo is on its way here, it stands in for this one */
+.about-portrait.is-covered {
+  visibility: hidden;
+}
+.about-paragraph {
+  margin: var(--space-5) 0 0;
+  max-width: 52ch;
+  font-size: 19px;
+  line-height: 30px;
+  color: var(--ink);
+}
+.about-interests {
+  margin: var(--space-5) 0 0;
+  display: grid;
+  gap: var(--space-1);
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--ink-secondary);
+}
+.about-interests .lu-kicker {
+  margin: 0;
+}
+.about-strip {
+  list-style: none;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+.about-strip li {
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--fill-muted);
+  box-shadow: var(--shadow-glass);
+}
+.about-strip img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+@media (max-width: 760px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+  .about-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* The window: the photo seen through the M as it grows (SVG clip of the same
+   TeX glyph), then the photo itself settling into the portrait. Fixed over the
+   page, under the nav, and never in the way of a click. */
+.mwin {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--layer-nav) - 1);
+  pointer-events: none;
+  visibility: hidden;
+}
+.mwin[data-mode='window'],
+.mwin[data-mode='settle'] {
+  visibility: visible;
+}
+.mwin-svg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: none;
+  opacity: var(--win-in, 0);
+}
+.mwin[data-mode='window'] .mwin-svg {
+  display: block;
+}
+.mwin-svg text {
+  font-family: KaTeX_Size2, 'Times New Roman', serif;
+}
+.mwin-img {
+  position: absolute;
+  display: none;
+  object-fit: cover;
+  opacity: var(--full, 1);
+}
+.mwin[data-mode='window'] .mwin-img,
+.mwin[data-mode='settle'] .mwin-img {
+  display: block;
 }
 
 /* ---------- Page swap for route changes outside Lucent.transition ---------- */

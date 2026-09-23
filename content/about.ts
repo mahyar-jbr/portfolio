@@ -54,3 +54,33 @@ export const about = {
     },
   ],
 };
+
+/**
+ * The About section on the home page (added 2026-09-22), right after the hero:
+ * photos of Mahyar, a short paragraph about him and his goal, and what he's into.
+ *
+ * `paragraph` is Mahyar's own (2026-09-22), lightly edited for flow with his
+ * phrasing kept: forced into CS in grade 11, hated it, found a new way of
+ * thinking; from drawing imaginary creatures to turning ideas into code; the
+ * inner child; searching for greatness. Change it only with him.
+ *
+ * PLACEHOLDERS until Mahyar sends them:
+ *   - `photos` — public/about/photo-1…5.jpg are neutral stand-ins. Replace the
+ *     files (4:5 portrait works best for the first; any aspect for the rest),
+ *     then update each `alt` and flip `placeholder` off.
+ * The first photo is the one the hero's M opens onto.
+ */
+export const aboutSection = {
+  kicker: 'About',
+  title: 'A bit about me',
+  paragraph:
+    'This journey started in grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here we are: always building something, to keep the inner child happy and keep searching for greatness. Thanks for reading.',
+  interests: ['Drawing', 'Gym', 'Football', 'Anime', 'DC and Marvel', 'Series and movies'],
+  photos: [
+    { src: '/about/photo-1.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
+    { src: '/about/photo-2.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
+    { src: '/about/photo-3.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
+    { src: '/about/photo-4.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
+    { src: '/about/photo-5.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
+  ],
+};

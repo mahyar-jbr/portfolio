@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { MORPH, stageSpan, TOTAL } from './timeline';
 
 /**
  * Drives the opening: while the hero is pinned, scroll progress `p` (0 → 1)
@@ -92,9 +93,10 @@ export default function SigmaMorph() {
 
       function frame() {
         raf = 0;
-        /* read live: the stage's height is in viewport units, which move with mobile browser chrome */
-        const dist = Math.max(1, stage!.offsetHeight - sticky!.offsetHeight);
-        const p = clamp((window.scrollY - (hero!.offsetTop + stage!.offsetTop)) / dist);
+        /* read live: the stage's height is in viewport units, which move with mobile
+           browser chrome. The morph is the first MORPH of TOTAL (timeline.ts). */
+        const span = stageSpan(hero!, stage!, sticky!);
+        const p = clamp((window.scrollY - span.top) / ((span.dist * MORPH) / TOTAL));
         hero!.style.setProperty('--p', p.toFixed(4));
 
         const slide = clamp((p - 0.2) / 0.5);
@@ -132,7 +134,8 @@ export default function SigmaMorph() {
          risen in; focusing one plays the reveal to its end. */
       const reveal = () => {
         if (hero!.classList.contains('is-landed')) return;
-        window.scrollTo({ top: hero!.offsetTop + stage!.offsetTop + stage!.offsetHeight - sticky!.offsetHeight, behavior: 'instant' });
+        const span = stageSpan(hero!, stage!, sticky!);
+        window.scrollTo({ top: span.top + (span.dist * MORPH) / TOTAL, behavior: 'instant' });
       };
 
       window.addEventListener('scroll', schedule, { passive: true });

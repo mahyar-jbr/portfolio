@@ -60,20 +60,12 @@ export const hero = {
   properties: [
     { id: 'role', label: 'Role', value: identity.roleTitle },
     // Was "Incoming AI Solutions Engineer at FGF · September 2026". He started in
-    // September, so it now reads as the present.
-    { id: 'now', label: 'Now', value: 'AI Solutions Engineer co-op at FGF Brands', status: true },
+    // September, so it now reads as the present. Plain text, NOT the kit's green
+    // status tag: in Lucent a green dot means "Available for work", which under his
+    // name would read as open-to-work — the opposite of the truth (2026-09-22 review).
+    { id: 'now', label: 'Now', value: 'AI Solutions Engineer co-op at FGF Brands' },
     { id: 'studying', label: 'Studying', value: `${education.credential}, ${education.institution}` },
     { id: 'based', label: 'Based', value: identity.location, timeZone: 'America/Toronto' },
-    // Interests from Mahyar, 2026-09-22. One plain line like every other row —
-    // mixed link-and-tag capsules read as two different things. "Drawing" leads
-    // and links, because it has a section of its own further down.
-    {
-      id: 'also',
-      label: 'Also',
-      value: 'Drawing',
-      href: '#drawings',
-      interests: ['Gym', 'Football', 'Anime', 'DC and Marvel', 'Series and movies'],
-    },
   ],
   ctas: [
     { label: 'View my work', href: '#work' },

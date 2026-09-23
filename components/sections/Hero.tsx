@@ -4,17 +4,14 @@ import SigmaMorph from '@/components/hero/SigmaMorph';
 import Button from '@/components/lucent/Button';
 import type { GlyphName } from '@/components/lucent/Glyph';
 import { Properties, type HeroProperty } from '@/components/lucent/Hero';
-import Tag from '@/components/lucent/Tag';
-import TransitionLink from '@/components/lucent/TransitionLink';
 import { hero } from '@/content/site';
 
-/** Each property's glyph (kit: role, now, studying, based, also). */
+/** Each property's glyph (kit: role, now, studying, based). */
 const GLYPH: Record<(typeof hero.properties)[number]['id'], GlyphName> = {
   role: 'role',
   now: 'now',
   studying: 'studying',
   based: 'pin',
-  also: 'pencil',
 };
 
 /**
@@ -32,26 +29,11 @@ const GLYPH: Record<(typeof hero.properties)[number]['id'], GlyphName> = {
 export default function Hero() {
   const properties: HeroProperty[] = hero.properties.map((p) => {
     let value: HeroProperty['value'] = p.value;
-    if ('status' in p) {
-      value = (
-        <Tag tone="green" dot>
-          {p.value}
-        </Tag>
-      );
-    } else if ('timeZone' in p) {
+    if ('timeZone' in p) {
       /* Lucent.liveTime keeps a quiet local clock; empty until the runtime fills it. */
       value = (
         <>
           {p.value} <time data-live="" data-tz={p.timeZone} />
-        </>
-      );
-    } else if ('interests' in p) {
-      value = (
-        <>
-          <TransitionLink className="lu-link" href={p.href}>
-            {p.value}
-          </TransitionLink>
-          {p.interests.map((t) => ` · ${t}`).join('')}
         </>
       );
     }
