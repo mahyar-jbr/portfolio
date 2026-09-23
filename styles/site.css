@@ -312,10 +312,10 @@ html:not(.js) .site-theme {
 
 /* ---------- Hero (components/sections/Hero.tsx) ----------
    His name set huge in ink on two lines with its two actions right under
-   it, and the iOS details card beside them, or under them where the screen
-   is narrow. Plain ground: no lens and no dot canvas (Mahyar, 2026-09-23).
-   Everything rises in once with the kit's entrance; nothing is pinned, and
-   the page scrolls on into About. */
+   it, and the iOS details card beside the name, or under the actions where
+   the screen is narrow. Plain ground: no lens and no dot canvas (Mahyar,
+   2026-09-23). Everything rises in once with the kit's entrance; nothing is
+   pinned, and the page scrolls on into About. */
 .lu-hero.site-hero {
   display: flex;
   align-items: center;
@@ -323,8 +323,11 @@ html:not(.js) .site-theme {
   box-sizing: border-box;
   padding-block: calc(env(safe-area-inset-top, 0px) + 112px) var(--space-8);
 }
-/* on phones the theme toggle floats in the bottom-right corner (44px, space-5
-   up): the hero ends clear of it */
+/* on phones the theme toggle (the kit's 44px icon button) floats in the
+   bottom-right corner, space-5 up: where the whole hero fits the screen (390x844)
+   it ends clear of the toggle; where it doesn't (360x800, 320x640) the toggle
+   floats over the card's empty corner, as it floats over everything once the
+   page scrolls */
 @media (max-width: 720px) {
   .lu-hero.site-hero {
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-5) * 2 + 44px);
@@ -338,8 +341,9 @@ html:not(.js) .site-theme {
 }
 /* Stacked, on phones and tablets: the name, its actions, then the card a
    step further down, as a group of its own. The card is as wide as its
-   longest value needs to stay on one line (the Studying row, about 390px in
-   Inter) past the 120px label column. */
+   longest value needs to stay on one line (the Studying row, 390px in Inter)
+   past the 120px label column (the widest label, Studying with its tile, is
+   101px). */
 .hero-grid {
   --hero-card: 560px;
   display: grid;
@@ -395,31 +399,35 @@ html:not(.js) .site-theme {
   margin-top: var(--space-4);
 }
 /* Split, on laptops and up: the name with its actions under it on the left,
-   the card on the right, centred against them and flush with the page's
-   right edge, so neither half of the first screen stands empty. The name
-   takes the width the card leaves (100cqi is this grid's width; "Mahyar" is
-   about 3.2em wide), so the gap between them holds at every width and the
-   whole hero fits a 1280x720 screen. Below 1180px that would shrink the name
-   under the card, so it stacks instead. */
+   the card on the right beside the name, flush with the page's right edge, so
+   neither half of the first screen stands empty. The name takes the width the
+   card and the gap leave (100cqi is this grid's width; "Mahyar" is 3.12em wide
+   in SF and 3.17em in Inter, so 3.2 fits either), and the whole hero fits a
+   1280x720 screen. The card's foot sits on the baseline of "Jaberi", a real
+   edge of the type at every name size: the name's box ends 0.17em below that
+   baseline (0.16em in SF, 0.18em in Inter, padding included). Below 1180px
+   the split would shrink the name under the card, so it stacks instead. */
 @media (min-width: 1180px) {
   .hero-grid {
     container-type: inline-size;
+    /* resolved where it's used, so 100cqi is this grid on both the name and the card */
+    --hero-name: min(176px, (100cqi - var(--hero-card) - var(--space-7)) / 3.2);
     grid-template-columns: auto minmax(0, var(--hero-card));
-    grid-template-areas: 'name card' 'actions card';
+    grid-template-areas: 'name card' 'actions .';
     justify-content: space-between;
     column-gap: var(--space-7);
   }
   .site-hero .hero-name {
     grid-area: name;
-    font-size: min(176px, (100cqi - var(--hero-card) - var(--space-8)) / 3.2);
+    font-size: var(--hero-name);
   }
   .hero-actions {
     grid-area: actions;
   }
   .hero-card {
     grid-area: card;
-    align-self: center;
-    margin-top: 0;
+    align-self: end;
+    margin: 0 0 calc(var(--hero-name) * 0.17);
   }
 }
 /* on phones the two buttons share the row, still at 320px */

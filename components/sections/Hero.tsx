@@ -16,9 +16,9 @@ const GLYPH: Record<(typeof hero.properties)[number]['id'], GlyphName> = {
 
 /**
  * The opening: his name set huge in ink on two lines with its two actions
- * right under it, and the details as an iOS card: beside them on laptops and
- * up, below them on narrower screens (styles/site.css). The markup follows
- * that reading order: name, actions, card.
+ * right under it, and the details as an iOS card: beside the name on laptops
+ * and up, below the actions on narrower screens (styles/site.css). The markup
+ * follows that reading order: name, actions, card.
  *
  * The name comes in like a keynote title: each line rises from behind a clean
  * edge at its foot, then the buttons and the card follow. The page reads the
