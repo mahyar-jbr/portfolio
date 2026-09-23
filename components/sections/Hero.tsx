@@ -1,6 +1,9 @@
+import type { CSSProperties } from 'react';
+import Formula, { SIGMA } from '@/components/hero/Formula';
+import SigmaMorph from '@/components/hero/SigmaMorph';
 import Button from '@/components/lucent/Button';
 import type { GlyphName } from '@/components/lucent/Glyph';
-import LucentHero, { type HeroProperty } from '@/components/lucent/Hero';
+import { enterStyle, Properties, type HeroProperty } from '@/components/lucent/Hero';
 import Tag from '@/components/lucent/Tag';
 import TransitionLink from '@/components/lucent/TransitionLink';
 import { hero } from '@/content/site';
@@ -14,6 +17,18 @@ const GLYPH: Record<(typeof hero.properties)[number]['id'], GlyphName> = {
   also: 'pencil',
 };
 
+/**
+ * The opening. The landing screen is the formula and nothing else, pinned while
+ * the page scrolls through it: the other terms leave, the Σ slides along the
+ * line and turns a quarter clockwise into the M, the rest of the name writes
+ * itself after it — in the formula's own place — and the kit's properties and
+ * actions rise in beneath. Then the pin releases and the page carries on.
+ * (SigmaMorph drives it; the CSS in styles/site.css "Hero" lays out both the
+ * live and the resting form.)
+ *
+ * The M is the formula's own Σ — the same TeX glyph, turned. At rest (no
+ * script, reduced motion) the formula sits above the finished name.
+ */
 export default function Hero() {
   const properties: HeroProperty[] = hero.properties.map((p) => {
     let value: HeroProperty['value'] = p.value;
@@ -30,32 +45,75 @@ export default function Hero() {
           {p.value} <time data-live="" data-tz={p.timeZone} />
         </>
       );
-    } else if ('href' in p) {
+    } else if ('interests' in p) {
       value = (
-        <TransitionLink className="lu-link" href={p.href}>
-          {p.value}
-        </TransitionLink>
+        <span className="hero-interests">
+          <TransitionLink className="lu-link" href={p.href}>
+            {p.value}
+          </TransitionLink>
+          {p.interests.map((t) => (
+            <Tag key={t}>{t}</Tag>
+          ))}
+        </span>
       );
     }
     return { label: p.label, glyph: GLYPH[p.id], value };
   });
 
   const [primary, secondary] = hero.ctas;
+  const rest = hero.name.slice(1);
 
   return (
-    <LucentHero
-      name={hero.name}
-      properties={properties}
-      actions={
-        <>
-          <Button variant="filled" href={primary.href}>
-            {primary.label}
-          </Button>
-          <Button variant="glass" href={secondary.href}>
-            {secondary.label}
-          </Button>
-        </>
-      }
-    />
+    <section className="lu-hero is-formula" id="top" aria-label="Introduction" data-sigma-hero="">
+      <div className="hero-stage">
+        <div className="hero-sticky">
+          <div className="hero-line">
+            <Formula spoken={hero.formula.spoken} />
+            <p className="hero-eq-caption" data-enter="" style={enterStyle(1)}>
+              {hero.formula.caption}
+            </p>
+            <h1 className="hero-title">
+              <span className="sr-only">{hero.name}</span>
+              <span className="hero-name" aria-hidden="true">
+                <span className="hero-m" data-sigma-to="">
+                  <span className="sigma-glyph">{SIGMA}</span>
+                </span>
+                {[...rest].map((ch, i) =>
+                  ch === ' ' ? (
+                    ' '
+                  ) : (
+                    <span key={i} className="hero-l" style={{ '--i': i } as CSSProperties}>
+                      {ch}
+                    </span>
+                  ),
+                )}
+              </span>
+            </h1>
+            {/* The Σ in flight: the same glyph as the M's, drawn over the page while live. */}
+            <span className="hero-fly" aria-hidden="true" data-sigma-fly="">
+              <span className="sigma-glyph">{SIGMA}</span>
+            </span>
+            <div className="hero-below">
+              <Properties items={properties} className="hero-props" />
+              <div className="lu-hero-actions hero-actions">
+                <Button variant="filled" href={primary.href}>
+                  {primary.label}
+                </Button>
+                <Button variant="glass" href={secondary.href}>
+                  {secondary.label}
+                </Button>
+              </div>
+            </div>
+          </div>
+          <span className="hero-cue" aria-hidden="true">
+            {hero.formula.cue}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </span>
+        </div>
+      </div>
+      <SigmaMorph />
+    </section>
   );
 }

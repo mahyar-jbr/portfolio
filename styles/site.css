@@ -5,8 +5,8 @@
  * (components and layout primitives) and styles/tokens.css (generated from
  * tokens.json). What lives here is what the kit leaves to the page: the page
  * ground, where the nav floats, the page-level styles from the kit's own
- * templates (hero curve, card diagrams, case-study header), and the CSS versions
- * of the kit's first-paint motion. Every value is a Lucent token.
+ * templates (card diagrams, case-study header), the formula hero, and the CSS
+ * versions of the kit's first-paint motion. Every value is a Lucent token.
  */
 
 /* ---------- Page ---------- */
@@ -68,6 +68,20 @@ img {
   pointer-events: auto;
   max-width: 100%;
 }
+/* The lens is aria-hidden decoration: it must never take a click meant for an item. */
+.site-nav .lu-lens {
+  pointer-events: none;
+}
+/* When the kit's compact state hides the name, it also leaves the tab order, so
+   focus never lands on something invisible. Visibility flips with the fade. */
+.site-nav .lu-nav-brand {
+  transition-property: max-width, padding, opacity, visibility;
+  transition-duration: var(--dur-morph), var(--dur-morph), var(--dur-jelly), var(--dur-jelly);
+  transition-timing-function: var(--ease-settle);
+}
+.site-nav .lu-nav.is-compact .lu-nav-brand {
+  visibility: hidden;
+}
 /* At phone width the name gives way so four items fit on one line with no
    horizontal scroll (390px bar) — the same trade the compact state makes. */
 @media (max-width: 560px) {
@@ -76,6 +90,12 @@ img {
   }
   .site-nav .lu-nav-item {
     padding-inline: 11px;
+  }
+}
+@media (max-width: 359px) {
+  .site-nav .lu-nav-item {
+    padding-inline: 7px;
+    font-size: 14px;
   }
 }
 
@@ -96,17 +116,9 @@ img {
   content: '· ';
 }
 
-/* ---------- Hero (kit PortfolioPage template) ---------- */
-.lu-hero-curve {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  color: var(--ink-secondary);
-}
-
-/* Entrance: the CSS form of Lucent.enter() — fade and rise 12px, 70ms apart,
-   on ease-settle over dur-enter. Starts with the first paint of the
+/* ---------- Entrance ----------
+   The CSS form of Lucent.enter(): fade and rise 12px, 70ms apart, on
+   ease-settle over dur-enter. Starts with the first paint of the
    server-rendered page, and the resting state is fully visible. */
 @keyframes site-enter {
   from {
@@ -119,28 +131,309 @@ img {
     opacity: 0;
   }
 }
-/* Brand reveal: the sigma turns a quarter clockwise into the M, on the kit's
-   spring easing — the same frames as Lucent.drawMark(). */
-@keyframes site-mark-turn {
-  from {
-    transform: rotate(-90deg);
-  }
-}
 @media (prefers-reduced-motion: no-preference) {
   [data-enter] {
     animation: site-enter var(--dur-enter) var(--ease-settle) backwards;
     animation-delay: calc(var(--enter-i, 0) * 70ms);
-  }
-  .lu-hero-icon.is-reveal .lu-mark [data-turn] {
-    transform-box: fill-box;
-    transform-origin: 50% 50%;
-    animation: site-mark-turn 900ms var(--ease-spring) 200ms backwards;
   }
 }
 /* Reduced motion: springs jump to rest, everything else is a fade of ≤150ms. */
 @media (prefers-reduced-motion: reduce) {
   [data-enter] {
     animation: site-fade 150ms ease backwards;
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Hero: the formula opening (components/sections/Hero.tsx) ----------
+   The landing screen is y = σ(Σ wᵢxᵢ + b) and nothing else. Pinned while the
+   page scrolls through it, the formula becomes the name in place:
+
+     p 0.02–0.32  the other terms leave, farthest from the Σ first
+     p 0.20–0.70  the Σ slides to the start of the line and turns a quarter
+                  clockwise into the M                      (SigmaMorph)
+     p 0.54–0.90  the rest of the name writes itself, left to right
+     p 0.78–0.96  the properties and actions rise in beneath
+
+   SigmaMorph sets --p (0 → 1) on the hero.
+
+   Two forms. At rest it is a plain stack: the formula, then the finished name,
+   properties and actions. That is what shows with no script, with reduced
+   motion, on screens too short to hold the landed hero, and if the script never
+   arrives. The pinned stage applies only under html.sigma — set before first
+   paint by the inline script in app/layout.tsx, withdrawn by it (or by
+   SigmaMorph) whenever the stage can't run. */
+
+.is-formula {
+  /* the name, in TeX's Computer Modern like the formula it comes from */
+  --title-size: clamp(44px, 9vw, 112px);
+}
+.hero-sticky {
+  display: grid;
+  place-items: center;
+  min-height: 100svh;
+  padding: calc(env(safe-area-inset-top, 0px) + var(--space-9)) var(--space-5) var(--space-8);
+  box-sizing: border-box;
+}
+.hero-line {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: var(--space-5);
+  text-align: center;
+}
+.hero-below {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-6);
+  /* the kit's .lu-props width, so each property stays on one line */
+  width: min(640px, calc(100vw - 2 * var(--space-5)));
+  margin-top: var(--space-3);
+  text-align: left;
+}
+
+/* TeX's own typesetting (KaTeX, Computer Modern): the formula as it would
+   appear in a paper. KaTeX sets its size at 1.21em of this; the whole formula
+   is ~10.7em wide, so it never outgrows a phone's content width. */
+.hero-eq {
+  margin: 0;
+  font-size: min(clamp(30px, 7.2vw, 96px), calc((100vw - 2 * var(--space-5)) / 10.7));
+  line-height: 1;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.hero-eq .katex-display {
+  margin: 0;
+}
+.hero-eq [data-k='1'] { --k: 1; }
+.hero-eq [data-k='2'] { --k: 2; }
+.hero-eq [data-k='3'] { --k: 3; }
+.hero-eq [data-k='4'] { --k: 4; }
+.hero-eq [data-k='5'] { --k: 5; }
+
+.hero-eq-caption {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+
+.lu-hero .hero-title {
+  margin: 0;
+  font-family: KaTeX_Main, 'Latin Modern Roman', 'Times New Roman', serif;
+  font-size: var(--title-size);
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.hero-l {
+  display: inline-block;
+}
+
+/* The M: the formula's Σ (TeX display size, KaTeX_Size2) turned a quarter
+   clockwise. Measured: the Σ's ink is 1.333em wide and 1.40em tall, centred in
+   its box both ways. Turned, its width becomes the M's height, so at 0.5124em
+   it stands exactly Computer Modern's cap height (0.683em) and is 0.717em wide.
+   The box is that ink plus CM's 0.029em side bearings, sitting on the baseline
+   with the glyph centred in it: feet on the baseline, top on the cap line.
+   The flying copy is the very same box and glyph. */
+.hero-m,
+.hero-fly {
+  width: 0.775em;
+  height: 0.683em;
+}
+.hero-m {
+  display: inline-block;
+  position: relative;
+  /* optical fit, measured against the neighbouring letters' ink at 2×: seat the
+     feet on the baseline and close the gap to "a" to the name's own spacing */
+  vertical-align: -0.01em;
+  margin-right: -0.025em;
+}
+.sigma-glyph {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-family: KaTeX_Size2, 'Times New Roman', serif;
+  font-size: 0.5124em;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.2;
+  letter-spacing: 0;
+  white-space: nowrap;
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.hero-fly {
+  position: absolute;
+  font-size: var(--title-size);
+  color: var(--ink);
+  pointer-events: none;
+  visibility: hidden;
+  transform-origin: 50% 50%;
+  will-change: transform;
+}
+
+.hero-props {
+  width: 100%;
+  margin: 0;
+}
+/* The property rows rest still: no hover band (Mahyar, 2026-09-22). */
+.hero-props > div:hover {
+  background: none;
+}
+.hero-actions {
+  justify-content: center;
+  margin-top: 0;
+}
+.hero-interests {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px var(--space-2);
+}
+.hero-cue {
+  display: none;
+}
+
+/* ---- The pinned, scripted form ---- */
+@media (prefers-reduced-motion: no-preference) and (min-height: 560px) {
+  .sigma .hero-stage {
+    /* one screen of formula, then the scroll the morph plays over */
+    height: calc(100svh + 110svh);
+  }
+  .sigma .hero-sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 0;
+    padding: 0 var(--space-5);
+    /* the line sits a little above centre, with room for what comes beneath it */
+    grid-template-rows: 36fr auto 64fr;
+    place-items: center;
+  }
+  .sigma .hero-line {
+    grid-row: 2;
+  }
+
+  /* formula and name share one line; everything else hangs off it */
+  .sigma .hero-line > .hero-eq,
+  .sigma .hero-line > .hero-title {
+    grid-area: 1 / 1;
+    align-self: center;
+  }
+  .sigma .hero-eq-caption {
+    position: absolute;
+    top: calc(100% + var(--space-4));
+    left: 50%;
+    translate: -50% 0;
+    white-space: nowrap;
+    opacity: calc(1 - clamp(0, var(--p, 0) / 0.12, 1));
+  }
+  .sigma .hero-below {
+    --r: clamp(0, (var(--p, 0) - 0.78) / 0.18, 1);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-top: var(--space-6);
+    translate: -50% calc((1 - var(--r)) * 16px);
+    opacity: var(--r);
+    pointer-events: none;
+  }
+  .sigma .is-landed .hero-below {
+    pointer-events: auto;
+  }
+  /* whatever the scroll, a focused control is never invisible */
+  .sigma .hero-below:focus-within {
+    opacity: 1;
+    translate: -50% 0;
+    pointer-events: auto;
+  }
+
+  /* the other terms leave first, farthest from the Σ first: term k fades over
+     0.02 + (5 − k) × 0.045 → +0.12, so all are gone before the Σ sets off */
+  .sigma .hero-eq [data-k] {
+    --f: clamp(0, (var(--p, 0) - (0.02 + (5 - var(--k)) * 0.045)) / 0.12, 1);
+    opacity: calc(1 - var(--f));
+    filter: blur(calc(var(--f) * 6px));
+  }
+
+  /* the name writes itself once the M has nearly arrived, left to right */
+  .sigma .hero-l {
+    --lf: clamp(0, (var(--p, 0) - 0.54 - var(--i) * 0.02) / 0.14, 1);
+    opacity: var(--lf);
+    filter: blur(calc((1 - var(--lf)) * 6px));
+    transform: translateY(calc((1 - var(--lf)) * 0.12em));
+  }
+
+  /* one Σ on screen at a time: once live, the flying copy stands in for both
+     the formula's Σ and the name's M */
+  .sigma .hero-m {
+    visibility: hidden;
+  }
+  .sigma .is-live .hero-fly {
+    visibility: visible;
+  }
+  .sigma .is-live .hero-eq [data-sigma] {
+    visibility: hidden;
+  }
+
+  .sigma .hero-cue {
+    position: absolute;
+    left: 50%;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-5));
+    translate: -50% 0;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-secondary);
+    opacity: calc(1 - clamp(0, var(--p, 0) / 0.12, 1));
+  }
+  .sigma .hero-cue svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* The nav keeps quiet while the opening is on screen: no name until the
+     hero's name has formed (and out of the tab order while hidden), and no
+     section lens until a section is actually in view. */
+  .sigma body:has(.is-formula:not(.is-landed)) .site-nav .lu-nav-brand {
+    max-width: 0;
+    padding: 0;
+    opacity: 0;
+    visibility: hidden;
+  }
+  .sigma.hero-in-view .site-nav .lu-lens {
+    opacity: 0;
+  }
+  .sigma.hero-in-view .site-nav .lu-nav-item[aria-current='page'] {
+    color: var(--ink);
+  }
+}
+/* On shorter screens the line sits higher, so the landed hero still fits. */
+@media (prefers-reduced-motion: no-preference) and (min-height: 560px) and (max-height: 700px) {
+  .sigma .hero-sticky {
+    grid-template-rows: 20fr auto 80fr;
   }
 }
 
@@ -151,14 +444,14 @@ img {
     transform: translateY(8px);
   }
 }
-.site-navigated .site-route {
+.site-navigated .site-route:not(.is-first) {
   animation: site-route-in var(--dur-enter) var(--ease-settle) backwards;
 }
 .lu-vt-page .site-route {
   animation: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .site-navigated .site-route {
+  .site-navigated .site-route:not(.is-first) {
     animation: site-fade 150ms ease backwards;
   }
 }
@@ -236,6 +529,17 @@ img {
   line-height: 1.05;
   font-weight: 700;
   letter-spacing: -0.035em;
+}
+/* The stack: the project's tools as soft tags, across the whole summary row.
+   Skills live here rather than in a section of their own (Mahyar, 2026-09-22). */
+.lu-meta > .case-stack {
+  grid-column: 1 / -1;
+}
+.case-stack dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
 }
 .case-next .lu-card {
   aspect-ratio: 16 / 6;

@@ -1,7 +1,6 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import BrandMark from './BrandMark';
 import TransitionLink from './TransitionLink';
 
 /**
@@ -24,8 +23,8 @@ export default function NavBar({
   return (
     <div className="site-nav">
       <nav className="lu-nav" data-compact="" aria-label="Main">
+        {/* The name alone: the mark lives in the hero now (Mahyar, 2026-09-22). */}
         <TransitionLink className="lu-nav-brand" href={home ? '#top' : '/'}>
-          <BrandMark size={22} />
           {brand}
         </TransitionLink>
         {items.map((item, i) => (

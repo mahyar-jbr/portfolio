@@ -22,6 +22,17 @@ export default function LucentRuntime() {
     return () => clearTimeout(t);
   }, []);
 
+  /* A page that arrived without the arrival animation keeps it that way: the
+     first page (its own entrances already play), and any page that came in
+     through the kit's page swap (a view transition), which would otherwise
+     fade in a second time when the transition hands back. */
+  useEffect(() => {
+    const html = document.documentElement;
+    if (!html.classList.contains('site-navigated') || html.classList.contains('lu-vt-page')) {
+      document.querySelectorAll('.site-route').forEach((el) => el.classList.add('is-first'));
+    }
+  }, [pathname]);
+
   useEffect(() => {
     let cancelled = false;
     loadLucent()

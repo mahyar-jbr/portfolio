@@ -41,14 +41,31 @@ export const viewport: Viewport = {
   ],
 };
 
-const navItems = [sections.work, sections.experience, sections.drawings, sections.contact].map((s) => ({
+/* Runs in <head>, before first paint, so the home page can lay out its pinned
+   formula opening from the first frame instead of switching after hydration:
+   - `js`: scripts run.
+   - `sigma`: the pinned stage can run here (motion allowed, screen tall enough —
+     the same query SigmaMorph and site.css use).
+   - failsafe: if the page's scripts never bring the stage to life (blocked or
+     failed bundle), `sigma` is withdrawn and the hero falls back to its resting
+     stack, so the name and buttons can never stay invisible. */
+const BOOT = `(function(){var d=document.documentElement;d.classList.add('js');
+if(!window.matchMedia||!matchMedia('(prefers-reduced-motion: no-preference) and (min-height: 560px)').matches)return;
+d.classList.add('sigma');
+setTimeout(function(){var h=document.querySelector('[data-sigma-hero]');if(h&&!h.classList.contains('is-live'))d.classList.remove('sigma');},4000);})();`;
+
+const navItems =[sections.work, sections.experience, sections.drawings, sections.contact].map((s) => ({
   id: s.id,
   label: s.nav,
 }));
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    /* See BOOT below: classes set before first paint. */
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: BOOT }} />
+      </head>
       <body className="lu-root">
         <a className="site-skip" href="#main">
           Skip to content

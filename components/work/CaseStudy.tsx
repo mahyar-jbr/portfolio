@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import Button from '@/components/lucent/Button';
 import Glyph, { type GlyphName } from '@/components/lucent/Glyph';
 import ProjectCard from '@/components/lucent/ProjectCard';
+import Tag from '@/components/lucent/Tag';
 import CardArt, { cardArtClass } from '@/components/work/CardArt';
 import { pagedProjects } from '@/content/projects';
 import type { BriefProject, CaseStudyProject, ExternalLink, ProjectStatus, Shot } from '@/content/types';
@@ -70,7 +71,20 @@ function linkFacts(links: ExternalLink[]): MetaItem[] {
     });
 }
 
-function CaseHero({ name, mark, lede, meta }: { name: string; mark?: string; lede: string; meta: MetaItem[] }) {
+function CaseHero({
+  name,
+  mark,
+  lede,
+  meta,
+  stack,
+}: {
+  name: string;
+  mark?: string;
+  lede: string;
+  meta: MetaItem[];
+  /** The tools the project was built with. The site has no Skills section: skills are shown where they were used. */
+  stack?: string[];
+}) {
   return (
     <section className="case-hero lu-wall">
       <div className="lu-page">
@@ -97,6 +111,17 @@ function CaseHero({ name, mark, lede, meta }: { name: string; mark?: string; led
               <dd>{m.value}</dd>
             </div>
           ))}
+          {stack && stack.length > 0 && (
+            <div className="case-stack">
+              <Glyph name="layers" />
+              <dt>Stack</dt>
+              <dd>
+                {stack.map((s) => (
+                  <Tag key={s}>{s}</Tag>
+                ))}
+              </dd>
+            </div>
+          )}
         </dl>
       </div>
     </section>
@@ -239,7 +264,7 @@ export function CaseStudy({ project: p }: { project: CaseStudyProject }) {
 
   return (
     <>
-      <CaseHero name={p.name} mark={p.mark} lede={p.oneLiner} meta={meta} />
+      <CaseHero name={p.name} mark={p.mark} lede={p.oneLiner} meta={meta} stack={p.stack} />
       <div className="lu-page lu-case">
         {beats.slice(0, MAX_SECTIONS).map((b) => (
           <section key={b.title} data-reveal="">

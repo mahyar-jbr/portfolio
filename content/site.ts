@@ -44,6 +44,20 @@ export const identity: Identity = {
  */
 export const hero = {
   name: identity.fullName,
+
+  /**
+   * The opening: the neuron formula his mark comes from (Lucent BrandMark:
+   * "y = σ(Σ wᵢxᵢ + b): sum, then activate"). On scroll the Σ turns into the M
+   * and lands at the start of his name. The formula itself is typeset in the
+   * component; these are its words.
+   */
+  formula: {
+    /** What a screen reader hears instead of the typeset formula. */
+    spoken: 'y equals sigma of the sum of w i times x i, plus b',
+    caption: 'A neuron: sum, then activate.',
+    cue: 'Scroll',
+  },
+
   properties: [
     { id: 'role', label: 'Role', value: identity.roleTitle },
     // Was "Incoming AI Solutions Engineer at FGF · September 2026". He started in
@@ -51,7 +65,15 @@ export const hero = {
     { id: 'now', label: 'Now', value: 'AI Solutions Engineer co-op at FGF Brands', status: true },
     { id: 'studying', label: 'Studying', value: `${education.credential}, ${education.institution}` },
     { id: 'based', label: 'Based', value: identity.location, timeZone: 'America/Toronto' },
-    { id: 'also', label: 'Also', value: 'I draw', href: '#drawings' },
+    // Interests added by Mahyar 2026-09-22. "I draw" leads because it links to a
+    // section of the page; the rest are tags.
+    {
+      id: 'also',
+      label: 'Also',
+      value: 'I draw',
+      href: '#drawings',
+      interests: ['Gym', 'Football', 'Anime', 'DC and Marvel', 'Series and movies'],
+    },
   ],
   ctas: [
     { label: 'View my work', href: '#work' },
