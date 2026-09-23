@@ -41,22 +41,24 @@ export const viewport: Viewport = {
   ],
 };
 
-/* Runs in <head>, before first paint, so the home page can lay out its pinned
-   formula opening from the first frame instead of switching after hydration:
+/* Runs in <head>, before first paint, so the home page lays out in its final
+   form from the first frame instead of switching after hydration:
    - `js`: scripts run.
-   - `sigma`: the pinned stage can run here (motion allowed, screen tall enough —
-     the same query SigmaMorph and site.css use).
-   - failsafe: if the page's scripts never bring the stage to life (blocked or
-     failed bundle), `sigma` is withdrawn and the hero falls back to its resting
-     stack, so the name and buttons can never stay invisible.
+   - `name-in-view` (home only): the hero's name is on screen, so the nav
+     capsule doesn't repeat it (components/hero/NavHandoff.tsx keeps it true).
+   - `pin`: the About story can pin and step (motion allowed, screen tall
+     enough — the same query components/about/StoryScroll.tsx uses).
+   - failsafe: if the page's scripts never come alive (blocked or failed
+     bundle), both are withdrawn, so the nav shows the name again and the story
+     falls back to its plain sequence — nothing can stay hidden.
    - a refresh of the home page starts at the opening, not wherever the browser
      would restore to, and drops a leftover #section from in-site navigation.
      A first visit to a /#section link still goes straight to it. */
 const BOOT = `(function(){var d=document.documentElement;d.classList.add('js');
 try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&location.pathname==='/'){history.scrollRestoration='manual';if(location.hash)history.replaceState(history.state,'',location.pathname+location.search);addEventListener('load',function(){scrollTo(0,0);setTimeout(function(){history.scrollRestoration='auto';},0);});}}catch(e){}
-if(!window.matchMedia||!matchMedia('(prefers-reduced-motion: no-preference) and (min-height: 600px)').matches)return;
-d.classList.add('sigma');
-setTimeout(function(){var h=document.querySelector('[data-sigma-hero]');if(h&&!h.classList.contains('is-live'))d.classList.remove('sigma');},4000);})();`;
+if(location.pathname==='/')d.classList.add('name-in-view');
+if(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference) and (min-height: 600px)').matches)d.classList.add('pin');
+setTimeout(function(){if(!d.classList.contains('hero-wired'))d.classList.remove('name-in-view');var s=document.querySelector('[data-story]');if(s&&!s.classList.contains('is-live'))d.classList.remove('pin');},4000);})();`;
 
 const navItems = [sections.work, sections.experience, sections.drawings, sections.contact].map((s) => ({
   id: s.id,

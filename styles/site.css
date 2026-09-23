@@ -5,7 +5,7 @@
  * (components and layout primitives) and styles/tokens.css (generated from
  * tokens.json). What lives here is what the kit leaves to the page: the page
  * ground, where the nav floats, the page-level styles from the kit's own
- * templates (card diagrams, case-study header), the formula hero, and the CSS
+ * templates (card diagrams, case-study header), the hero, and the CSS
  * versions of the kit's first-paint motion. Every value is a Lucent token.
  */
 
@@ -152,130 +152,97 @@ img {
   border: 0;
 }
 
-/* ---------- Hero: the formula opening (components/sections/Hero.tsx) ----------
-   The landing screen is y = σ(Σ wᵢxᵢ + b) and nothing else. Pinned while the
-   page scrolls through it, the formula becomes the name in place:
-
-     p 0.02–0.32  the other terms leave, farthest from the Σ first
-     p 0.20–0.70  the Σ slides to the start of the line and turns a quarter
-                  clockwise into the M                      (SigmaMorph)
-     p 0.54–0.90  the rest of the name writes itself, left to right
-     p 0.78–0.96  the properties and actions rise in beneath
-
-   SigmaMorph sets --p (0 → 1) on the hero.
-
-   Two forms. At rest it is a plain stack: the formula, then the finished name,
-   properties and actions. That is what shows with no script, with reduced
-   motion, on screens too short to hold the landed hero, and if the script never
-   arrives. The pinned stage applies only under html.sigma — set before first
-   paint by the inline script in app/layout.tsx, withdrawn by it (or by
-   SigmaMorph) whenever the stage can't run. */
-
-.is-formula {
-  /* the name, in TeX's Computer Modern like the formula it comes from */
-  --title-size: clamp(44px, 9vw, 112px);
-}
-.hero-sticky {
-  display: grid;
-  place-items: center;
+/* ---------- Hero (components/sections/Hero.tsx) ----------
+   His name set huge in ink on two lines, then the iOS details card and the
+   two actions. Plain ground: no lens and no dot canvas (Mahyar, 2026-09-23).
+   Everything rises in once with the kit's entrance; nothing is pinned, and
+   the page scrolls on into About. */
+.lu-hero.site-hero {
+  display: flex;
+  align-items: center;
   min-height: 100svh;
-  padding: calc(env(safe-area-inset-top, 0px) + var(--space-9)) var(--space-5) var(--space-8);
   box-sizing: border-box;
+  padding-block: calc(env(safe-area-inset-top, 0px) + 112px) var(--space-8);
 }
-.hero-line {
-  position: relative;
-  display: grid;
-  justify-items: center;
-  gap: var(--space-5);
-  text-align: center;
+/* fill the row up to the kit's measure, so the hero lines up with the
+   sections below at every width (auto margins alone would shrink it) */
+.site-hero > .lu-hero-inner {
+  flex: 1 1 auto;
+  min-width: 0;
 }
-.hero-below {
+.hero-grid {
   display: grid;
-  justify-items: center;
   gap: var(--space-6);
-  /* the kit's .lu-props width, so each property stays on one line */
-  width: min(640px, calc(100vw - 2 * var(--space-5)));
-  margin-top: var(--space-3);
-  text-align: left;
+}
+/* the buttons sit beside the card only where both fit without the card's
+   values wrapping; narrower screens stack them under it */
+@media (min-width: 1180px) {
+  .hero-grid {
+    grid-template-columns: minmax(0, 600px) auto;
+    grid-template-areas: 'name name' 'card actions';
+    column-gap: var(--space-7);
+    row-gap: var(--space-7);
+    align-items: end;
+    justify-content: start;
+  }
+  .hero-name {
+    grid-area: name;
+  }
+  .hero-card {
+    grid-area: card;
+  }
+  .hero-actions {
+    grid-area: actions;
+    /* centred on the card's last row */
+    margin-bottom: 5px;
+  }
+}
+/* the name: the kit's big-name type (display 700, tracking -0.05em, line
+   height .92), sized so the whole hero fits a short laptop */
+.site-hero .hero-name {
+  justify-self: start;
+  font-size: clamp(64px, min(22vw, 21svh), 176px);
+  line-height: 0.92;
+  letter-spacing: -0.05em;
+  /* room for the descenders of y and J */
+  padding-bottom: 0.08em;
+}
+.site-hero .hero-name > span {
+  display: block;
 }
 
-/* TeX's own typesetting (KaTeX, Computer Modern): the formula as it would
-   appear in a paper. KaTeX sets its size at 1.21em of this; the whole formula
-   is ~10.7em wide, so it never outgrows a phone's content width. */
-.hero-eq {
-  margin: 0;
-  font-size: min(clamp(30px, 7.2vw, 96px), calc((100vw - 2 * var(--space-5)) / 10.7));
-  line-height: 1;
-  color: var(--ink);
-  white-space: nowrap;
+.hero-card {
+  width: 100%;
+  max-width: 600px;
 }
-.hero-eq .katex-display {
-  margin: 0;
+.hero-actions {
+  margin-top: 0;
 }
-.hero-eq [data-k='1'] { --k: 1; }
-.hero-eq [data-k='2'] { --k: 2; }
-.hero-eq [data-k='3'] { --k: 3; }
-.hero-eq [data-k='4'] { --k: 4; }
-.hero-eq [data-k='5'] { --k: 5; }
-
-
-.lu-hero .hero-title {
-  margin: 0;
-  font-family: KaTeX_Main, 'Latin Modern Roman', 'Times New Roman', serif;
-  font-size: var(--title-size);
-  line-height: 1.1;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: var(--ink);
-  text-wrap: balance;
-}
-.hero-l {
-  display: inline-block;
+@media (max-width: 560px) {
+  .hero-actions .lu-btn {
+    flex: 1 1 0;
+  }
 }
 
-/* The M: the formula's Σ (TeX display size, KaTeX_Size2) turned a quarter
-   clockwise. Measured: the Σ's ink is 1.333em wide and 1.40em tall, centred in
-   its box both ways. Turned, its width becomes the M's height, so at 0.5124em
-   it stands exactly Computer Modern's cap height (0.683em) and is 0.717em wide.
-   The box is that ink plus CM's 0.029em side bearings, sitting on the baseline
-   with the glyph centred in it: feet on the baseline, top on the cap line.
-   The flying copy is the very same box and glyph. */
-.hero-m,
-.hero-fly {
-  width: 0.775em;
-  height: 0.683em;
-}
-.hero-m {
-  display: inline-block;
-  position: relative;
-  /* optical fit, measured against the neighbouring letters' ink at 2×: seat the
-     feet on the baseline and close the gap to "a" to the name's own spacing */
-  vertical-align: -0.01em;
-  margin-right: -0.025em;
-}
-.sigma-glyph {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  font-family: KaTeX_Size2, 'Times New Roman', serif;
-  font-size: 0.5124em;
-  font-weight: 400;
-  font-style: normal;
-  line-height: 1.2;
-  letter-spacing: 0;
-  white-space: nowrap;
-  transform: translate(-50%, -50%) rotate(90deg);
-}
-.hero-fly {
-  position: absolute;
-  font-size: var(--title-size);
-  color: var(--ink);
-  pointer-events: none;
+/* The name hands over to the nav: while the hero's name is on screen the
+   capsule doesn't repeat it, and "Mahyar" opens in the capsule as the name
+   scrolls under it (components/hero/NavHandoff.tsx). Hidden also means out of
+   the tab order. And no nav item is "current" until its section arrives —
+   the kit's scroll spy would otherwise default to Work. */
+.name-in-view .site-nav .lu-nav-brand {
+  max-width: 0;
+  padding: 0;
+  opacity: 0;
   visibility: hidden;
-  transform-origin: 50% 50%;
-  will-change: transform;
+}
+.hero-in-view .site-nav .lu-lens {
+  opacity: 0;
+}
+.hero-in-view .site-nav .lu-nav-item[aria-current='page'] {
+  color: var(--ink);
 }
 
+/* ---- The details card and the clock ---- */
 .hero-props {
   width: 100%;
   margin: 0;
@@ -388,117 +355,6 @@ img {
 @media (prefers-reduced-motion: reduce) {
   .clock-strip {
     transition: none;
-  }
-}
-.hero-actions {
-  justify-content: center;
-  margin-top: 0;
-}
-
-/* ---- The pinned, scripted form ---- */
-@media (prefers-reduced-motion: no-preference) and (min-height: 600px) {
-  .sigma .hero-stage {
-    /* one screen, then the scroll the opening plays over: morph 110 + hold 40
-       (components/hero/timeline.ts — keep in step) */
-    height: calc(100svh + 150svh);
-  }
-  .sigma .hero-sticky {
-    position: sticky;
-    top: 0;
-    height: 100svh;
-    min-height: 0;
-    padding: 0 var(--space-5);
-    /* the line sits a little above centre, with room for what comes beneath it */
-    grid-template-rows: 36fr auto 64fr;
-    place-items: center;
-  }
-  .sigma .hero-line {
-    grid-row: 2;
-  }
-
-  /* formula and name share one line; everything else hangs off it */
-  .sigma .hero-line > .hero-eq,
-  .sigma .hero-line > .hero-title {
-    grid-area: 1 / 1;
-    align-self: center;
-  }
-  .sigma .hero-below {
-    --r: clamp(0, (var(--p, 0) - 0.78) / 0.18, 1);
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-top: var(--space-6);
-    translate: -50% calc((1 - var(--r)) * 16px);
-    opacity: var(--r);
-    pointer-events: none;
-  }
-  .sigma .is-landed .hero-below {
-    pointer-events: auto;
-  }
-  /* whatever the scroll, a focused control is never invisible */
-  .sigma .hero-below:focus-within {
-    opacity: 1;
-    translate: -50% 0;
-    pointer-events: auto;
-  }
-
-  /* the other terms leave first, farthest from the Σ first: term k fades over
-     0.02 + (5 − k) × 0.045 → +0.12, so all are gone before the Σ sets off */
-  .sigma .hero-eq [data-k] {
-    --f: clamp(0, (var(--p, 0) - (0.02 + (5 - var(--k)) * 0.045)) / 0.12, 1);
-    opacity: calc(1 - var(--f));
-    filter: blur(calc(var(--f) * 6px));
-  }
-
-  /* the name writes itself once the M has nearly arrived, left to right */
-  .sigma .hero-l {
-    --lf: clamp(0, (var(--p, 0) - 0.54 - var(--i) * 0.02) / 0.14, 1);
-    opacity: var(--lf);
-    filter: blur(calc((1 - var(--lf)) * 6px));
-    transform: translateY(calc((1 - var(--lf)) * 0.12em));
-  }
-
-  /* One Σ on screen at a time, and the hand-overs happen only while it moves:
-     at rest before the slide, the formula's own Σ shows; while it slides and
-     turns, the flying copy; once it has arrived, the name's own M. So no
-     sub-pixel difference between the copies can ever show as a jump on a still
-     screen. SigmaMorph sets data-sigma-at on the hero. */
-  .sigma .hero-m {
-    visibility: hidden;
-  }
-  .sigma .is-live[data-sigma-at='move'] .hero-fly {
-    visibility: visible;
-  }
-  .sigma .is-live[data-sigma-at='move'] .hero-eq [data-sigma],
-  .sigma .is-live[data-sigma-at='name'] .hero-eq [data-sigma] {
-    visibility: hidden;
-  }
-  .sigma .is-live[data-sigma-at='name'] .hero-m {
-    visibility: visible;
-  }
-
-
-
-  /* The nav keeps quiet while the opening is on screen: no name until the
-     hero's name has formed (and out of the tab order while hidden), and no
-     section lens until a section is actually in view. */
-  .sigma body:has(.is-formula:not(.is-landed)) .site-nav .lu-nav-brand {
-    max-width: 0;
-    padding: 0;
-    opacity: 0;
-    visibility: hidden;
-  }
-  .sigma.hero-in-view .site-nav .lu-lens {
-    opacity: 0;
-  }
-  .sigma.hero-in-view .site-nav .lu-nav-item[aria-current='page'] {
-    color: var(--ink);
-  }
-}
-/* On shorter screens the line sits higher, so the landed hero still fits. */
-@media (prefers-reduced-motion: no-preference) and (min-height: 600px) and (max-height: 700px) {
-  .sigma .hero-sticky {
-    grid-template-rows: 20fr auto 80fr;
   }
 }
 
@@ -636,26 +492,26 @@ img {
 
 /* ---- The pinned story (desktop, with scripts and motion) ---- */
 @media (prefers-reduced-motion: no-preference) and (min-height: 600px) and (min-width: 761px) {
-  .sigma .about {
+  .pin .about {
     padding-block: 0;
   }
-  .sigma .about-stage {
+  .pin .about-stage {
     /* one screen, then 65svh of scroll per step */
     height: calc(100svh + var(--steps) * 65svh);
   }
-  .sigma .about-sticky {
+  .pin .about-sticky {
     position: sticky;
     top: 0;
     height: 100svh;
     display: grid;
     align-items: center;
   }
-  .sigma .story {
+  .pin .story {
     grid-template-rows: auto;
     align-items: center;
   }
   /* the frame: every step's photo stacked in one place */
-  .sigma .story-media {
+  .pin .story-media {
     display: block;
     position: relative;
     grid-column: 1;
@@ -665,7 +521,7 @@ img {
     aspect-ratio: 4 / 5;
     border-radius: var(--radius-lg);
   }
-  .sigma .story-fig {
+  .pin .story-fig {
     position: absolute;
     inset: 0;
     grid-row: auto;
@@ -675,12 +531,12 @@ img {
       opacity var(--dur-morph) var(--ease-settle),
       scale var(--dur-enter) var(--ease-settle);
   }
-  .sigma .story-fig.is-active {
+  .pin .story-fig.is-active {
     opacity: 1;
     scale: 1;
   }
   /* the coda: a contact sheet of every photo */
-  .sigma .story-fig.is-sheet {
+  .pin .story-fig.is-sheet {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
@@ -690,7 +546,7 @@ img {
     border-radius: 0;
     overflow: visible;
   }
-  .sigma .story-fig.is-sheet .story-ph {
+  .pin .story-fig.is-sheet .story-ph {
     position: relative;
     inset: auto;
     border-radius: var(--radius-md);
@@ -698,30 +554,30 @@ img {
     background: var(--fill-muted);
     box-shadow: var(--shadow-glass);
   }
-  .sigma .story-fig.is-sheet .story-ph:first-child {
+  .pin .story-fig.is-sheet .story-ph:first-child {
     grid-row: 1 / 3;
   }
 
   /* the text column: head, the step index, then one step's words at a time */
-  .sigma .story-texts {
+  .pin .story-texts {
     display: grid;
     grid-column: 2;
     grid-row: 1;
     align-content: center;
     row-gap: var(--space-6);
   }
-  .sigma .story-head {
+  .pin .story-head {
     grid-column: 1;
     grid-row: 1;
   }
   /* the kit's Liquid Glass segmented control, its lens following the story */
-  .sigma .story-seg {
+  .pin .story-seg {
     display: inline-flex;
     grid-row: 2;
     justify-self: start;
   }
-  .sigma .story-text,
-  .sigma .story-text.is-coda {
+  .pin .story-text,
+  .pin .story-text.is-coda {
     grid-column: 1;
     grid-row: 3;
     margin: 0;
@@ -732,13 +588,13 @@ img {
       translate var(--dur-morph) var(--ease-settle);
     pointer-events: none;
   }
-  .sigma .story-text.is-active {
+  .pin .story-text.is-active {
     opacity: 1;
     translate: 0 0;
     pointer-events: auto;
   }
   /* the step's kicker is the index above it */
-  .sigma .story-text .lu-kicker {
+  .pin .story-text .lu-kicker {
     display: none;
   }
 }

@@ -33,29 +33,20 @@ export const identity: Identity = {
 };
 
 /**
- * Hero — the Lucent page hero: name, then key/value properties, then two actions.
- * The properties ARE the pitch (Lucent Hero guideline): no paragraph beside them.
+ * Hero (2026-09-23): his name set huge in ink on two lines, then the details as
+ * an iOS card and two actions. The properties ARE the pitch (Lucent Hero
+ * guideline): no paragraph beside them. He turned down the magnifier lens over
+ * the name and the dot canvas behind it.
  *
- * Per the 2026-09-22 content decision the facts are this file's, not the kit's
- * sample copy: no availability status, no graduation year, Aurora rather than
- * "Toronto area". The status slot shows the role he is actually in.
+ * The facts are this file's, not the kit's sample copy: no availability status,
+ * no graduation year, Aurora rather than "Toronto area". The status slot shows
+ * the role he is actually in, as plain text — in Lucent a green dot means
+ * "Available for work", which he is not.
  *
  * `id` names the property so the design can give it a glyph; the words are content.
  */
 export const hero = {
   name: identity.fullName,
-
-  /**
-   * The opening: the neuron formula his mark comes from (Lucent BrandMark:
-   * "y = σ(Σ wᵢxᵢ + b): sum, then activate"). On scroll the Σ turns into the M
-   * and lands at the start of his name. The formula itself is typeset in the
-   * component; these are its words.
-   */
-  formula: {
-    /** What a screen reader hears instead of the typeset formula. */
-    spoken: 'y equals sigma of the sum of w i times x i, plus b',
-    // No caption and no scroll cue under it (Mahyar, 2026-09-22): the formula stands alone.
-  },
 
   properties: [
     { id: 'role', label: 'Role', value: identity.roleTitle },

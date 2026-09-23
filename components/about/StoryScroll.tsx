@@ -14,13 +14,26 @@ import { useEffect } from 'react';
  *
  * When the section rests as a plain sequence (phones, reduced motion, no
  * script) nothing is pinned and every step simply shows.
+ *
+ * The pinned layout is html.pin: app/layout.tsx sets it before first paint
+ * where the stage can run, and this keeps it in step with the screen. The
+ * story says it is alive with `is-live`; without that, the layout's failsafe
+ * takes `pin` away so no step can stay hidden.
  */
+const STAGE = '(prefers-reduced-motion: no-preference) and (min-height: 600px)';
+
 export default function StoryScroll() {
   useEffect(() => {
     const section = document.querySelector<HTMLElement>('[data-story]');
     const stage = section?.querySelector<HTMLElement>('.about-stage');
     const sticky = section?.querySelector<HTMLElement>('.about-sticky');
     if (!section || !stage || !sticky) return;
+    const root = document.documentElement;
+    const mq = matchMedia(STAGE);
+    const onStage = () => root.classList.toggle('pin', mq.matches);
+    onStage();
+    mq.addEventListener('change', onStage);
+    section.classList.add('is-live');
     const parts = [...section.querySelectorAll<HTMLElement>('[data-step]')];
     const steps = new Set(parts.map((el) => el.dataset.step)).size;
     /* the Liquid Glass segmented control: one item per chapter (not the coda) */
@@ -79,16 +92,18 @@ export default function StoryScroll() {
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', reset);
     const mo = new MutationObserver(reset);
-    /* the pinned layout comes and goes with html.sigma */
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    /* the pinned layout comes and goes with html.pin */
+    mo.observe(root, { attributes: true, attributeFilter: ['class'] });
     schedule();
 
     return () => {
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', reset);
+      mq.removeEventListener('change', onStage);
       seg?.removeEventListener('change', onChoose);
       mo.disconnect();
       if (raf) cancelAnimationFrame(raf);
+      section.classList.remove('is-live');
     };
   }, []);
 
