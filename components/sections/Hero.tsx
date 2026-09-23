@@ -15,12 +15,14 @@ const GLYPH: Record<(typeof hero.properties)[number]['id'], GlyphName> = {
 };
 
 /**
- * The opening: his name set huge in ink on two lines, then the details as an
- * iOS card and the two actions.
+ * The opening: his name set huge in ink on two lines with its two actions
+ * right under it, and the details as an iOS card: beside them on laptops and
+ * up, below them on narrower screens (styles/site.css). The markup follows
+ * that reading order: name, actions, card.
  *
  * The name comes in like a keynote title: each line rises from behind a clean
- * edge at its foot, then the card and buttons follow (styles/site.css). The
- * page reads the same without scripts.
+ * edge at its foot, then the buttons and the card follow. The page reads the
+ * same without scripts.
  */
 export default function Hero() {
   const properties: HeroProperty[] = hero.properties.map((p) => {
@@ -50,16 +52,16 @@ export default function Hero() {
             <span>{last.join(' ')}</span>
           </span>
         </h1>
-        <div className="hero-card" data-enter="" style={enterStyle(6)}>
-          <Properties items={properties} className="hero-props" tiles />
-        </div>
-        <div className="lu-hero-actions hero-actions" data-enter="" style={enterStyle(7)}>
+        <div className="lu-hero-actions hero-actions" data-enter="" style={enterStyle(6)}>
           <Button variant="filled" href={primary.href}>
             {primary.label}
           </Button>
           <Button variant="glass" href={secondary.href}>
             {secondary.label}
           </Button>
+        </div>
+        <div className="hero-card" data-enter="" style={enterStyle(7)}>
+          <Properties items={properties} className="hero-props" tiles />
         </div>
       </div>
       <NavHandoff />

@@ -311,8 +311,9 @@ html:not(.js) .site-theme {
 }
 
 /* ---------- Hero (components/sections/Hero.tsx) ----------
-   His name set huge in ink on two lines, then the iOS details card and the
-   two actions. Plain ground: no lens and no dot canvas (Mahyar, 2026-09-23).
+   His name set huge in ink on two lines with its two actions right under
+   it, and the iOS details card beside them, or under them where the screen
+   is narrow. Plain ground: no lens and no dot canvas (Mahyar, 2026-09-23).
    Everything rises in once with the kit's entrance; nothing is pinned, and
    the page scrolls on into About. */
 .lu-hero.site-hero {
@@ -322,44 +323,35 @@ html:not(.js) .site-theme {
   box-sizing: border-box;
   padding-block: calc(env(safe-area-inset-top, 0px) + 112px) var(--space-8);
 }
+/* on phones the theme toggle floats in the bottom-right corner (44px, space-5
+   up): the hero ends clear of it */
+@media (max-width: 720px) {
+  .lu-hero.site-hero {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-5) * 2 + 44px);
+  }
+}
 /* fill the row up to the kit's measure, so the hero lines up with the
    sections below at every width (auto margins alone would shrink it) */
 .site-hero > .lu-hero-inner {
   flex: 1 1 auto;
   min-width: 0;
 }
+/* Stacked, on phones and tablets: the name, its actions, then the card a
+   step further down, as a group of its own. The card is as wide as its
+   longest value needs to stay on one line (the Studying row, about 390px in
+   Inter) past the 120px label column. */
 .hero-grid {
+  --hero-card: 560px;
   display: grid;
-  gap: var(--space-6);
-}
-/* the buttons sit beside the card only where both fit without the card's
-   values wrapping; narrower screens stack them under it */
-@media (min-width: 1180px) {
-  .hero-grid {
-    grid-template-columns: minmax(0, 600px) auto;
-    grid-template-areas: 'name name' 'card actions';
-    column-gap: var(--space-7);
-    row-gap: var(--space-7);
-    align-items: end;
-    justify-content: start;
-  }
-  .hero-name {
-    grid-area: name;
-  }
-  .hero-card {
-    grid-area: card;
-  }
-  .hero-actions {
-    grid-area: actions;
-    /* centred on the card's last row */
-    margin-bottom: 5px;
-  }
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
+  row-gap: var(--space-6);
 }
 /* the name: the kit's big-name type (display 700, tracking -0.05em, line
-   height .92), sized so the whole hero fits a short laptop */
+   height .92), as wide as a phone allows and short enough that a tablet on
+   its side still shows the card */
 .site-hero .hero-name {
-  justify-self: start;
-  font-size: clamp(64px, min(22vw, 21svh), 176px);
+  font-size: clamp(64px, min(24vw, 21svh), 176px);
   line-height: 0.92;
   letter-spacing: -0.05em;
   /* room for the descenders of y and J */
@@ -372,8 +364,8 @@ html:not(.js) .site-theme {
 /* The keynote title: each line rises from behind a clean edge at its foot
    (just under the descenders), the second 120ms after the first, half again
    as long as the kit's entrance so the name settles rather than pops; the
-   card and buttons follow as it lands (--enter-i 6 and 7). It plays once per
-   load, and reduced motion gets a 150ms fade instead. */
+   buttons, then the card, follow as it lands (--enter-i 6 and 7). It plays
+   once per load, and reduced motion gets a 150ms fade instead. */
 @media (prefers-reduced-motion: no-preference) {
   .site-hero .hero-line {
     clip-path: inset(-0.4em -0.4em -0.22em -0.4em);
@@ -394,16 +386,54 @@ html:not(.js) .site-theme {
   }
 }
 
-.hero-card {
-  width: 100%;
-  max-width: 600px;
-}
 .hero-actions {
   margin-top: 0;
 }
+.hero-card {
+  width: 100%;
+  max-width: var(--hero-card);
+  margin-top: var(--space-4);
+}
+/* Split, on laptops and up: the name with its actions under it on the left,
+   the card on the right, centred against them and flush with the page's
+   right edge, so neither half of the first screen stands empty. The name
+   takes the width the card leaves (100cqi is this grid's width; "Mahyar" is
+   about 3.2em wide), so the gap between them holds at every width and the
+   whole hero fits a 1280x720 screen. Below 1180px that would shrink the name
+   under the card, so it stacks instead. */
+@media (min-width: 1180px) {
+  .hero-grid {
+    container-type: inline-size;
+    grid-template-columns: auto minmax(0, var(--hero-card));
+    grid-template-areas: 'name card' 'actions card';
+    justify-content: space-between;
+    column-gap: var(--space-7);
+  }
+  .site-hero .hero-name {
+    grid-area: name;
+    font-size: min(176px, (100cqi - var(--hero-card) - var(--space-8)) / 3.2);
+  }
+  .hero-actions {
+    grid-area: actions;
+  }
+  .hero-card {
+    grid-area: card;
+    align-self: center;
+    margin-top: 0;
+  }
+}
+/* on phones the two buttons share the row, still at 320px */
 @media (max-width: 560px) {
+  .hero-actions {
+    justify-self: stretch;
+  }
   .hero-actions .lu-btn {
     flex: 1 1 0;
+  }
+}
+@media (max-width: 359px) {
+  .hero-actions .lu-btn {
+    padding-inline: var(--space-4);
   }
 }
 
@@ -451,7 +481,7 @@ html:not(.js) .site-theme {
 .lu-props.hero-props > div {
   position: relative;
   box-sizing: border-box;
-  grid-template-columns: 140px minmax(0, 1fr);
+  grid-template-columns: 120px minmax(0, 1fr);
   min-height: 48px;
   margin: 0;
   padding: 8px var(--space-4);
