@@ -182,18 +182,29 @@ html:not(.js) .site-theme {
   visibility: hidden;
 }
 /* At phone width the name gives way so four items fit on one line with no
-   horizontal scroll (390px bar) — the same trade the compact state makes. */
+   horizontal scroll (390px bar) — the same trade the compact state makes. The
+   items tighten in steps so Contact (and the lens on it) stays inside the
+   capsule down to 320px, in Inter too, which runs wider than SF. The narrow
+   padding holds when compact: the kit's compact padding (12px) is wider. */
 @media (max-width: 560px) {
   .site-nav .lu-nav-brand {
     display: none;
   }
-  .site-nav .lu-nav-item {
+  .site-nav .lu-nav-item,
+  .site-nav .lu-nav.is-compact .lu-nav-item {
     padding-inline: 11px;
   }
 }
+@media (max-width: 374px) {
+  .site-nav .lu-nav-item,
+  .site-nav .lu-nav.is-compact .lu-nav-item {
+    padding-inline: 9px;
+  }
+}
 @media (max-width: 359px) {
-  .site-nav .lu-nav-item {
-    padding-inline: 7px;
+  .site-nav .lu-nav-item,
+  .site-nav .lu-nav.is-compact .lu-nav-item {
+    padding-inline: 6px;
     font-size: 14px;
   }
 }
