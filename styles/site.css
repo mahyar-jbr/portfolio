@@ -193,6 +193,48 @@ html:not(.js) .site-theme {
     font-size: 14px;
   }
 }
+/* Hover (components/lucent/NavHover.tsx): a soft pill in the kit's hover fill,
+   with the lens's shape and inset, under the item the pointer is on. It paints
+   beneath the kit's ink lens, so on the current item the lens covers it:
+   z-index -1 inside the capsule, which is isolated so that holds even where
+   the glass falls back to a solid fill. It fades in as a hover fill does and
+   out as an exit does. */
+.site-nav .lu-nav {
+  isolation: isolate;
+}
+.site-nav-hover {
+  position: absolute;
+  z-index: -1;
+  top: 6px;
+  bottom: 6px;
+  left: 0;
+  width: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent-tint);
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-exit) var(--ease-exit);
+}
+.site-nav-hover.is-shown {
+  opacity: 1;
+  transition: opacity var(--dur-jelly) var(--ease-settle);
+}
+.site-nav .lu-nav.is-compact .site-nav-hover {
+  top: 4px;
+  bottom: 4px;
+}
+@media (hover: none), (pointer: coarse) {
+  .site-nav-hover {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-nav-hover,
+  .site-nav-hover.is-shown {
+    transition: opacity 150ms ease;
+  }
+}
 
 /* ---------- Scripts blocked (kit bar: "everything is visible at rest, only motion is lost") ----------
    Two kit components lean on the runtime for layout, so they get a resting
