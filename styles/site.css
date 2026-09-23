@@ -86,6 +86,83 @@ img {
 .lu-toast-region {
   top: calc(env(safe-area-inset-top, 0px) + 84px);
 }
+/* ---------- Theme toggle (components/lucent/ThemeToggle.tsx) ----------
+   The kit's glass icon button, fixed in the top-right corner level with the
+   nav capsule; on phones, where the capsule takes the width, it floats in the
+   bottom-right corner instead. It only appears when scripts run. */
+.site-theme {
+  position: fixed;
+  z-index: var(--layer-nav);
+  top: calc(env(safe-area-inset-top, 0px) + 28px);
+  right: calc(env(safe-area-inset-right, 0px) + 28px);
+  color: var(--ink);
+}
+html:not(.js) .site-theme {
+  display: none;
+}
+@media (max-width: 720px) {
+  .site-theme {
+    top: auto;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-5));
+    right: calc(env(safe-area-inset-right, 0px) + var(--space-4));
+  }
+}
+.theme-glyph {
+  width: 22px;
+  height: 22px;
+  overflow: visible;
+}
+/* The sun: a small disc and its rays. The moon: the disc grows full and a
+   shadow slides across it while the rays turn away. The glyph follows the
+   root's theme, set or from the system. */
+.theme-body,
+.theme-rays {
+  transform-origin: 12px 12px;
+}
+.theme-body {
+  transform: scale(0.5);
+  transition: transform var(--dur-morph) var(--ease-spring);
+}
+.theme-bite {
+  transform: translate(8px, -8px);
+  transition: transform var(--dur-morph) var(--ease-settle);
+}
+.theme-rays {
+  transition: transform var(--dur-morph) var(--ease-spring), opacity var(--dur-jelly) var(--ease-settle);
+}
+:root[data-theme='dark'] .theme-body,
+:root[data-theme='dark'] .theme-bite {
+  transform: none;
+}
+:root[data-theme='dark'] .theme-rays {
+  transform: rotate(-90deg) scale(0.4);
+  opacity: 0;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .theme-body,
+  :root:not([data-theme='light']) .theme-bite {
+    transform: none;
+  }
+  :root:not([data-theme='light']) .theme-rays {
+    transform: rotate(-90deg) scale(0.4);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .theme-body,
+  .theme-bite,
+  .theme-rays {
+    transition: none;
+  }
+}
+/* The new theme spreads from the button as a circle; the kit's theme
+   crossfade is replaced for this one transition. */
+.theme-reveal::view-transition-old(root),
+.theme-reveal::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 /* The lens is aria-hidden decoration: it must never take a click meant for an item. */
 .site-nav .lu-lens {
   pointer-events: none;

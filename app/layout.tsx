@@ -4,6 +4,7 @@ import '@/design-system/lucent/bundle.css';
 import '@/styles/tokens.css';
 import '@/styles/site.css';
 import NavBar from '@/components/lucent/NavBar';
+import ThemeToggle from '@/components/lucent/ThemeToggle';
 import LucentRuntime from '@/components/lucent/Runtime';
 import { identity, meta, sections } from '@/content/site';
 
@@ -45,6 +46,8 @@ export const viewport: Viewport = {
 /* Runs in <head>, before first paint, so the home page lays out in its final
    form from the first frame instead of switching after hydration:
    - `js`: scripts run.
+   - `data-theme`: the light or dark theme the visitor chose with the toggle
+     (components/lucent/ThemeToggle.tsx), so a remembered choice never flashes.
    - `name-in-view` (home only): the hero's name is on screen, so the nav
      capsule doesn't repeat it (components/hero/NavHandoff.tsx keeps it true).
    - `pin`: the About story can pin and step (motion allowed, screen tall
@@ -56,6 +59,7 @@ export const viewport: Viewport = {
      would restore to, and drops a leftover #section from in-site navigation.
      A first visit to a /#section link still goes straight to it. */
 const BOOT = `(function(){var d=document.documentElement;d.classList.add('js');
+try{var t=localStorage.getItem('lucent:theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t);}catch(e){}
 try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&location.pathname==='/'){history.scrollRestoration='manual';if(location.hash)history.replaceState(history.state,'',location.pathname+location.search);addEventListener('load',function(){scrollTo(0,0);setTimeout(function(){history.scrollRestoration='auto';},0);});}}catch(e){}
 if(location.pathname==='/')d.classList.add('name-in-view');
 if(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference) and (min-height: 600px)').matches)d.classList.add('pin');
@@ -84,6 +88,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           Skip to content
         </a>
         <NavBar brand={identity.fullName.split(' ')[0]} items={navItems} />
+        <ThemeToggle />
         <main id="main">{children}</main>
         <footer className="lu-footer">
           © {new Date().getFullYear()} {identity.fullName}
