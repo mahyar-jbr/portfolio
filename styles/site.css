@@ -1012,7 +1012,8 @@ a:hover > svg.site-out {
    LLM Agents") runs to four lines at the kit's 24px on a card under 400px wide,
    and its caption buries the art and climbs under the status label. Cards get
    that narrow on phones and in the two columns just past the 720px break. Only
-   that card gives, measured on its own width: a smaller name under 400px, no
+   that card gives, measured on its own width: a smaller name under 400px (20px:
+   the kit's 22px small title still takes three lines on a 390px phone), no
    meta line under 340px. On phones under 350px the name still takes four lines,
    and there, where the card stands alone in its row, it goes square. Every other
    card keeps the kit's 4:3 and 24px. */
