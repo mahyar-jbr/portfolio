@@ -126,14 +126,14 @@ export interface TechnicalDecision {
  * the design can pick a glyph; the words are `label`.
  *
  * live      — in production, people use it
- * stealth   — unreleased; the product's name and screenshots are withheld
+ * soon      — named, with nothing to show yet
  * progress  — underway, no result yet
  * research  — a finished study
  * hackathon — built under a hackathon clock
  */
 export interface ProjectStatus {
   label: string;
-  kind: 'live' | 'stealth' | 'progress' | 'research' | 'hackathon';
+  kind: 'live' | 'soon' | 'progress' | 'research' | 'hackathon';
 }
 
 /** A real screenshot of the product. Never a mockup. */
@@ -163,7 +163,7 @@ interface ProjectCard {
   slug: string;
   name: string;
   kind: ProjectKind;
-  /** Ordering on the home page. The lowest is the featured card. */
+  /** Ordering on the home page. With an odd count, the lowest is the featured card. */
   order: number;
   status: ProjectStatus;
   /** The one line under the name on the card. Short: it sits in a glass caption. */
@@ -172,13 +172,17 @@ interface ProjectCard {
 }
 
 /**
- * A project that is not public yet. It appears only as the stealth card, and
- * opening it shows a short quick look instead of a page. Nothing here may name
- * the product, show it, or describe it closely enough to identify it.
+ * A project that is named on the site but has nothing to show yet. It appears
+ * only as a card that opens nothing: no page, no link, no screenshots, no
+ * details. The card line and year are optional because some of these have
+ * neither yet, and neither may be invented to fill the gap.
  */
-export interface StealthProject extends ProjectCard {
+export interface SoonProject extends Omit<ProjectCard, 'cardLine' | 'year'> {
   page: 'none';
-  quickLook: string[];
+  cardLine?: string;
+  year?: string;
+  /** Lay the kit's stealth frost over abstract art, for a product whose look stays private until launch. */
+  frost?: boolean;
 }
 
 /**
@@ -236,7 +240,7 @@ export interface CaseStudyProject extends ProjectCard {
   };
 }
 
-export type Project = CaseStudyProject | BriefProject | StealthProject;
+export type Project = CaseStudyProject | BriefProject | SoonProject;
 
 export interface SkillGroup {
   label: string;

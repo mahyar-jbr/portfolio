@@ -51,7 +51,7 @@ layout, and layout can be reworked without re-typing facts.
 | `site.ts` | Identity, hero properties, section heads, SEO metadata, contact tiles, skills |
 | `experience.ts` | Roles, education, credentials |
 | `about.ts` | About narrative and highlights (not on the Lucent home page; kept for reuse) |
-| `projects.ts` | The five project cards: three case studies, one brief page (work underway), one stealth card |
+| `projects.ts` | The six project cards: three case studies, one brief page (work underway), two soon cards (named, nothing to show yet) |
 | `art.ts` | Gallery pieces and the Godfall series, with each image's pixel size |
 
 ### Every claim is sourced
@@ -71,8 +71,9 @@ Rules that follow from that, and should survive any rewrite:
 - No number ships without a `source`.
 - Dead deploys are data, not memory — `ExternalLink.status` marks them, so a broken demo
   can never be linked by accident.
-- An unreleased product appears only as the stealth card: no name, no screenshots
-  (`StealthProject`). MoneyMind's verified write-up is kept as `heldBack` for launch day.
+- Work with nothing to show yet appears only as a soon card (`SoonProject`): a name and a
+  status, no page, no screenshots, no details. MoneyMind's verified write-up is kept,
+  unrendered, as `heldBack` for launch day.
 - "Multi-agent" describes exactly one project here (Maridian, six verified agents). It is
   not a claim about the author.
 

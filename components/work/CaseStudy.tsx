@@ -23,7 +23,7 @@ import type { BriefProject, CaseStudyProject, ExternalLink, ProjectStatus, Shot 
 
 const STATUS_GLYPH: Record<ProjectStatus['kind'], GlyphName> = {
   live: 'store',
-  stealth: 'lock',
+  soon: 'spark',
   progress: 'flask',
   research: 'flask',
   hackathon: 'timer',
@@ -175,6 +175,7 @@ function Points({ glyph, items }: { glyph: GlyphName; items: { title: string; bo
   );
 }
 
+/** The next project with a page. Soon cards have none, so they are never next. */
 function NextProject({ current }: { current: string }) {
   const i = pagedProjects.findIndex((p) => p.slug === current);
   const next = pagedProjects[(i + 1) % pagedProjects.length];

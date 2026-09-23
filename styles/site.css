@@ -882,9 +882,16 @@ a:hover > svg.site-out {
   gap: var(--space-2);
   flex-wrap: wrap;
 }
+/* The kit's filter hides a card with the hidden attribute, but .lu-card's own
+   display: block outranks the browser's [hidden] rule, so every filtered-out card
+   came back at full opacity the moment its exit animation ended. */
+.lu-card[hidden] {
+  display: none;
+}
 
 /* Card art that isn't a screenshot: a diagram in ink on the warm grey dot canvas
-   (kit: .fh + .graph), or the stealth card's abstract bars (kit: .bars). */
+   (kit: .fh + .graph), the frosted soon card's abstract bars (kit: .bars), or an
+   unfrosted soon card's own name on the plain raised ground. */
 .lu-card-art.art-canvas {
   background: var(--surface-raised);
   color: var(--ink);
@@ -910,6 +917,38 @@ a:hover > svg.site-out {
 }
 .art-bars i:last-child {
   opacity: 0.9;
+}
+/* The name in the hero's type (display 700, tracking -0.05em), sized to the card
+   and centred in the space above the caption. Faint, so it reads as ground, not
+   a second title. */
+.art-name {
+  position: absolute;
+  inset: 0 0 30%;
+  display: grid;
+  place-items: center;
+  container-type: inline-size;
+}
+.art-name span {
+  font-family: var(--font-display);
+  font-size: 19cqi;
+  line-height: 1;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  white-space: nowrap;
+  opacity: 0.08;
+}
+
+/* A soon card opens nothing, so it mustn't answer the pointer as if it would:
+   no lift, no deeper shadow, no art drift, no press dip. */
+.lu-card.is-soon:hover {
+  --lift: 0px;
+  box-shadow: var(--shadow-glass);
+}
+.lu-card.is-soon:hover .lu-card-art {
+  transform: none;
+}
+.lu-card.is-soon:active {
+  --lscale: 1;
 }
 
 /* ---------- Case study header (kit CaseStudy template) ---------- */
@@ -967,6 +1006,22 @@ a:hover > svg.site-out {
 @media (max-width: 720px) {
   .case-next .lu-card {
     aspect-ratio: 4 / 3;
+  }
+}
+/* A 4:3 card under about 350px wide has no room for a long name: "Graph-Native
+   Retrieval for Clinical LLM Agents" wraps to four lines and its caption climbs
+   under the status label. Cards get that narrow on small phones and in the two
+   columns just past the 720px break; there they go square. */
+@media (max-width: 380px) {
+  .lu-card,
+  .lu-card.is-feature,
+  .case-next .lu-card {
+    aspect-ratio: 1;
+  }
+}
+@media (min-width: 721px) and (max-width: 800px) {
+  .lu-grid > .lu-card:not(.is-feature) {
+    aspect-ratio: 1;
   }
 }
 

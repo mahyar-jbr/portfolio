@@ -1,12 +1,12 @@
-import type { BriefProject, CaseStudyProject, Project, StealthProject } from './types';
+import type { BriefProject, CaseStudyProject, Project, SoonProject } from './types';
 
 /**
  * The projects on the site, in display order (`order`).
  *
  * BowlWise, Maridian and Tactical DNA are written from verified extracts — every
  * claim traces to a file:line citation in `content/sources/*_PORTFOLIO_EXTRACT.md`.
- * The stealth product and Graph RAG for FHIR carry only what Mahyar has stated,
- * and no results.
+ * MoneyMind's card, Realest and Graph-Native Retrieval carry only what Mahyar has
+ * stated, and no results.
  *
  * Editorial standard: present the work as impressively as the facts allow, and
  * never further. On BowlWise that costs nothing — the verified numbers came back
@@ -187,10 +187,10 @@ const bowlwise: CaseStudyProject = {
 // Written from content/sources/*_PORTFOLIO_EXTRACT.md (content/sources/PROJECT_EXTRACTION_PROMPT.md).
 // ---------------------------------------------------------------------------
 
-// HELD BACK (2026-09-22). MoneyMind is becoming a co-founded product and is in
-// stealth: per the Lucent kit, its name, screenshots and characters stay off every
-// public page until launch. It appears on the site only as `stealth` below. This
-// verified write-up is kept, unrendered, for the day it launches.
+// HELD BACK (2026-09-22). MoneyMind is becoming a co-founded product. Since
+// 2026-09-23 Mahyar shows it by name, but only as the "Coming soon" card
+// `moneymind` below: its screenshots, characters and details stay off every public
+// page until launch. This verified write-up is kept, unrendered, for that day.
 export const heldBack: CaseStudyProject = {
   slug: 'moneymind',
   name: 'MoneyMind',
@@ -409,7 +409,7 @@ const tacticalDna: CaseStudyProject = {
   kind: 'research',
   page: 'case-study',
   depth: 'standard',
-  order: 5,
+  order: 6,
   // Source files dated 2026-05-13 to 2026-06-09 (TacticalDNA extract §git).
   year: '2026',
   status: { label: 'Research', kind: 'research' },
@@ -511,23 +511,34 @@ const tacticalDna: CaseStudyProject = {
 };
 
 /**
- * The co-founded product MoneyMind grew into. Stealth card only: no name, no
- * screenshots, no description close enough to identify it (Lucent kit, MoneyMind
- * asset group). The card opens a quick look rather than a page.
+ * The co-founded product MoneyMind grew into, shown by name since 2026-09-23 as a
+ * low-key "Coming soon" card and nothing more. The frost stays over abstract art
+ * (Lucent kit, MoneyMind asset group): never a screenshot, and no page, so
+ * /work/moneymind 404s until `heldBack` replaces this at launch.
  */
-const stealth: StealthProject = {
-  slug: 'stealth-fintech',
-  name: 'Stealth fintech',
+const moneymind: SoonProject = {
+  slug: 'moneymind',
+  name: 'MoneyMind',
   kind: 'product',
   page: 'none',
   order: 2,
   year: '2026',
-  status: { label: 'In stealth', kind: 'stealth' },
-  cardLine: 'An AI money coach, co-founded',
-  quickLook: [
-    'An AI money coach, co-founded and in development now.',
-    'The name, the product and the details stay private until it launches.',
-  ],
+  status: { label: 'Coming soon', kind: 'soon' },
+  cardLine: 'An AI money coach',
+  frost: true,
+};
+
+/**
+ * A prototype whose details Mahyar will send (2026-09-23). Until then the card is
+ * its name and a status, nothing else: no line, no year, no stack, no claims.
+ */
+const realest: SoonProject = {
+  slug: 'realest',
+  name: 'Realest',
+  kind: 'prototype',
+  page: 'none',
+  order: 3,
+  status: { label: 'Details soon', kind: 'soon' },
 };
 
 /**
@@ -536,15 +547,19 @@ const stealth: StealthProject = {
  * and nothing here may claim an outcome until one exists.
  */
 const graphRag: BriefProject = {
+  // Renamed from "Graph RAG for FHIR" (2026-09-23); the slug stays so links hold.
   slug: 'graph-rag-fhir',
-  name: 'Graph RAG for FHIR',
+  name: 'Graph-Native Retrieval for Clinical LLM Agents',
   kind: 'research',
   page: 'brief',
-  order: 3,
+  order: 5,
   year: '2026',
   status: { label: 'In progress', kind: 'progress' },
   cardLine: 'Directed studies, York Data Mining Lab',
-  lede: 'Graph-native retrieval for clinical LLM agents, evaluated on FHIR-AgentBench.',
+  // The name already says "graph-native retrieval for clinical LLM agents"; the lede
+  // says where and what instead, from the facts below. No outcome until there is one.
+  lede:
+    'Directed studies at the York Data Mining Lab: a graph traversal tool over FHIR references, to be evaluated on FHIR-AgentBench.',
   role: 'Directed studies, EECS 4070',
   facts: [
     { label: 'Lab', value: 'York Data Mining Lab' },
@@ -559,9 +574,11 @@ const graphRag: BriefProject = {
 
 /**
  * Display order is `order`, derived rather than hand-maintained — a hand-kept list
- * once silently dropped Maridian. The lowest order is the featured card.
+ * once silently dropped Maridian. Six cards, two of each kind, so the grid reads in
+ * pairs by kind (products, prototypes, research) and no card is featured; with an
+ * odd count the lowest order would span both columns.
  */
-export const projects: Project[] = [bowlwise, stealth, graphRag, maridian, tacticalDna].sort(
+export const projects: Project[] = [bowlwise, moneymind, realest, maridian, graphRag, tacticalDna].sort(
   (a, b) => a.order - b.order,
 );
 

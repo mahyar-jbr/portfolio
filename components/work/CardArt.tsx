@@ -4,17 +4,19 @@ import type { Project } from '@/content/types';
 /**
  * What fills a project card. The kit's rule: real screenshots where they exist,
  * cropped from the top; otherwise a diagram of the idea rather than a stock
- * picture — and for unreleased work, abstract shapes only (they sit under the
- * stealth frost, and must never be a blurred real screenshot).
+ * picture. A soon card (nothing to show yet) gets art that says nothing about
+ * the work: abstract shapes under the frost (never a blurred real screenshot),
+ * or, unfrosted, just its own name, large and faint.
  *
  * Diagrams are monochrome line art in ink on the dot canvas, like the kit's
  * graph-research card.
  */
 
-/** The art container's own classes: diagrams sit on the dot canvas. */
+/** The art container's own classes: diagrams sit on the dot canvas, a soon card's name on the plain raised ground. */
 export function cardArtClass(project: Project): string | undefined {
   if (project.page === 'case-study' && project.shots?.length) return undefined;
-  if (project.page === 'none') return undefined;
+  // frosted: the kit's .is-stealth card gives the art its raised ground
+  if (project.page === 'none') return project.frost ? undefined : 'art-canvas';
   return 'art-canvas lu-wall';
 }
 
@@ -23,7 +25,7 @@ export default function CardArt({ project, priority }: { project: Project; prior
     const shot = project.shots[0];
     return <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 720px) 100vw, 1152px" priority={priority} />;
   }
-  if (project.page === 'none') return <Bars />;
+  if (project.page === 'none') return project.frost ? <Bars /> : <NameArt name={project.name} />;
   switch (project.slug) {
     case 'graph-rag-fhir':
       return <Graph />;
@@ -36,13 +38,26 @@ export default function CardArt({ project, priority }: { project: Project; prior
   }
 }
 
-/** Stealth: a rising bar chart, abstract enough to say "money" and nothing else (kit). */
+/** Frosted soon card: a rising bar chart, abstract enough to say "money" and nothing else (kit). */
 function Bars() {
   return (
     <div className="art-bars" aria-hidden="true">
       {[48, 44, 56, 64, 74, 88].map((h, i) => (
         <i key={i} style={{ height: `${h}%` }} />
       ))}
+    </div>
+  );
+}
+
+/**
+ * Unfrosted soon card: the name set large and faint in the hero's type, so the
+ * art claims nothing about a project whose details haven't arrived. Decorative:
+ * the caption already says the name.
+ */
+function NameArt({ name }: { name: string }) {
+  return (
+    <div className="art-name" aria-hidden="true">
+      <span>{name}</span>
     </div>
   );
 }
