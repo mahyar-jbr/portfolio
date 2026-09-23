@@ -23,6 +23,8 @@ const GLYPHS = {
   /* navigation (kit) */
   'arrow-right': '<path d="M5 12h14M13 6l6 6-6 6"/>',
   'arrow-left': '<path d="M19 12H5M11 6l-6 6 6 6"/>',
+  /* a link to another site: the contact tile's arrow out (kit), on the 24 grid */
+  'arrow-up-right': '<path d="M7.5 16.5l9-9M9 7.5h7.5V15"/>',
   'chevron-down': '<path d="M6 9l6 6 6-6"/>',
   check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
   /* case-study facts (kit: person, calendar) */
@@ -45,7 +47,16 @@ const GLYPHS = {
 export type GlyphName = keyof typeof GLYPHS;
 
 /** Status labels and navigation arrows use the kit's heavier 2.2 stroke. */
-const HEAVY = new Set<GlyphName>(['store', 'lock', 'flask', 'timer', 'arrow-right', 'arrow-left', 'check']);
+const HEAVY = new Set<GlyphName>([
+  'store',
+  'lock',
+  'flask',
+  'timer',
+  'arrow-right',
+  'arrow-left',
+  'arrow-up-right',
+  'check',
+]);
 
 export default function Glyph({ name, className }: { name: GlyphName; className?: string }) {
   return (

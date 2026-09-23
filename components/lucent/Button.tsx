@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import LinkOut from './LinkOut';
 import TransitionLink from './TransitionLink';
 
 /**
@@ -9,7 +10,8 @@ import TransitionLink from './TransitionLink';
  * sentence case. Never two filled buttons side by side.
  *
  * With `href` it renders a link (internal ones get the page swap and smooth
- * in-page scroll); without, a <button>.
+ * in-page scroll; ones to other sites open in a new tab); without, a <button>.
+ * `external` is for a link the router can't take, such as the resume PDF.
  */
 type Variant = 'filled' | 'glass' | 'quiet';
 
@@ -26,9 +28,9 @@ export default function Button({ variant, small, href, external, children, ...ar
   const className = `lu-btn is-${variant}${small ? ' is-small' : ''}`;
   if (href && external) {
     return (
-      <a className={className} href={href} {...aria}>
+      <LinkOut className={className} href={href} {...aria}>
         {children}
-      </a>
+      </LinkOut>
     );
   }
   if (href) {

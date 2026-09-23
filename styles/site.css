@@ -310,6 +310,33 @@ html:not(.js) .site-theme {
   border: 0;
 }
 
+/* ---------- Links to other sites (components/lucent/LinkOut.tsx) ----------
+   They open in a new tab, and the arrow out after the label says so before
+   the click: the contact tile's ↗ at text size, in the secondary ink, nudging
+   the way it points on hover as the tile's does. The glyph box is a full em
+   with the arrow in its middle: its own padding is the gap after the label,
+   and the negative right margin ends the underline at the arrow's tip.
+   `a > svg` outranks the kit's sizing of every svg in a meta row or a button. */
+a > svg.site-out {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin: 0 -0.28em 0 0;
+  vertical-align: -0.1em;
+  grid-row: auto;
+  color: var(--ink-secondary);
+  transition: transform var(--dur-jelly) var(--ease-settle), color var(--dur-jelly) var(--ease-settle);
+}
+a:hover > svg.site-out {
+  transform: translate(1px, -1px);
+  color: var(--ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  a:hover > svg.site-out {
+    transform: none;
+  }
+}
+
 /* ---------- Hero (components/sections/Hero.tsx) ----------
    His name set huge in ink on two lines with its two actions right under
    it, and the iOS details card beside the name, or under the actions where

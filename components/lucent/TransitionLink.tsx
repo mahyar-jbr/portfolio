@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { AnchorHTMLAttributes, MouseEvent } from 'react';
 import { navigate, scrollToTarget } from '@/lib/lucent';
+import LinkOut, { isOffsite } from './LinkOut';
 
 type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & { href: string };
 
@@ -16,9 +17,12 @@ type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & { href: str
  *   dur-exit, new view up 8px in dur-enter.
  *
  * Modified clicks, other origins and explicit targets fall through to the browser.
+ * An href to another site is handed to LinkOut, so it opens in a new tab even
+ * when it comes through here (a Button, a card).
  */
 export default function TransitionLink({ href, onClick, ...rest }: Props) {
   const router = useRouter();
+  if (isOffsite(href)) return <LinkOut href={href} onClick={onClick} {...rest} />;
 
   function handle(e: MouseEvent<HTMLAnchorElement>) {
     onClick?.(e);

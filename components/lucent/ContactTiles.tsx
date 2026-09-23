@@ -1,4 +1,5 @@
 import BrandIcon, { brandFor } from './BrandIcon';
+import LinkOut from './LinkOut';
 
 /**
  * ContactTiles — each way to reach him as a small tile with its own glyph instead
@@ -14,6 +15,9 @@ import BrandIcon, { brandFor } from './BrandIcon';
  * The email tile is the one ink tile (is-primary): Lucent.auto() copies the
  * address and shows the "Email copied" toast, or shows the address itself if the
  * clipboard is refused.
+ *
+ * The other tiles are LinkOuts: GitHub and LinkedIn open in a new tab and say so
+ * to screen readers; the tile's own ↗ is the sighted cue, so LinkOut adds none.
  */
 export interface ContactLink {
   label: string;
@@ -72,14 +76,20 @@ export default function ContactTiles({
         <span className="lu-contact-value">{email.value}</span>
       </button>
       {links.map((l) => (
-        <a className="lu-contact-tile" href={l.href} key={l.label} aria-label={`${l.label}: ${l.value}`}>
+        <LinkOut
+          className="lu-contact-tile"
+          href={l.href}
+          key={l.label}
+          aria-label={`${l.label}: ${l.value}`}
+          arrow={false}
+        >
           <span className="lu-contact-glyph">
             <GlyphFor label={l.label} />
           </span>
           <Go />
           <span className="lu-contact-label">{l.label}</span>
           <span className="lu-contact-value">{l.value}</span>
-        </a>
+        </LinkOut>
       ))}
     </div>
   );

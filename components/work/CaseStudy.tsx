@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import BrandIcon, { brandFor, type BrandName } from '@/components/lucent/BrandIcon';
 import Button from '@/components/lucent/Button';
 import Glyph, { type GlyphName } from '@/components/lucent/Glyph';
+import LinkOut from '@/components/lucent/LinkOut';
 import ProjectCard from '@/components/lucent/ProjectCard';
 import { ToolTag } from '@/components/lucent/Tag';
 import CardArt, { cardArtClass } from '@/components/work/CardArt';
@@ -67,9 +68,9 @@ function linkFacts(links: ExternalLink[]): MetaItem[] {
         brand: brandFor(l.label),
         label: code ? 'Code' : 'Live',
         value: (
-          <a className="lu-link" href={l.href}>
+          <LinkOut className="lu-link" href={l.href}>
             {l.label}
-          </a>
+          </LinkOut>
         ),
       } satisfies MetaItem;
     });
