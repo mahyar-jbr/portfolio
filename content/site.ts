@@ -57,7 +57,7 @@ export const hero = {
     // September, so it now reads as the present. Plain text, NOT the kit's green
     // status tag: in Lucent a green dot means "Available for work", which under his
     // name would read as open-to-work — the opposite of the truth (2026-09-22 review).
-    { id: 'now', label: 'Now', value: 'AI Solutions Engineer co-op at FGF Brands' },
+    { id: 'now', label: 'Now', value: 'AI Solution Engineer co-op at FGF Brands' },
     { id: 'studying', label: 'Studying', value: `${education.credential}, ${education.institution}` },
     { id: 'based', label: 'Based', value: identity.location, timeZone: 'America/Toronto' },
   ],
@@ -103,7 +103,7 @@ export const meta: SiteMeta = {
   // 2026-08-08 it read "Starting September 2026", because he hadn't started and a
   // description cannot run ahead of the facts. He started in September 2026.
   description:
-    'I build AI agent systems and full-stack products. AI Solutions Engineer co-op at FGF Brands.',
+    'I build AI agent systems and full-stack products. AI Solution Engineer co-op at FGF Brands.',
   ogImageAlt: 'Mahyar Jaberi — AI Agent & Full-Stack Engineer',
 };
 

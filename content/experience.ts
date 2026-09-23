@@ -3,30 +3,31 @@ import type { Role, Education, Credential } from './types';
 /**
  * Work history, newest first.
  *
- * Nova Ventures and Sepantech copy was reviewed and approved unchanged on
- * 2026-08-08. FGF and Pet Valu are new/reframed and carry open questions.
+ * 2026-09-23: synced with Mahyar's LinkedIn (content/sources/LinkedIn_EXPERIENCE.md),
+ * which now wins on titles, dates, locations and duties. BowlWise's row is gone at
+ * his request: it is a project, and lives in Work. The York lab row isn't on
+ * LinkedIn and stays as he described it.
  *
- * 2026-09-22: merged with the Lucent kit's experience list — EECS 4070 and
- * BowlWise added as rows, FGF moved from incoming to current (the co-op started
- * in September). The kit's bullets for FGF were placeholders and are NOT used.
+ * Earlier: Nova Ventures and Sepantech copy was reviewed and approved on
+ * 2026-08-08; the Lucent kit's placeholder bullets for FGF were never used.
  */
 export const roles: Role[] = [
   {
     company: 'FGF Brands',
-    title: 'AI Solutions Engineer Co-op',
-    period: 'Sept 2026 – Sept 2027',
-    // From the Lucent kit ("FGF Brands · Vaughan"), which closed the old
-    // TODO(verify) on the office location.
-    location: 'Vaughan, ON',
+    title: 'AI Solution Engineer Co-op',
+    period: 'Sept 2026 – Present',
+    location: 'Toronto, ON (Hybrid)',
     monogram: 'FG',
     current: true,
-    context:
-      'A one-year co-op term building AI agent systems.',
-    // Deliberately no bullets: the role has not started. Listing responsibilities
-    // for work not yet done reads as padding and is the easiest thing on the site
-    // to catch someone out on. Replace with real accomplishments after ~2 months in.
-    bullets: [],
-    stack: [],
+    context: 'A one-year co-op term building AI agent systems.',
+    // From his LinkedIn, cut to three and stripped of adjectives ("scalable"). The
+    // "collaborating with cross-functional teams" line said nothing, so it's out.
+    bullets: [
+      'Building a promotion pipeline that moves AI agents between environments without a rebuild, to cut deployment overhead and configuration drift.',
+      'Adding live web search to AI chat agents: the backend services, the frontend integration, source citations, and the testing and validation tooling.',
+      'Working in Python, Azure services and Docker with containerized deployments, and writing the technical docs and architecture guides for onboarding.',
+    ],
+    stack: ['Python', 'FastAPI', 'Azure', 'Docker'],
   },
   {
     company: 'York Data Mining Lab',
@@ -45,65 +46,53 @@ export const roles: Role[] = [
     stack: ['Graphs', 'RAG', 'FHIR'],
   },
   {
-    company: 'BowlWise',
-    title: 'Founder and builder',
-    period: '2026',
-    location: 'Aurora, ON',
-    subline: 'BowlWise Inc. · bowlwise.app',
-    monogram: 'BW',
-    context: 'A dog food recommendation platform, built and shipped solo.',
-    // Every figure here is from content/projects.ts, which cites the extract.
-    bullets: [
-      'Built and shipped solo a platform that scores 260 dog foods against each dog, on AAFCO, NRC and WSAVA guidance.',
-      'Launched April 4, 2026; it runs on customer tablets in Pet Valu Oak Ridges and Aurora.',
-      '133 commits and 121 passing tests, then incorporated as BowlWise Inc.',
-    ],
-    stack: ['Python', 'FastAPI', 'React', 'MongoDB'],
-  },
-  {
     company: 'Pet Valu',
-    title: 'Animal Care Expert → Assistant Manager',
-    // TODO(verify): the end date is an INFERENCE — Mahyar confirmed he was still there
-    // through summer 2026, and the FGF co-op starts in September, so this assumes he
-    // leaves. If he stays on part-time, this should read "Aug 2023 – Present".
-    period: 'Aug 2023 – Sept 2026',
-    location: 'Ontario',
+    title: 'Assistant Manager',
+    // LinkedIn closes the old TODO(verify) on the end date: Aug 2026. It also lists
+    // the first title as Retail Sales Associate, not Animal Care Expert.
+    period: 'Aug 2023 – Aug 2026',
+    location: 'Richmond Hill, ON',
     monogram: 'PV',
+    positions: [
+      { title: 'Assistant Manager', since: 'Aug 2025' },
+      { title: 'Retail Sales Associate', since: 'Aug 2023' },
+    ],
     context:
       'Three years on the retail floor, promoted to Assistant Manager — and the reason BowlWise exists.',
     bullets: [
-      // This bullet does the heavy lifting — it converts a retail job from filler
-      // into the origin story of the strongest project on the site.
-      'Built BowlWise for the stores I helped run — it now runs on customer-facing tablets in two locations.',
-      'Promoted from Animal Care Expert to Assistant Manager, leading a team on the floor and running the store under pressure.',
-      'Spent three years helping customers make a decision they rarely had enough information for — which became the problem BowlWise solves.',
+      'Trained new staff on service, nutrition basics, store routines, safety and the POS, and helped plan schedules and tasks.',
+      'Tracked weekly sales patterns and adjusted product placement, signage and recommendations to match.',
+      'Helped customers choose food by breed size, age, allergies and dietary goals.',
     ],
   },
   {
     company: 'Nova Ventures',
     title: 'Software Developer Intern',
     period: 'May – Aug 2025',
-    location: 'Toronto, ON',
+    location: 'Toronto, ON (Hybrid)',
     monogram: 'NV',
-    context: 'A goalkeeper analytics platform for soccer clubs.',
+    context: 'A goalkeeper analytics platform for competitive soccer teams.',
     bullets: [
       'Built backend API endpoints in Python and FastAPI for a goalkeeper analytics platform, exposing per-session performance data to the coaching dashboard.',
       'Built a data pipeline that parsed and cleaned match stats from club PDFs and spreadsheets into structured database tables for analysis.',
       'Built interactive React heatmap components that visualized save patterns across goal zones.',
     ],
-    stack: ['Python', 'FastAPI', 'React'],
+    stack: ['Python', 'FastAPI', 'React', 'TypeScript'],
   },
   {
     company: 'Sepantech',
-    title: 'App Developer & Database Intern',
-    period: 'May – Aug 2024',
+    // LinkedIn has the title and the March start; the old copy said "App Developer &
+    // Database Intern" and May.
+    title: 'Software Engineer Intern',
+    period: 'Mar – Aug 2024',
     location: 'Sweden (Remote)',
     monogram: 'ST',
-    context: 'A course-management platform for medical professionals.',
+    context: 'A course-management platform for healthcare and physiotherapy professionals.',
     bullets: [
-      'Built core features for a course-management platform serving 500+ medical professionals, including enrollment and automated certification.',
-      'Designed 6+ MySQL tables and optimized 12+ queries, cutting average response time by 30%.',
-      'Built 8+ Node.js API endpoints in an Agile team for authentication, enrollment, and certificate generation.',
+      'Built core features for a course-management platform used by 500+ healthcare and physiotherapy professionals across Sweden: enrollment, progress tracking and automated certification.',
+      // LinkedIn says "about thirty percent", so the copy does too.
+      'Designed 6+ MySQL tables in a normalized schema and optimized 12+ queries with composite indexes, cutting average response time by about 30%.',
+      'Built 8+ Node.js API endpoints for authentication, enrollment, progress updates and certificate generation, in an Agile team.',
     ],
     stack: ['Node.js', 'MySQL'],
   },

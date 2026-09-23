@@ -56,9 +56,14 @@ export interface Role {
   current?: boolean;
   /** True for roles not yet started — renders an "Incoming" treatment. */
   incoming?: boolean;
+  /**
+   * The titles he held there, newest first, each with the month it began: only
+   * for a role with a promotion inside it. `title` is then the latest of them.
+   */
+  positions?: { title: string; since: string }[];
   /** One line of context: what the company/team does. */
   context: string;
-  /** What he actually did. Past tense, concrete, no adjectives. */
+  /** What he actually did. Past tense (present for the current role), concrete, no adjectives. */
   bullets: string[];
   /** Technologies genuinely used in this role. */
   stack?: string[];
