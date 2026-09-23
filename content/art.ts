@@ -18,8 +18,9 @@ export interface ArtPiece {
   medium: string;
   year: string;
   image: string;
-  /** Portrait/landscape ratio, used to reserve space and avoid layout shift. */
-  aspect: number;
+  /** Intrinsic pixel size, so the gallery reserves the right space before load. */
+  width: number;
+  height: number;
   timelapse?: string;
   exhibition?: string;
   note?: string;
@@ -34,7 +35,8 @@ export const pieces: ArtPiece[] = [
     medium: 'Ink on paper',
     year: '2022',
     image: '/artwork/art-1.jpg',
-    aspect: 0.65,
+    width: 2391,
+    height: 3664,
     exhibition: 'Exhibited at Aurora City Hall',
     note: 'The monsters we’re taught to fear wear the same clothes we do.',
   },
@@ -43,7 +45,8 @@ export const pieces: ArtPiece[] = [
     medium: 'Digital',
     year: '2025',
     image: '/artwork/art-2.png',
-    aspect: 0.71,
+    width: 2480,
+    height: 3508,
     timelapse: '/artwork/art-2-timelaps.mp4',
     note: 'Power doesn’t corrupt. It empties.',
   },
@@ -52,7 +55,8 @@ export const pieces: ArtPiece[] = [
     medium: 'Digital',
     year: '2023',
     image: '/artwork/art-3.jpg',
-    aspect: 0.81,
+    width: 1577,
+    height: 1955,
     timelapse: '/artwork/art-3-timelaps.mp4',
     note: 'They forged him a crown. He forged himself into a weapon.',
   },
@@ -61,7 +65,8 @@ export const pieces: ArtPiece[] = [
     medium: 'Digital',
     year: '2024',
     image: '/artwork/art-4.jpg',
-    aspect: 1.43,
+    width: 2388,
+    height: 1668,
     timelapse: '/artwork/art-4-timelaps.mp4',
     note: 'Some paths only open when you stop looking back.',
   },
@@ -70,7 +75,8 @@ export const pieces: ArtPiece[] = [
     medium: 'Digital',
     year: '2025',
     image: '/artwork/art-10.png',
-    aspect: 0.75,
+    width: 1478,
+    height: 1150,
     timelapse: '/artwork/art-10-timelaps.mp4',
     note: 'Half of him wanted to be saved. The other half already won.',
   },
@@ -82,10 +88,10 @@ export const series = {
   year: '2022',
   note: 'He didn’t defeat them. He became what they feared.',
   panels: [
-    '/artwork/art-5.png',
-    '/artwork/art-6.png',
-    '/artwork/art-7.png',
-    '/artwork/art-8.png',
-    '/artwork/art-9.png',
+    { image: '/artwork/art-5.png', width: 1246, height: 934 },
+    { image: '/artwork/art-6.png', width: 1096, height: 832 },
+    { image: '/artwork/art-7.png', width: 469, height: 654 },
+    { image: '/artwork/art-8.png', width: 1220, height: 1688 },
+    { image: '/artwork/art-9.png', width: 495, height: 368 },
   ],
 };

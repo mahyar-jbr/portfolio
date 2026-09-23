@@ -1,0 +1,32 @@
+/**
+ * BrandMark — an upright sigma turned a quarter clockwise into an M; in the lockup
+ * a sigmoid trails after it. Together: a neuron, y = σ(Σ wᵢxᵢ + b).
+ *
+ * Inlined so it takes currentColor (ink on paper, on-accent in an ink tile). The
+ * path carries `data-turn`: the kit's brand reveal turns the sigma into the M
+ * once, where the brand is introduced (the page hero). The nav mark never moves.
+ * Don't round it, outline it, colour it, or set the sigmoid without the M.
+ */
+export const MARK_PATH =
+  'M40 9L40 40L32 40L34 34L34 19.5L24 30L14 19.5L14 34L16 40L8 40L8 9L12.5 9L24 21.2L35.5 9Z';
+
+/** The lockup's sigmoid trail, rising from the baseline to the cap line (kit asset mj-lockup-ink.svg). */
+export const SIGMOID_PATH =
+  'M46.0 36.90 L46.50 36.89 L47.00 36.87 L47.50 36.85 L48.00 36.83 L48.50 36.81 L49.00 36.78 L49.50 36.75 L50.00 36.71 L50.50 36.67 L51.00 36.62 L51.50 36.56 L52.00 36.50 L52.50 36.43 L53.00 36.34 L53.50 36.25 L54.00 36.14 L54.50 36.02 L55.00 35.88 L55.50 35.72 L56.00 35.54 L56.50 35.33 L57.00 35.10 L57.50 34.85 L58.00 34.56 L58.50 34.23 L59.00 33.87 L59.50 33.47 L60.00 33.03 L60.50 32.54 L61.00 32.01 L61.50 31.43 L62.00 30.81 L62.50 30.14 L63.00 29.43 L63.50 28.67 L64.00 27.89 L64.50 27.07 L65.00 26.23 L65.50 25.37 L66.00 24.50 L66.50 23.63 L67.00 22.77 L67.50 21.93 L68.00 21.11 L68.50 20.33 L69.00 19.57 L69.50 18.86 L70.00 18.19 L70.50 17.57 L71.00 16.99 L71.50 16.46 L72.00 15.97 L72.50 15.53 L73.00 15.13 L73.50 14.77 L74.00 14.44 L74.50 14.15 L75.00 13.90 L75.50 13.67 L76.00 13.46 L76.50 13.28 L77.00 13.12 L77.50 12.98 L78.00 12.86 L78.50 12.75 L79.00 12.66 L79.50 12.57 L80.00 12.50 L80.50 12.44 L81.00 12.38 L81.50 12.33 L82.00 12.29 L82.50 12.25 L83.00 12.22 L83.50 12.19 L84.00 12.17 L84.50 12.15 L85.00 12.13 L85.50 12.11 L86.00 12.10';
+
+export default function BrandMark({ size, lockup = false }: { size: number; lockup?: boolean }) {
+  return (
+    <svg
+      className="lu-mark"
+      viewBox={lockup ? '0 0 90 48' : '0 0 48 48'}
+      width={lockup ? (size * 90) / 48 : size}
+      height={size}
+      aria-hidden="true"
+    >
+      <path data-turn="" d={MARK_PATH} fill="currentColor" />
+      {lockup && (
+        <path data-draw="1100" d={SIGMOID_PATH} stroke="currentColor" fill="none" strokeWidth={6} strokeLinejoin="round" />
+      )}
+    </svg>
+  );
+}

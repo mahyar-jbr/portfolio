@@ -45,6 +45,15 @@ export interface Role {
   /** Display string, e.g. "May – Aug 2025". Dates are content, not data. */
   period: string;
   location: string;
+  /**
+   * Replaces "company · location" as the row's second line when that pairing
+   * doesn't describe the role (a lab and its supervisor, a product and its URL).
+   */
+  subline?: string;
+  /** Two letters for the row's monogram. Letters, never a company logo. */
+  monogram: string;
+  /** The role he is in today — carries the "Now" tag. At most one. */
+  current?: boolean;
   /** True for roles not yet started — renders an "Incoming" treatment. */
   incoming?: boolean;
   /** One line of context: what the company/team does. */
@@ -98,16 +107,92 @@ export interface TechnicalDecision {
   why: string;
 }
 
-export interface Project {
+/**
+ * The status label on a project card. `kind` says what sort of status it is so
+ * the design can pick a glyph; the words are `label`.
+ *
+ * live      — in production, people use it
+ * stealth   — unreleased; the product's name and screenshots are withheld
+ * progress  — underway, no result yet
+ * research  — a finished study
+ * hackathon — built under a hackathon clock
+ */
+export interface ProjectStatus {
+  label: string;
+  kind: 'live' | 'stealth' | 'progress' | 'research' | 'hackathon';
+}
+
+/** A real screenshot of the product. Never a mockup. */
+export interface Shot {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  /** One line on what the screenshot shows. */
+  caption: string;
+}
+
+/** One beat of "how it works". Three of them, in order. */
+export interface Step {
+  title: string;
+  body: string;
+}
+
+/** A labelled fact for a case study's summary row ("In stores", "Event"). */
+export interface MetaFact {
+  label: string;
+  value: string;
+}
+
+/** What every project has, whatever page it gets. */
+interface ProjectCard {
   slug: string;
   name: string;
   kind: ProjectKind;
-  depth: ProjectDepth;
-  /** Ordering on the home page. */
+  /** Ordering on the home page. The lowest is the featured card. */
   order: number;
+  status: ProjectStatus;
+  /** The one line under the name on the card. Short: it sits in a glass caption. */
+  cardLine: string;
+  year: string;
+}
+
+/**
+ * A project that is not public yet. It appears only as the stealth card, and
+ * opening it shows a short quick look instead of a page. Nothing here may name
+ * the product, show it, or describe it closely enough to identify it.
+ */
+export interface StealthProject extends ProjectCard {
+  page: 'none';
+  quickLook: string[];
+}
+
+/**
+ * Work that has started but has nothing to show yet: a short page with the
+ * summary row and what is being built, and no results.
+ */
+export interface BriefProject extends ProjectCard {
+  page: 'brief';
+  /** One sentence under the name. */
+  lede: string;
+  role: string;
+  facts: MetaFact[];
+  /** What is being built, one line each. */
+  building: string[];
+}
+
+export interface CaseStudyProject extends ProjectCard {
+  page: 'case-study';
+  depth: ProjectDepth;
 
   /** One sentence. What it is, for whom. */
   oneLiner: string;
+  /** The product's own mark, shown beside its name on the case study. */
+  mark?: string;
+  /** Extra facts for the summary row, after role and status. */
+  facts?: MetaFact[];
+  steps?: Step[];
+  shots?: Shot[];
   /** Short context labels: "Course project", "Hackathon", "Live in production". */
   badges: string[];
   stack: string[];
@@ -136,6 +221,8 @@ export interface Project {
     body: string;
   };
 }
+
+export type Project = CaseStudyProject | BriefProject | StealthProject;
 
 export interface SkillGroup {
   label: string;

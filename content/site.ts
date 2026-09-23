@@ -1,4 +1,5 @@
-import type { Identity, SiteMeta, SkillGroup } from './types';
+import type { ExternalLink, Identity, SiteMeta, SkillGroup } from './types';
+import { education } from './experience';
 
 export const identity: Identity = {
   fullName: 'Mahyar Jaberi',
@@ -32,54 +33,55 @@ export const identity: Identity = {
 };
 
 /**
- * Hero.
+ * Hero — the Lucent page hero: name, then key/value properties, then two actions.
+ * The properties ARE the pitch (Lucent Hero guideline): no paragraph beside them.
  *
- * The credential line replaces the deleted availability slot — same position, but it
- * states a fact instead of making a request, which is the whole shift from hunting to
- * presence. It is also the only line above the fold that someone other than Mahyar can
- * vouch for; everything else in a hero is self-assigned by definition.
+ * Per the 2026-09-22 content decision the facts are this file's, not the kit's
+ * sample copy: no availability status, no graduation year, Aurora rather than
+ * "Toronto area". The status slot shows the role he is actually in.
+ *
+ * `id` names the property so the design can give it a glyph; the words are content.
  */
 export const hero = {
-  eyebrow: 'AI Agent & Full-Stack Engineer',
-  name: 'Mahyar Jaberi',
-  tagline: identity.tagline,
-  credential: 'Incoming AI Solutions Engineer at FGF · September 2026',
-  // Swap "Incoming" for "AI Solutions Engineer at FGF" once he actually starts.
-
+  name: identity.fullName,
+  properties: [
+    { id: 'role', label: 'Role', value: identity.roleTitle },
+    // Was "Incoming AI Solutions Engineer at FGF · September 2026". He started in
+    // September, so it now reads as the present.
+    { id: 'now', label: 'Now', value: 'AI Solutions Engineer co-op at FGF Brands', status: true },
+    { id: 'studying', label: 'Studying', value: `${education.credential}, ${education.institution}` },
+    { id: 'based', label: 'Based', value: identity.location, timeZone: 'America/Toronto' },
+    { id: 'also', label: 'Also', value: 'I draw', href: '#drawings' },
+  ],
   ctas: [
-    { label: 'View work', href: '#work' },
-    { label: 'Email', href: 'mailto:jaberi.mahyar@gmail.com' },
-    // Résumé pill stays pulled until public/resume.pdf is replaced — the current file
+    { label: 'View my work', href: '#work' },
+    { label: 'Get in touch', href: '#contact' },
+    // Résumé stays pulled until public/resume.pdf is replaced — the current file
     // is the June version and predates FGF entirely.
   ],
-};
+} as const;
 
 /**
- * The hero signature: a rendered agent trace.
- *
- * This is CONTENT, not decoration — the point is that it shows what a real agent call
- * chain looks like, so it lives here rather than as strings inside a component.
- *
- * Every tool name below is real, taken from MoneyMind's agent and verified three ways
- * in content/MoneyMindHackathon_PORTFOLIO_EXTRACT.md §3. It deliberately does NOT use
- * the Maridian pipeline that design/SECTIONS.md §3.2 proposed — those four agent names
- * (intake/classify/recommend/review) were invented by an earlier session and have never
- * been confirmed against Maridian's source. A fabricated diagram is the one thing this
- * particular site cannot open with.
- *
- * The result strings are illustrative of shape, not transcribed from a specific run —
- * so present this as an example call chain, never as captured output.
+ * Home-page section heads, and the nav labels that point at them.
+ * The nav is built from this list, so a section and its nav item cannot drift.
  */
-export const heroTrace = {
-  caption: 'An agent call chain from MoneyMind',
-  steps: [
-    { call: 'recall_memory("groceries")', result: '3 memories · vector match' },
-    { call: 'query_transactions(30d)', result: '47 rows' },
-    { call: 'get_spend_anomaly()', result: '+38% vs baseline' },
-    { call: 'propose_intervention()', result: 'awaiting user' },
-    { call: 'write_memory("bulking")', result: 'persisted' },
-  ],
-};
+export const sections = {
+  work: {
+    id: 'work',
+    nav: 'Work',
+    kicker: 'Selected work',
+    title: 'Projects',
+    filters: [
+      { value: 'all', label: 'All' },
+      { value: 'product', label: 'Products' },
+      { value: 'prototype', label: 'Prototypes' },
+      { value: 'research', label: 'Research' },
+    ],
+  },
+  experience: { id: 'experience', nav: 'Experience', kicker: 'Experience', title: 'Where I’ve worked' },
+  drawings: { id: 'drawings', nav: 'Drawings', kicker: 'Drawings', title: 'Off the keyboard' },
+  contact: { id: 'contact', nav: 'Contact', kicker: 'Contact', title: 'Get in touch' },
+} as const;
 
 /**
  * SEO / social metadata.
@@ -90,11 +92,10 @@ export const heroTrace = {
  */
 export const meta: SiteMeta = {
   title: 'Mahyar Jaberi — AI Agent & Full-Stack Engineer',
-  // Was "Currently an AI Solutions Engineer at FGF" — corrected 2026-08-08. He starts
-  // in September; today he is not one. A description is the one string that gets
-  // scraped, cached and quoted back at you, so it cannot run ahead of the facts.
+  // 2026-08-08 it read "Starting September 2026", because he hadn't started and a
+  // description cannot run ahead of the facts. He started in September 2026.
   description:
-    'I build AI agent systems and full-stack products. Starting September 2026 as an AI Solutions Engineer at FGF.',
+    'I build AI agent systems and full-stack products. AI Solutions Engineer co-op at FGF Brands.',
   ogImageAlt: 'Mahyar Jaberi — AI Agent & Full-Stack Engineer',
 };
 
@@ -112,6 +113,16 @@ export const contact = {
   body: 'Always happy to talk about agent systems, football data, or anything someone is building. The inbox is open.',
   // Deliberately absent: availability status, "hire me", "open to work",
   // response-time promises.
+
+  /** Contact tiles. One-word labels, values of three words at most (Lucent ContactTiles). */
+  email: { label: 'Email', value: 'Tap to copy', address: identity.email },
+  links: [
+    { label: 'GitHub', value: 'Code and experiments', href: 'https://github.com/mahyar-jbr', status: 'live' },
+    { label: 'LinkedIn', value: 'Work history', href: 'https://linkedin.com/in/mahyar-jaberi', status: 'live' },
+    // Pending until public/resume.pdf is replaced: the current file is the June
+    // version and predates FGF. Flip to 'live' and the tile appears.
+    { label: 'Resume', value: 'Download PDF', href: '/resume.pdf', status: 'pending' },
+  ] satisfies (ExternalLink & { value: string })[],
 };
 
 /**

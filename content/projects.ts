@@ -1,23 +1,82 @@
-import type { Project } from './types';
+import type { BriefProject, CaseStudyProject, Project, StealthProject } from './types';
 
 /**
- * The four projects, in display order.
+ * The projects on the site, in display order (`order`).
  *
- * BowlWise is complete — every claim below traces to a file:line citation in
- * `content/BowlWise_PORTFOLIO_EXTRACT.md`. The other three are stubs awaiting
- * their own extraction pass.
+ * BowlWise, Maridian and Tactical DNA are written from verified extracts — every
+ * claim traces to a file:line citation in `content/sources/*_PORTFOLIO_EXTRACT.md`.
+ * The stealth product and Graph RAG for FHIR carry only what Mahyar has stated,
+ * and no results.
  *
  * Editorial standard: present the work as impressively as the facts allow, and
  * never further. On BowlWise that costs nothing — the verified numbers came back
  * larger than the ones the June draft was guessing at.
  */
 
-const bowlwise: Project = {
+const bowlwise: CaseStudyProject = {
   slug: 'bowlwise',
   name: 'BowlWise',
   kind: 'product',
+  page: 'case-study',
   depth: 'deep',
   order: 1,
+  year: '2026',
+  status: { label: 'Live in stores', kind: 'live' },
+  cardLine: 'Scores 260 dog foods against your dog',
+  mark: '/work/bowlwise/mark.png',
+  facts: [
+    { label: 'In stores', value: 'Pet Valu Oak Ridges and Aurora' },
+    { label: 'Launched', value: 'April 4, 2026' },
+  ],
+
+  // Written from `approach` below — the same facts, cut into the three beats the
+  // case study's "How it works" shows. Nothing here that approach doesn't say.
+  steps: [
+    {
+      title: 'Describe your dog',
+      body: 'An eight-step profile: life stage, activity, weight goal, allergies and any diagnosed conditions. No account needed.',
+    },
+    {
+      title: 'Compare like with like',
+      body: 'Every product is normalized to a dry-matter basis at import, so a raw food and a kibble are finally measured on the same scale.',
+    },
+    {
+      title: 'Score and explain',
+      body: 'Allergens and size mismatches are filtered out first. The rest score 0–100 on six weighted factors from AAFCO, NRC and WSAVA guidance, each explainable line by line.',
+    },
+  ],
+
+  // Real screenshots of bowlwise.app, from the Lucent kit's Bowlwise asset group.
+  shots: [
+    {
+      src: '/work/bowlwise/marketing-hero.png',
+      width: 3840,
+      height: 2160,
+      alt: 'The BowlWise home page: "Stop guessing what to feed your dog", with an example match card',
+      caption: 'The home page: one question, one clear answer.',
+    },
+    {
+      src: '/work/bowlwise/petprofile.png',
+      width: 3840,
+      height: 2160,
+      alt: 'A dog profile with breed size, age, activity, goal and allergies, and its top food matches',
+      caption: 'A dog’s profile and its top matches.',
+    },
+    {
+      src: '/work/bowlwise/foodcard.png',
+      width: 3840,
+      height: 2160,
+      alt: 'One food in detail: match score, match reasons, nutrition bars and guaranteed analysis',
+      caption: 'One food in detail: the score, the reasons, and the nutrition behind them.',
+    },
+    {
+      src: '/work/bowlwise/marketing-brands.png',
+      width: 3840,
+      height: 2160,
+      alt: 'The brands BowlWise scores, and its three-step explainer',
+      caption: 'The brands it scores, and how it works in three steps.',
+    },
+  ],
 
   oneLiner:
     'A dog food recommendation engine that scores 260 products against veterinary nutrition standards — live on tablets in two Pet Valu stores.',
@@ -27,10 +86,16 @@ const bowlwise: Project = {
   stack: ['React', 'Vite', 'FastAPI', 'Python', 'Pydantic', 'MongoDB', 'Docker'],
 
   links: [
+    // Verified serving 2026-08-08: HTTP 200 on / and /scoring. This is the only live
+    // link on the entire site, so it is worth re-checking before any redeploy.
     { label: 'bowlwise.app', href: 'https://bowlwise.app', status: 'live' },
     // No public repo. Highest-ROI fix available: extract the scoring engine to a
     // standalone public repo with its tests — it's the most interesting code here
     // and the only thing currently unviewable.
+    //
+    // KNOWN ISSUE on the live site (not ours to fix, but it undercuts this link):
+    // /scoring says "191 products and 9 brands"; the catalog is 260 across 15. It is
+    // the page whose entire purpose is trust.
   ],
 
   problem:
@@ -119,15 +184,23 @@ const bowlwise: Project = {
 };
 
 // ---------------------------------------------------------------------------
-// Awaiting extraction. Run content/PROJECT_EXTRACTION_PROMPT.md in each repo.
+// Written from content/sources/*_PORTFOLIO_EXTRACT.md (content/sources/PROJECT_EXTRACTION_PROMPT.md).
 // ---------------------------------------------------------------------------
 
-const moneymind: Project = {
+// HELD BACK (2026-09-22). MoneyMind is becoming a co-founded product and is in
+// stealth: per the Lucent kit, its name, screenshots and characters stay off every
+// public page until launch. It appears on the site only as `stealth` below. This
+// verified write-up is kept, unrendered, for the day it launches.
+export const heldBack: CaseStudyProject = {
   slug: 'moneymind',
   name: 'MoneyMind',
   kind: 'prototype',
+  page: 'case-study',
   depth: 'deep',
-  order: 2,
+  order: 99,
+  year: '2026',
+  status: { label: 'Hackathon build', kind: 'hackathon' },
+  cardLine: 'A finance agent that remembers the user',
 
   oneLiner:
     'A personal finance agent that remembers the user, not just their transactions.',
@@ -221,12 +294,36 @@ const moneymind: Project = {
   },
 };
 
-const maridian: Project = {
+const maridian: CaseStudyProject = {
   slug: 'maridian',
   name: 'Maridian',
   kind: 'prototype',
+  page: 'case-study',
   depth: 'deep',
-  order: 3,
+  order: 4,
+  year: '2026',
+  status: { label: 'Built in 5 days', kind: 'hackathon' },
+  cardLine: 'Six agents triaging defects on a bakery line',
+  facts: [
+    { label: 'Event', value: 'TMLS 2026 Agentic AI Hackathon' },
+    { label: 'Team', value: '6 people' },
+  ],
+
+  // Cut from `approach`: the six agents, in the order they run, as three beats.
+  steps: [
+    {
+      title: 'Classify the defect',
+      body: 'Triage classifies what the camera flagged. Options finds the routes that customer’s contract allows.',
+    },
+    {
+      title: 'Price it and decide',
+      body: 'Scorer prices each route. Decision commits one and logs why, streaming its reasoning to the operator as it goes.',
+    },
+    {
+      title: 'Check the batch',
+      body: 'Batch Tracker checks the batch against its SLA, and Recovery Planner proposes a recovery if it was breached.',
+    },
+  ],
 
   oneLiner:
     'Six Claude agents that triage defects on a bakery production line and recommend what to do with the batch.',
@@ -306,12 +403,34 @@ const maridian: Project = {
   },
 };
 
-const tacticalDna: Project = {
+const tacticalDna: CaseStudyProject = {
   slug: 'tactical-dna',
   name: 'Tactical DNA',
   kind: 'research',
+  page: 'case-study',
   depth: 'standard',
-  order: 4,
+  order: 5,
+  // Source files dated 2026-05-13 to 2026-06-09 (TacticalDNA extract §git).
+  year: '2026',
+  status: { label: 'Research', kind: 'research' },
+  cardLine: 'Does a coach leave a fingerprint on passing?',
+  facts: [{ label: 'Course', value: 'EECS 4414 Information Networks' }],
+
+  // Cut from `approach`.
+  steps: [
+    {
+      title: 'Build the networks',
+      body: '775 passing networks from StatsBomb open data, each cut at the first substitution so every graph has exactly eleven nodes.',
+    },
+    {
+      title: 'Describe the structure',
+      body: '44 features per network: global statistics, centrality summaries and triadic-census motif fractions.',
+    },
+    {
+      title: 'Test it two ways',
+      body: 'Coach classification, style clustering and a player-role embedding, each evaluated two ways rather than one.',
+    },
+  ],
 
   oneLiner:
     'Testing whether a football coach leaves a measurable fingerprint on how their team passes. Mostly, they don’t — the roster does.',
@@ -392,14 +511,64 @@ const tacticalDna: Project = {
 };
 
 /**
- * All four are now written from verified extracts, so these are the same list.
- * `completeProjects` derives from `projects` and sorts by `order` rather than being
- * maintained by hand — it was hand-maintained while projects were landing one at a time,
- * and Maridian was silently missing from it for exactly that reason.
+ * The co-founded product MoneyMind grew into. Stealth card only: no name, no
+ * screenshots, no description close enough to identify it (Lucent kit, MoneyMind
+ * asset group). The card opens a quick look rather than a page.
  */
-export const projects: Project[] = [bowlwise, moneymind, maridian, tacticalDna];
+const stealth: StealthProject = {
+  slug: 'stealth-fintech',
+  name: 'Stealth fintech',
+  kind: 'product',
+  page: 'none',
+  order: 2,
+  year: '2026',
+  status: { label: 'In stealth', kind: 'stealth' },
+  cardLine: 'An AI money coach, co-founded',
+  quickLook: [
+    'An AI money coach, co-founded and in development now.',
+    'The name, the product and the details stay private until it launches.',
+  ],
+};
 
-export const completeProjects: Project[] = [...projects].sort((a, b) => a.order - b.order);
+/**
+ * Directed studies, started Fall 2026. Facts from the Lucent kit's experience list,
+ * which Mahyar wrote. No results yet, so it gets a brief page, not a case study —
+ * and nothing here may claim an outcome until one exists.
+ */
+const graphRag: BriefProject = {
+  slug: 'graph-rag-fhir',
+  name: 'Graph RAG for FHIR',
+  kind: 'research',
+  page: 'brief',
+  order: 3,
+  year: '2026',
+  status: { label: 'In progress', kind: 'progress' },
+  cardLine: 'Directed studies, York Data Mining Lab',
+  lede: 'Graph-native retrieval for clinical LLM agents, evaluated on FHIR-AgentBench.',
+  role: 'Directed studies, EECS 4070',
+  facts: [
+    { label: 'Lab', value: 'York Data Mining Lab' },
+    { label: 'Supervisor', value: 'Prof. Manos Papagelis' },
+    { label: 'Timeline', value: 'Fall 2026 – Winter 2027' },
+  ],
+  building: [
+    'A graph traversal tool over FHIR references, for clinical LLM agents.',
+    'An evaluation on FHIR-AgentBench, measured against published baselines.',
+  ],
+};
+
+/**
+ * Display order is `order`, derived rather than hand-maintained — a hand-kept list
+ * once silently dropped Maridian. The lowest order is the featured card.
+ */
+export const projects: Project[] = [bowlwise, stealth, graphRag, maridian, tacticalDna].sort(
+  (a, b) => a.order - b.order,
+);
+
+/** Projects with a page of their own, for routing. */
+export const pagedProjects = projects.filter(
+  (p): p is CaseStudyProject | BriefProject => p.page !== 'none',
+);
 
 /**
  * A NOTE ON "MULTI-AGENT" — read before writing any copy that uses the phrase.

@@ -1,0 +1,420 @@
+/* Lucent v2: liquid glass components. Tokens come from tokens.css; motion from window.Lucent. */
+@property --lift { syntax: "<length>"; inherits: false; initial-value: 0px; }
+@property --lscale { syntax: "<number>"; inherits: false; initial-value: 1; }
+
+:root {
+  --ease-spring: linear(0, 0.009, 0.035 2.1%, 0.141 4.4%, 0.723 12.9%, 0.938 16.7%, 1.017 19.4%, 1.067, 1.099 24.3%, 1.108 26%, 1.1, 1.078 30.9%, 1.006 38.1%, 0.984 42.4%, 0.976 46.9%, 0.985 55.5%, 1.002 66.7%, 1);
+  --glass-filter: blur(var(--blur-regular)) saturate(var(--glass-saturate));
+}
+.lu-root { font-family: var(--font-text); color: var(--ink); -webkit-font-smoothing: antialiased; }
+html.lu-locked { overflow: hidden; }
+
+/* ---------- Canvas: paper with a fine dot grid. No colour ever sits behind components. ---------- */
+.lu-wall { position: relative; isolation: isolate; background: var(--bg); }
+.lu-wall::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.3px); background-size: 20px 20px; background-position: 10px 10px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 35%, transparent 80%); mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 35%, transparent 80%);
+}
+.lu-wall.is-flat::before { display: none; }
+
+/* ---------- Glass material ---------- */
+.lu-glass {
+  --lu-r: var(--radius-md);
+  position: relative; border-radius: var(--lu-r);
+  background: var(--glass-fill-strong);
+  -webkit-backdrop-filter: blur(var(--blur-thick)) saturate(var(--glass-saturate));
+  backdrop-filter: blur(var(--blur-thick)) saturate(var(--glass-saturate));
+  border: 1px solid var(--glass-stroke);
+  box-shadow: var(--shadow-rim), var(--shadow-glass);
+  overflow: hidden;
+}
+.lu-glass.is-clear { background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter); }
+.lu-glass.is-tinted { background: var(--accent-tint); }
+/* refraction edge: a brighter rim at the top-left, fading around the lens */
+.lu-glass::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; padding: 1px;
+  background: linear-gradient(135deg, var(--glass-specular), transparent 38%, transparent 62%, var(--glass-shade));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude;
+  opacity: .9;
+}
+/* a soft, fixed specular sheen at the top of the lens */
+.lu-glass::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: linear-gradient(180deg, var(--glass-specular), transparent 40%);
+  opacity: .28; mix-blend-mode: soft-light;
+}
+.lu-glass > * { position: relative; z-index: 1; }
+
+/* ---------- Jelly: Lucent drives --sx/--sy with a spring ---------- */
+.lu-jelly { transform: scale(var(--sx, 1), var(--sy, 1)); transform-origin: 50% 60%; }
+
+/* ---------- Focus, shared ---------- */
+.lu-btn:focus-visible, .lu-nav-item:focus-visible, .lu-seg-item:focus-visible, .lu-chip:focus-visible, .lu-card:focus-visible, .lu-switch:focus-visible, .lu-sheet:focus-visible {
+  outline: 3px solid var(--accent); outline-offset: 3px;
+}
+.lu-sheet:focus-visible { outline-offset: -3px; }
+
+/* ---------- Button ---------- */
+.lu-btn {
+  appearance: none; border: 0; cursor: pointer; font: inherit; text-decoration: none;
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  padding: var(--space-3) var(--space-5); border-radius: var(--radius-pill);
+  font-size: 17px; line-height: 22px; font-weight: 600; letter-spacing: -0.01em;
+  color: var(--ink); position: relative; isolation: isolate; white-space: nowrap;
+  transition: background var(--dur-jelly) var(--ease-settle), color var(--dur-jelly) var(--ease-settle), opacity var(--dur-jelly) var(--ease-settle);
+}
+.lu-btn.is-glass { background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter); box-shadow: inset 0 0 0 1px var(--glass-stroke), var(--shadow-rim), var(--shadow-glass); }
+.lu-btn.is-filled { background: var(--accent); color: var(--on-accent); box-shadow: var(--shadow-rim), var(--shadow-glass); }
+.lu-btn.is-filled::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(180deg, rgba(255,255,255,.22), transparent 55%); pointer-events: none; }
+.lu-btn.is-quiet { background: transparent; color: var(--accent); }
+.lu-btn.is-quiet:hover, .lu-btn.is-glass:hover { background: var(--accent-tint); }
+.lu-btn.is-filled:hover { background: color-mix(in srgb, var(--accent) 88%, var(--bg)); }
+.lu-btn.is-small { padding: var(--space-2) var(--space-4); font-size: 15px; line-height: 20px; }
+.lu-btn.is-icon { padding: 0; width: 44px; height: 44px; }
+.lu-btn.is-icon.is-small { width: 36px; height: 36px; }
+.lu-btn svg { width: 18px; height: 18px; flex: none; }
+.lu-btn:disabled, .lu-btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
+.lu-btn.is-loading { pointer-events: none; }
+.lu-btn.is-loading > :not(.lu-dots) { opacity: 0; }
+.lu-btn.is-loading { color: transparent; }
+.lu-dots { position: absolute; inset: 0; display: none; align-items: center; justify-content: center; gap: 5px; }
+.lu-btn.is-loading .lu-dots { display: flex; }
+.lu-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--ink); animation: lu-pulse 1s var(--ease-settle) infinite; }
+.lu-btn.is-filled .lu-dots i { background: var(--on-accent); }
+.lu-btn.is-quiet .lu-dots i { background: var(--accent); }
+.lu-dots i:nth-child(2) { animation-delay: 160ms; } .lu-dots i:nth-child(3) { animation-delay: 320ms; }
+@keyframes lu-pulse { 0%, 100% { opacity: .3; transform: scale(.8); } 40% { opacity: 1; transform: scale(1); } }
+
+/* ---------- Switch ---------- */
+.lu-switch {
+  appearance: none; border: 0; cursor: pointer; padding: 0; position: relative; flex: none;
+  width: 64px; height: 30px; border-radius: var(--radius-pill);
+  background: var(--control-off); box-shadow: inset 0 1px 3px rgba(0,0,0,.12);
+  -webkit-backdrop-filter: blur(var(--blur-thin)); backdrop-filter: blur(var(--blur-thin));
+  transition: background var(--dur-jelly) var(--ease-settle);
+}
+.lu-switch[aria-checked="true"] { background: var(--accent); box-shadow: inset 0 1px 3px rgba(0,0,0,.18); }
+.lu-switch-knob {
+  position: absolute; top: 2px; left: 2px; width: 38px; height: 26px; border-radius: var(--radius-pill);
+  background: #ffffff; box-shadow: 0 2px 6px rgba(0,0,0,.18), 0 0 0 .5px rgba(0,0,0,.06); transform-origin: 50% 50%;
+}
+.lu-switch[aria-checked="true"] .lu-switch-knob { background: var(--on-accent); }
+.lu-switch-row { display: inline-flex; align-items: center; gap: var(--space-3); font-size: 15px; line-height: 20px; font-weight: 500; }
+
+/* ---------- Lens (NavBar + SegmentedControl) ---------- */
+.lu-lens {
+  position: absolute; z-index: 0; top: 6px; bottom: 6px; left: 0; width: 0;
+  border-radius: var(--radius-pill); background: var(--accent);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 6px 16px rgba(0,0,0,.18);
+  transform-origin: 50% 50%; transition: opacity 200ms ease;
+}
+.lu-lens.is-hidden { opacity: 0; }
+
+/* ---------- NavBar ---------- */
+.lu-nav {
+  display: inline-flex; align-items: center; gap: var(--space-1); padding: 6px;
+  border-radius: var(--radius-pill); position: relative;
+  background: var(--glass-fill);
+  -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter);
+  box-shadow: inset 0 0 0 1px var(--glass-stroke), var(--shadow-rim), var(--shadow-glass);
+  transition: padding var(--dur-morph) var(--ease-spring), gap var(--dur-morph) var(--ease-spring);
+}
+.lu-nav-brand {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: -0.02em; white-space: nowrap; overflow: hidden;
+  padding: 0 var(--space-4) 0 var(--space-3); max-width: 160px; color: inherit; text-decoration: none;
+  transition: max-width var(--dur-morph) var(--ease-settle), padding var(--dur-morph) var(--ease-settle), opacity var(--dur-jelly) var(--ease-settle);
+}
+.lu-nav-item {
+  position: relative; z-index: 1; appearance: none; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 15px; line-height: 20px; font-weight: 600; color: var(--ink); white-space: nowrap;
+  padding: 10px var(--space-4); border-radius: var(--radius-pill); text-decoration: none;
+  transition: color var(--dur-jelly) var(--ease-settle), padding var(--dur-morph) var(--ease-spring);
+}
+.lu-nav-item[aria-current="page"] { color: var(--on-accent); }
+.lu-nav.is-compact { padding: 4px; }
+.lu-nav.is-compact .lu-nav-brand { max-width: 0; padding: 0; opacity: 0; }
+.lu-nav.is-compact .lu-nav-item { padding: 8px var(--space-3); }
+.lu-nav.is-compact .lu-lens { top: 4px; bottom: 4px; }
+
+/* ---------- SegmentedControl ---------- */
+.lu-seg {
+  display: inline-flex; padding: 3px; gap: 2px; position: relative; border-radius: var(--radius-pill);
+  background: var(--glass-fill-strong); box-shadow: inset 0 0 0 1px var(--glass-stroke), var(--shadow-rim);
+  -webkit-backdrop-filter: blur(var(--blur-thin)) saturate(var(--glass-saturate)); backdrop-filter: blur(var(--blur-thin)) saturate(var(--glass-saturate));
+}
+.lu-seg .lu-lens { top: 3px; bottom: 3px; background: var(--surface); box-shadow: 0 3px 10px rgba(0,0,0,.14), 0 0 0 .5px rgba(0,0,0,.04); }
+.lu-seg-item {
+  position: relative; z-index: 1; appearance: none; border: 0; background: none; cursor: pointer; font: inherit;
+  padding: 7px var(--space-4); border-radius: var(--radius-pill); font-size: 14px; line-height: 20px; font-weight: 600; color: var(--ink-secondary);
+  transition: color var(--dur-jelly) var(--ease-settle);
+}
+.lu-seg-item[aria-checked="true"] { color: var(--ink); }
+
+/* ---------- Chip ---------- */
+.lu-chip {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  appearance: none; border: 0; font: inherit;
+  padding: 6px var(--space-3); border-radius: var(--radius-pill);
+  font-size: 13px; line-height: 18px; font-weight: 500; color: var(--ink);
+  background: var(--glass-fill-strong);
+  -webkit-backdrop-filter: blur(var(--blur-thin)) saturate(var(--glass-saturate)); backdrop-filter: blur(var(--blur-thin)) saturate(var(--glass-saturate));
+  box-shadow: inset 0 0 0 1px var(--glass-stroke), var(--shadow-rim);
+  transition: background var(--dur-jelly) var(--ease-settle), box-shadow var(--dur-jelly) var(--ease-settle);
+}
+span.lu-chip { cursor: default; }
+.lu-chip[aria-pressed="true"] { background: var(--accent-tint); box-shadow: inset 0 0 0 1.5px var(--accent), var(--shadow-rim); }
+.lu-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--success); position: relative; }
+
+/* ---------- ProjectCard ---------- */
+.lu-card {
+  display: block; position: relative; text-decoration: none; color: inherit;
+  border-radius: var(--radius-lg); overflow: hidden; isolation: isolate;
+  aspect-ratio: 4 / 3; max-width: 100%; background: var(--surface);
+  box-shadow: var(--shadow-glass);
+  transform: translateY(var(--lift)) scale(var(--lscale));
+  transition: --lift var(--dur-jelly) var(--ease-settle), --lscale var(--dur-press) var(--ease-settle), box-shadow var(--dur-jelly) var(--ease-settle);
+}
+.lu-card:hover { --lift: -4px; box-shadow: var(--shadow-lift); }
+.lu-card:active { --lscale: .99; }
+.lu-card.is-feature { grid-column: 1 / -1; aspect-ratio: 16 / 7; }
+.lu-card-art { position: absolute; inset: 0; z-index: -1; transition: transform 1.2s var(--ease-settle); }
+.lu-card-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lu-card:hover .lu-card-art { transform: scale(1.03); }
+.lu-card-caption {
+  position: absolute; left: var(--space-3); right: var(--space-3); bottom: var(--space-3);
+  padding: var(--space-4) var(--space-5); border-radius: calc(var(--radius-lg) - var(--space-3));
+  display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4);
+}
+.lu-card-title { margin: 0; font-family: var(--font-display); font-size: 24px; line-height: 30px; font-weight: 600; letter-spacing: -0.015em; }
+.lu-card-meta { margin: 2px 0 0; font-size: 15px; line-height: 20px; color: var(--ink-secondary); }
+.lu-card-label { position: absolute; top: var(--space-4); left: var(--space-4); z-index: 1; padding: 5px 10px; border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: 11px; line-height: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink); background: var(--glass-fill-strong); -webkit-backdrop-filter: blur(var(--blur-thin)) saturate(var(--glass-saturate)); backdrop-filter: blur(var(--blur-thin)) saturate(var(--glass-saturate)); box-shadow: inset 0 0 0 1px var(--glass-stroke); }
+.lu-card-go {
+  flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--accent); color: var(--on-accent); transition: transform var(--dur-jelly) var(--ease-settle);
+}
+.lu-card-go svg { width: 18px; height: 18px; }
+.lu-card:hover .lu-card-go { transform: translateX(3px); }
+.lu-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-5); }
+@media (max-width: 720px) { .lu-grid { grid-template-columns: 1fr; } .lu-card.is-feature { aspect-ratio: 4 / 3; } }
+
+
+/* ---------- Stealth card: an unreleased project behind frosted glass ---------- */
+.lu-card.is-stealth .lu-card-art { background: var(--surface-raised); }
+.lu-card-frost { position: absolute; inset: 0; z-index: 0; background: var(--glass-fill); -webkit-backdrop-filter: blur(22px) saturate(140%); backdrop-filter: blur(22px) saturate(140%); }
+.lu-card.is-stealth .lu-card-label, .lu-card.is-stealth .lu-card-caption { z-index: 1; }
+.lu-card-label.has-icon { display: inline-flex; align-items: center; gap: 6px; }
+.lu-card-label svg { width: 12px; height: 12px; }
+.lu-card-art img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+
+/* ---------- ContactTiles: each way to reach you as a small glass tile with its own glyph ---------- */
+.lu-contact { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-3); }
+.lu-contact-tile {
+  appearance: none; border: 0; font: inherit; color: var(--ink); text-align: left; text-decoration: none; cursor: pointer;
+  position: relative; display: grid; grid-template-rows: auto 1fr auto auto; gap: 2px; min-height: 148px; padding: var(--space-4);
+  border-radius: var(--radius-md); background: var(--surface);
+  box-shadow: var(--shadow-glass);
+  transition: box-shadow var(--dur-jelly) var(--ease-settle), background var(--dur-jelly) var(--ease-settle);
+}
+.lu-contact-tile:hover { box-shadow: var(--shadow-lift); }
+.lu-contact-tile:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.lu-contact-glyph { width: 40px; height: 40px; color: var(--ink); }
+.lu-contact-glyph svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.lu-contact-label { grid-row: 3; font-size: 15px; line-height: 20px; font-weight: 600; }
+.lu-contact-value { grid-row: 4; font-size: 13px; line-height: 18px; color: var(--ink-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lu-contact-go { position: absolute; top: var(--space-4); right: var(--space-4); width: 16px; height: 16px; color: var(--ink-secondary); transition: transform var(--dur-jelly) var(--ease-settle), color var(--dur-jelly) var(--ease-settle); }
+.lu-contact-tile:hover .lu-contact-go { transform: translate(2px, -2px); color: var(--ink); }
+.lu-contact-tile.is-primary { background: var(--accent); color: var(--on-accent); box-shadow: var(--shadow-glass); }
+.lu-contact-tile.is-primary .lu-contact-glyph, .lu-contact-tile.is-primary .lu-contact-go { color: var(--on-accent); }
+.lu-contact-tile.is-primary .lu-contact-value { color: var(--on-accent); opacity: .75; }
+/* email glyph: the flap lifts a little on hover, the only glyph that moves */
+.lu-glyph-flap { transform-origin: 50% 30%; transition: transform var(--dur-jelly) var(--ease-settle); }
+.lu-contact-tile:hover .lu-glyph-flap { transform: scaleY(-0.35); }
+
+
+/* ---------- Layout primitives: the page frame every section is built on ---------- */
+.lu-page { max-width: 1152px; margin: 0 auto; padding-inline: clamp(16px, 5vw, 64px); }
+.lu-section { padding-block: clamp(72px, 10vw, 120px) 0; }
+.lu-section.is-first { padding-block-start: clamp(40px, 6vw, 72px); }
+.lu-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-5); flex-wrap: wrap; margin-bottom: var(--space-6); }
+.lu-kicker { margin: 0 0 var(--space-3); font-family: var(--font-mono); font-size: 12px; line-height: 16px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-secondary); }
+.lu-title { margin: 0; font-family: var(--font-display); font-size: clamp(32px, 4.5vw, 44px); line-height: 1.1; font-weight: 700; letter-spacing: -0.025em; text-wrap: balance; }
+.lu-title-sm { margin: 0; font-family: var(--font-display); font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -0.015em; }
+.lu-lede { margin: var(--space-3) 0 0; max-width: 44ch; font-size: 19px; line-height: 28px; color: var(--ink-secondary); }
+.lu-prose { background: var(--surface); border-radius: var(--radius-lg); padding: clamp(20px, 3vw, 32px); box-shadow: var(--shadow-glass); }
+.lu-prose > p { margin: 0 0 var(--space-4); max-width: 64ch; }
+.lu-prose > p:last-child { margin-bottom: 0; }
+.lu-prose .is-muted { color: var(--ink-secondary); }
+.lu-footer { padding-block: var(--space-6) var(--space-7); text-align: center; font-size: 13px; line-height: 18px; color: var(--ink-secondary); }
+
+/* Case study: a meta row, sections with a sticky label column, screenshots and highlights */
+.lu-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: var(--space-4); margin: var(--space-6) 0 0; padding-top: var(--space-5); border-top: 1px solid var(--hairline); }
+.lu-meta > div { display: grid; grid-template-columns: 20px minmax(0, 1fr); column-gap: 10px; align-items: start; }
+.lu-meta svg { width: 18px; height: 18px; color: var(--ink-secondary); margin-top: 2px; grid-row: span 2; }
+.lu-meta dt { font-family: var(--font-mono); font-size: 11px; line-height: 14px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-secondary); }
+.lu-meta dd { margin: 2px 0 0; font-size: 15px; line-height: 21px; font-weight: 500; }
+.lu-case { display: grid; gap: clamp(48px, 7vw, 80px); padding-block: clamp(40px, 7vw, 80px) 0; }
+.lu-case > section { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: clamp(16px, 4vw, 48px); align-items: start; }
+.lu-case > section > h2 { position: sticky; top: 96px; }
+.lu-case p { margin: 0 0 var(--space-4); max-width: 64ch; }
+.lu-case p:last-child { margin-bottom: 0; }
+.lu-shots { display: grid; gap: var(--space-5); }
+.lu-shots.is-two { grid-template-columns: 1fr 1fr; }
+.lu-shot { margin: 0; border-radius: var(--radius-lg); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-glass); }
+.lu-shot img { display: block; width: 100%; height: auto; }
+.lu-shot figcaption { padding: var(--space-3) var(--space-5); font-size: 14px; line-height: 20px; color: var(--ink-secondary); border-top: 1px solid var(--hairline); }
+.lu-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+.lu-step { background: var(--surface); border-radius: var(--radius-md); padding: var(--space-5); box-shadow: var(--shadow-glass); }
+.lu-step b { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: var(--on-accent); font-size: 13px; font-weight: 600; margin-bottom: var(--space-3); }
+.lu-step h3 { margin: 0 0 6px; font-size: 17px; line-height: 22px; font-weight: 600; }
+.lu-step p { margin: 0; font-size: 15px; line-height: 22px; color: var(--ink-secondary); }
+.lu-points { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); max-width: 64ch; }
+.lu-points li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: var(--space-3); align-items: start; background: var(--surface); border-radius: var(--radius-md); padding: var(--space-4) var(--space-5); box-shadow: var(--shadow-glass); }
+.lu-points svg { width: 20px; height: 20px; margin-top: 3px; }
+.lu-points b { display: block; font-weight: 600; }
+.lu-points span { color: var(--ink-secondary); font-size: 15px; line-height: 22px; }
+.lu-timeline { list-style: none; margin: 0; padding: 0; max-width: 64ch; }
+.lu-timeline li { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--hairline); font-variant-numeric: tabular-nums; }
+.lu-timeline time { font-family: var(--font-mono); font-size: 13px; line-height: 20px; color: var(--ink-secondary); }
+@media (max-width: 760px) {
+  .lu-case > section { grid-template-columns: 1fr; }
+  .lu-case > section > h2 { position: static; }
+  .lu-shots.is-two, .lu-steps { grid-template-columns: 1fr; }
+}
+
+/* ---------- Toast ---------- */
+.lu-toast-region { position: fixed; z-index: var(--layer-toast, 120); left: 0; right: 0; top: calc(env(safe-area-inset-top, 0px) + var(--space-5)); display: grid; justify-items: center; gap: var(--space-2); pointer-events: none; padding-inline: var(--space-4); }
+.lu-toast { --lu-r: var(--radius-pill); pointer-events: auto; cursor: pointer; display: inline-flex; align-items: center; gap: var(--space-2); padding: 10px var(--space-5) 10px var(--space-3); font-size: 15px; line-height: 20px; font-weight: 600; color: var(--ink); max-width: min(420px, 100%); }
+.lu-toast-icon { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--success); color: var(--surface); flex: none; }
+.lu-toast-icon svg { width: 14px; height: 14px; }
+
+/* ---------- Sheet ---------- */
+.lu-sheet-layer { position: fixed; inset: 0; z-index: var(--layer-sheet, 100); display: grid; place-items: center; padding: var(--space-5) var(--space-4); }
+.lu-sheet-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.28); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+.lu-sheet { --lu-r: var(--radius-xl); position: relative; width: min(640px, 100%); max-height: calc(100% - var(--space-7)); overflow: auto; padding: var(--space-7) var(--space-6) var(--space-6); outline: none; }
+.lu-sheet-close { position: absolute !important; top: var(--space-4); right: var(--space-4); z-index: 2; }
+.lu-sheet-body h2 { margin: 0 0 var(--space-3); font-family: var(--font-display); font-size: 28px; line-height: 34px; font-weight: 600; letter-spacing: -0.015em; }
+.lu-sheet-body p { margin: 0 0 var(--space-4); color: var(--ink-secondary); }
+
+/* ---------- Hero: shared ---------- */
+.lu-hero { position: relative; }
+.lu-hero h1 { margin: 0; font-family: var(--font-display); font-weight: 700; letter-spacing: -0.035em; text-wrap: balance; }
+.lu-hero-lede { margin: var(--space-4) 0 0; font-size: 21px; line-height: 30px; color: var(--ink-secondary); max-width: 38ch; }
+.lu-hero-actions { display: flex; gap: var(--space-3); margin-top: var(--space-6); flex-wrap: wrap; }
+.lu-hero-inner { max-width: 1152px; margin: 0 auto; padding-inline: clamp(16px, 5vw, 64px); }
+
+/* Hero, page variant: the opening reads like a well-kept doc page. Cover band, page icon, title, properties. */
+.lu-hero.is-page { padding-bottom: var(--space-8); }
+.lu-hero-cover { height: clamp(160px, 24vw, 260px); position: relative; overflow: hidden; background: var(--surface-raised); border-bottom: 1px solid var(--hairline); }
+.lu-hero-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.lu-hero-icon { width: 96px; height: 96px; margin-top: -48px; position: relative; z-index: 1; border-radius: 24px; background: var(--surface); box-shadow: var(--shadow-glass); display: grid; place-items: center; overflow: hidden; font-family: var(--font-display); font-size: 36px; font-weight: 700; letter-spacing: -0.04em; color: var(--ink); }
+.lu-hero-icon img { width: 100%; height: 100%; object-fit: cover; }
+.lu-hero.is-page h1 { margin-top: var(--space-5); font-size: clamp(44px, 7vw, 72px); line-height: 1.04; }
+.lu-props { margin: var(--space-5) 0 0; display: grid; gap: 2px; max-width: 640px; }
+.lu-props > div { display: grid; grid-template-columns: 148px minmax(0, 1fr); align-items: center; min-height: 36px; border-radius: 8px; padding: 0 var(--space-2); margin: 0 calc(var(--space-2) * -1); transition: background var(--dur-jelly) var(--ease-settle); }
+.lu-props > div:hover { background: var(--accent-tint); }
+.lu-props dt { display: flex; align-items: center; gap: var(--space-2); font-size: 14px; line-height: 20px; color: var(--ink-secondary); }
+.lu-props dt svg { width: 16px; height: 16px; flex: none; }
+.lu-props dd { margin: 0; font-size: 15px; line-height: 22px; color: var(--ink); min-width: 0; }
+.lu-props dd a { color: inherit; }
+.lu-props time { font-variant-numeric: tabular-nums; color: var(--ink-secondary); }
+.lu-tag { display: inline-flex; align-items: center; gap: 6px; padding: 1px 8px; border-radius: 6px; font-size: 14px; line-height: 22px; color: var(--ink); background: var(--tag-gray); }
+.lu-tag.is-green { background: var(--tag-green); } .lu-tag.is-blue { background: var(--tag-blue); } .lu-tag.is-orange { background: var(--tag-orange); } .lu-tag.is-purple { background: var(--tag-purple); }
+.lu-tag .lu-dot { width: 6px; height: 6px; }
+
+/* Hero, lens variant: one liquid-glass lens rests on the name and magnifies the ink under it. Drag it; nothing else moves. */
+.lu-hero.is-lens { padding-block: clamp(120px, 14vw, 168px) var(--space-8); overflow: hidden; }
+.lu-lens-stage { position: relative; }
+.lu-lens-type { font-size: clamp(64px, 13vw, 176px) !important; line-height: .92 !important; letter-spacing: -0.05em !important; user-select: none; }
+.lu-lens-glass {
+  position: absolute; left: 0; top: 0; width: var(--lens-size, 180px); height: var(--lens-size, 180px); border-radius: 50%; overflow: hidden; z-index: 2;
+  cursor: grab; touch-action: none; outline: none;
+  box-shadow: inset 0 0 0 1px var(--glass-stroke), inset 0 2px 1px rgba(255,255,255,.6), inset 0 -3px 6px rgba(0,0,0,.08), var(--shadow-lift);
+  transform: translate(var(--lx, 0px), var(--ly, 0px));
+}
+.lu-lens-glass:active { cursor: grabbing; }
+.lu-lens-glass:focus-visible { box-shadow: 0 0 0 3px var(--accent), var(--shadow-lift); }
+.lu-lens-glass::after { content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none; background: radial-gradient(120% 80% at 30% 0%, var(--glass-specular), transparent 45%), radial-gradient(90% 60% at 70% 110%, var(--glass-shade), transparent 60%); opacity: .55; }
+.lu-lens-inner { position: absolute; left: 0; top: 0; background: var(--bg); pointer-events: none; }
+.lu-lens-inner::before { content: ""; position: absolute; inset: 0; background-image: radial-gradient(var(--dot) 1px, transparent 1.3px); background-size: 20px 20px; background-position: 10px 10px; }
+.lu-lens-inner .lu-lens-type { position: relative; }
+.lu-lens-hint { margin-top: var(--space-4); font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-secondary); }
+@media (max-width: 720px) { .lu-props > div { grid-template-columns: 112px minmax(0, 1fr); } .lu-lens-glass { --lens-size: 120px; } }
+
+/* ---------- ExperienceList: a scannable list of roles; each row opens to show what you did ---------- */
+.lu-exp { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--hairline); }
+.lu-exp-item { border-bottom: 1px solid var(--hairline); }
+.lu-exp-row { appearance: none; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; width: 100%; display: grid; grid-template-columns: 44px minmax(0, 1fr) auto 20px; align-items: center; gap: var(--space-4); padding: var(--space-4) var(--space-2); margin: 0; border-radius: var(--radius-sm); transition: background var(--dur-jelly) var(--ease-settle); }
+.lu-exp-row:hover { background: var(--accent-tint); }
+.lu-exp-row:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.lu-exp-mark { width: 44px; height: 44px; border-radius: 12px; background: var(--surface-raised); box-shadow: inset 0 0 0 1px var(--hairline); display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: -0.02em; overflow: hidden; }
+.lu-exp-mark img { width: 100%; height: 100%; object-fit: cover; }
+.lu-exp-main { min-width: 0; display: grid; gap: 1px; }
+.lu-exp-main b { font-size: 17px; line-height: 22px; font-weight: 600; display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.lu-exp-main > span { font-size: 15px; line-height: 20px; color: var(--ink-secondary); }
+.lu-exp-when { font-family: var(--font-mono); font-size: 13px; line-height: 18px; color: var(--ink-secondary); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.lu-exp-chev { width: 20px; height: 20px; color: var(--ink-secondary); transition: transform var(--dur-morph) var(--ease-spring); }
+.lu-exp-row[aria-expanded="true"] .lu-exp-chev { transform: rotate(180deg); }
+.lu-exp-detail { overflow: hidden; }
+.lu-exp-detail[hidden] { display: none; }
+.lu-exp-detail-inner { padding: 0 var(--space-2) var(--space-5) calc(44px + var(--space-4) + var(--space-2)); }
+.lu-exp-detail ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 62ch; font-size: 15px; line-height: 22px; }
+.lu-exp-detail .lu-exp-stack { display: flex; flex-wrap: wrap; gap: 6px; margin-top: var(--space-3); }
+@media (max-width: 720px) { .lu-exp-row { grid-template-columns: 40px minmax(0, 1fr) 20px; } .lu-exp-when { grid-column: 2; grid-row: 2; } .lu-exp-detail-inner { padding-left: var(--space-2); } }
+
+/* ---------- ArtGallery: drawings hung on paper. Never cropped, never under glass. ---------- */
+.lu-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr)); grid-auto-rows: 4px; column-gap: var(--space-5); }
+.lu-art { margin: 0 0 var(--space-5); display: flex; flex-direction: column; gap: var(--space-2); align-self: start; }
+.lu-art-open { appearance: none; border: 0; padding: 10px; margin: 0; cursor: zoom-in; display: block; width: 100%; background: var(--surface); border-radius: 6px; box-shadow: var(--shadow-glass); transition: box-shadow var(--dur-jelly) var(--ease-settle), transform var(--dur-jelly) var(--ease-settle); }
+.lu-art-open:hover { box-shadow: var(--shadow-lift); transform: translateY(-2px); }
+.lu-art-open:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.lu-art-open img { display: block; width: 100%; height: auto; background: var(--fill-muted); border-radius: 2px; }
+.lu-art figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); padding: 0 2px; }
+.lu-art figcaption b { font-size: 14px; line-height: 20px; font-weight: 600; }
+.lu-art figcaption span { font-size: 13px; line-height: 18px; color: var(--ink-secondary); white-space: nowrap; }
+
+/* Lightbox: a quiet paper room. The drawing is the only thing with weight; controls float as glass. */
+.lu-lightbox { position: fixed; inset: 0; z-index: var(--layer-sheet, 100); display: grid; grid-template-rows: 1fr auto; }
+.lu-lightbox-bg { position: absolute; inset: 0; background: var(--bg); opacity: .97; }
+.lu-lightbox-stage { position: relative; display: flex; align-items: center; justify-content: center; padding: 72px var(--space-5) var(--space-4); min-height: 0; overflow: hidden; }
+.lu-lightbox-img { display: block; max-width: min(100%, 1100px); max-height: calc(100vh - 230px); max-height: calc(100dvh - 230px); width: auto; height: auto; object-fit: contain; box-sizing: border-box; background: #fff; padding: 12px; border-radius: 4px; box-shadow: var(--shadow-lift); }
+.lu-lightbox-info { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-5); padding: var(--space-3) var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom, 0px)); max-width: 1180px; width: 100%; margin: 0 auto; }
+.lu-lightbox-info h2 { margin: 0; font-family: var(--font-display); font-size: 22px; line-height: 28px; font-weight: 600; letter-spacing: -0.015em; }
+.lu-lightbox-info p { margin: 4px 0 0; font-size: 15px; line-height: 22px; color: var(--ink-secondary); max-width: 60ch; }
+.lu-lightbox-process { display: flex; gap: var(--space-2); flex: none; }
+.lu-lightbox-process button { appearance: none; border: 0; padding: 3px; background: var(--surface); border-radius: 6px; box-shadow: var(--shadow-glass); cursor: pointer; }
+.lu-lightbox-process button[aria-current="true"] { box-shadow: 0 0 0 2px var(--accent); }
+.lu-lightbox-process img { width: 48px; height: 48px; object-fit: cover; display: block; border-radius: 3px; }
+.lu-lightbox-bar { position: absolute; top: calc(var(--space-4) + env(safe-area-inset-top, 0px)); left: 50%; transform: translateX(-50%); z-index: 2; display: flex; align-items: center; gap: var(--space-1); padding: 5px; border-radius: var(--radius-pill); background: var(--glass-fill); -webkit-backdrop-filter: var(--glass-filter); backdrop-filter: var(--glass-filter); box-shadow: inset 0 0 0 1px var(--glass-stroke), var(--shadow-rim), var(--shadow-glass); }
+.lu-lightbox-bar .lu-btn { width: 36px; height: 36px; padding: 0; }
+.lu-lightbox-count { font-family: var(--font-mono); font-size: 12px; min-width: 56px; text-align: center; color: var(--ink-secondary); font-variant-numeric: tabular-nums; }
+@media (max-width: 720px) { .lu-lightbox-info { flex-direction: column; align-items: stretch; } }
+
+/* ---------- Link: the underline draws in on hover ---------- */
+.lu-link { color: var(--ink); text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; transition: background-size var(--dur-jelly) var(--ease-settle); padding-bottom: 2px; }
+.lu-link:hover, .lu-link:focus-visible { background-size: 100% 1.5px; }
+
+/* ---------- Reveal ---------- */
+.lu-pending { opacity: 0; transform: translateY(12px); }
+.lu-pending.lu-in { opacity: 1; transform: none; transition: opacity var(--dur-enter) var(--ease-settle), transform var(--dur-enter) var(--ease-settle); }
+
+/* ---------- View transitions: page swap and the theme reveal ---------- */
+.lu-vt-page::view-transition-old(root) { animation: lu-vt-out 160ms var(--ease-exit) both; }
+.lu-vt-page::view-transition-new(root) { animation: lu-vt-in var(--dur-enter) var(--ease-settle) both; }
+@keyframes lu-vt-out { to { opacity: 0; } }
+@keyframes lu-vt-in { from { opacity: 0; transform: translateY(8px); } }
+.lu-vt-theme::view-transition-old(root), .lu-vt-theme::view-transition-new(root) { animation-duration: 320ms; animation-timing-function: var(--ease-settle); }
+
+@media (prefers-reduced-motion: reduce) {
+  .lu-dots i { animation-duration: 2s; }
+  .lu-card, .lu-card-art, .lu-card-go, .lu-chip, .lu-nav, .lu-nav-item, .lu-nav-brand { transition-duration: 150ms; transition-timing-function: ease; }
+  .lu-card:hover { --lift: 0px; --lscale: 1; }
+  .lu-card:hover .lu-card-art, .lu-card:hover .lu-card-go, .lu-contact-tile:hover .lu-contact-go, .lu-contact-tile:hover .lu-glyph-flap, .lu-art-open:hover { transform: none; }
+  .lu-exp-chev { transition-duration: 150ms; }
+  .lu-pending { opacity: 1; transform: none; }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .lu-glass, .lu-glass.is-clear, .lu-btn.is-glass, .lu-nav, .lu-chip, .lu-seg { background: var(--surface); }
+}

@@ -4,31 +4,27 @@
   "version": "2.0.0",
   "type": "module",
   "scripts": {
+    "tokens": "node scripts/build-tokens.mjs",
+    "predev": "npm run tokens",
     "dev": "next dev",
+    "prebuild": "npm run tokens",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@fontsource-variable/geist-mono": "^5.3.0",
-    "@fontsource-variable/inter": "^5.2.8",
     "@vercel/analytics": "^1.5.0",
-    "lucide-react": "^0.552.0",
-    "motion": "^12.23.24",
     "next": "^15.5.4",
     "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "react-icons": "^5.5.0"
+    "react-dom": "^19.1.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.14",
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "eslint": "^9.36.0",
     "eslint-config-next": "^15.5.4",
-    "tailwindcss": "^4.1.14",
     "typescript": "^5.9.2"
   }
 }

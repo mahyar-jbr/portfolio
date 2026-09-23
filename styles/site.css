@@ -1,0 +1,247 @@
+/*
+ * Site glue — the only hand-written CSS on the site.
+ *
+ * Everything visual comes from the Lucent kit: design-system/lucent/bundle.css
+ * (components and layout primitives) and styles/tokens.css (generated from
+ * tokens.json). What lives here is what the kit leaves to the page: the page
+ * ground, where the nav floats, the page-level styles from the kit's own
+ * templates (hero curve, card diagrams, case-study header), and the CSS versions
+ * of the kit's first-paint motion. Every value is a Lucent token.
+ */
+
+/* ---------- Page ---------- */
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+}
+body {
+  /* Lucent `body`: all reading copy */
+  font: var(--text-body);
+  letter-spacing: -0.01em;
+}
+img {
+  max-width: 100%;
+}
+
+/* Every interactive element shows the kit's focus ring: 3px accent, offset 3px.
+   :where() keeps this at zero specificity so the kit's own rules win. */
+:where(a, button, [tabindex]):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Section anchors land clear of the floating nav. */
+.lu-section[id] {
+  scroll-margin-top: var(--space-4);
+}
+
+.site-skip {
+  position: absolute;
+  left: var(--space-4);
+  top: -100px;
+  z-index: calc(var(--layer-toast) + 1);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+  font: var(--text-headline);
+  text-decoration: none;
+}
+.site-skip:focus-visible {
+  top: calc(env(safe-area-inset-top, 0px) + var(--space-4));
+}
+
+/* ---------- NavBar placement (kit: fixed, centred, top space-5 + safe area, layer-nav) ---------- */
+.site-nav {
+  position: fixed;
+  z-index: var(--layer-nav);
+  top: calc(env(safe-area-inset-top, 0px) + var(--space-5));
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--space-4);
+  pointer-events: none;
+}
+.site-nav .lu-nav {
+  pointer-events: auto;
+  max-width: 100%;
+}
+/* At phone width the name gives way so four items fit on one line with no
+   horizontal scroll (390px bar) — the same trade the compact state makes. */
+@media (max-width: 560px) {
+  .site-nav .lu-nav-brand {
+    display: none;
+  }
+  .site-nav .lu-nav-item {
+    padding-inline: 11px;
+  }
+}
+
+/* ---------- Scripts blocked (kit bar: "everything is visible at rest, only motion is lost") ----------
+   Two kit components lean on the runtime for layout, so they get a resting
+   form of their own until it arrives:
+   - the nav's current item is ink-on-lens; with no lens it wears the lens colour itself;
+   - the gallery packs 4px rows spanned by script; unpacked it flows as a plain grid. */
+.lu-nav:not(:has(.lu-lens)) .lu-nav-item[aria-current='page'] {
+  background: var(--accent);
+}
+.lu-gallery:not(.is-wired) {
+  grid-auto-rows: auto;
+  align-items: start;
+}
+/* The live clock's separator only appears once the clock has a time to show. */
+.lu-props time[data-live]:not(:empty)::before {
+  content: '· ';
+}
+
+/* ---------- Hero (kit PortfolioPage template) ---------- */
+.lu-hero-curve {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  color: var(--ink-secondary);
+}
+
+/* Entrance: the CSS form of Lucent.enter() — fade and rise 12px, 70ms apart,
+   on ease-settle over dur-enter. Starts with the first paint of the
+   server-rendered page, and the resting state is fully visible. */
+@keyframes site-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes site-fade {
+  from {
+    opacity: 0;
+  }
+}
+/* Brand reveal: the sigma turns a quarter clockwise into the M, on the kit's
+   spring easing — the same frames as Lucent.drawMark(). */
+@keyframes site-mark-turn {
+  from {
+    transform: rotate(-90deg);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-enter] {
+    animation: site-enter var(--dur-enter) var(--ease-settle) backwards;
+    animation-delay: calc(var(--enter-i, 0) * 70ms);
+  }
+  .lu-hero-icon.is-reveal .lu-mark [data-turn] {
+    transform-box: fill-box;
+    transform-origin: 50% 50%;
+    animation: site-mark-turn 900ms var(--ease-spring) 200ms backwards;
+  }
+}
+/* Reduced motion: springs jump to rest, everything else is a fade of ≤150ms. */
+@media (prefers-reduced-motion: reduce) {
+  [data-enter] {
+    animation: site-fade 150ms ease backwards;
+  }
+}
+
+/* ---------- Page swap for route changes outside Lucent.transition ---------- */
+@keyframes site-route-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.site-navigated .site-route {
+  animation: site-route-in var(--dur-enter) var(--ease-settle) backwards;
+}
+.lu-vt-page .site-route {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-navigated .site-route {
+    animation: site-fade 150ms ease backwards;
+  }
+}
+
+/* ---------- Projects ---------- */
+.site-filters {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Card art that isn't a screenshot: a diagram in ink on the warm grey dot canvas
+   (kit: .fh + .graph), or the stealth card's abstract bars (kit: .bars). */
+.lu-card-art.art-canvas {
+  background: var(--surface-raised);
+  color: var(--ink);
+}
+.art-diagram {
+  position: absolute;
+  inset: 12% 14% 34%;
+  width: 72%;
+  height: auto;
+}
+.art-bars {
+  position: absolute;
+  inset: 18% 14% 34%;
+  display: flex;
+  align-items: flex-end;
+  gap: 8%;
+}
+.art-bars i {
+  flex: 1;
+  background: var(--ink);
+  border-radius: 6px;
+  opacity: 0.16;
+}
+.art-bars i:last-child {
+  opacity: 0.9;
+}
+
+/* ---------- Case study header (kit CaseStudy template) ---------- */
+.case-hero {
+  /* the kit's clamp(56px, 8vw, 88px), plus room for the floating nav */
+  padding-block: calc(clamp(56px, 8vw, 88px) + 56px) 0;
+}
+.case-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+.case-title img,
+.case-monogram {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: var(--shadow-glass);
+  flex: none;
+}
+.case-monogram {
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.case-hero h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 6vw, 64px);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+.case-next .lu-card {
+  aspect-ratio: 16 / 6;
+}
+@media (max-width: 720px) {
+  .case-next .lu-card {
+    aspect-ratio: 4 / 3;
+  }
+}

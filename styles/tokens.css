@@ -1,0 +1,216 @@
+/* Lucent v6 — GENERATED from design-system/lucent/tokens.json by scripts/build-tokens.mjs. Do not edit. */
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #fbfbfa; /* Page ground: warm paper white in light, soft black in dark. No colour ever sits behind components; use .lu-wall (bg with a fine dot grid) where a section wants texture. */
+  --surface: #ffffff; /* Solid (non-glass) content cards: reading blocks, case-study bodies. */
+  --surface-raised: #f7f6f3; /* Nested solid blocks inside a surface card: callouts, code, stat rows. The warm grey is the signature neutral. */
+  --ink: #191918; /* Primary text and icons on bg, surface, surface-raised and every glass fill. Also the primary button fill: ink is the brand colour. */
+  --ink-secondary: #6b6a66; /* Supporting text (meta, captions, descriptions) on bg, surface, surface-raised and glass-fill-strong. At least 4.8:1 in both themes. */
+  --hairline: rgba(55, 53, 47, 0.12); /* Dividers and the 1px outline of solid cards. Decorative only, never the only edge of a control. */
+  --glass-fill: rgba(255, 255, 255, 0.5); /* Clear glass: nav capsule, chips and controls floating over real content (screenshots, drawings, text scrolling under the nav). */
+  --glass-fill-strong: rgba(255, 255, 255, 0.76); /* Regular glass: panels that carry text (captions, sheets, hero slab). Use this whenever ink-secondary sits on glass. */
+  --glass-stroke: rgba(255, 255, 255, 0.85); /* 1px rim on every glass element; the lit edge of the lens. */
+  --glass-specular: rgba(255, 255, 255, 0.95); /* The fixed sheen across the top of glass and the bright top-left of the refraction rim. */
+  --glass-shade: rgba(55, 53, 47, 0.08); /* Bottom-right of the refraction rim, giving the lens thickness. */
+  --accent: #191918; /* The action colour, which is ink: primary buttons, the nav lens, card arrows, the email tile and the focus ring. Black on paper in light, white on black in dark. */
+  --on-accent: #ffffff; /* Text and icons on an accent fill. */
+  --accent-tint: rgba(55, 53, 47, 0.08); /* Selected chips and quiet-button hover: a warm grey wash. Text on it stays ink. */
+  --control-off: rgba(55, 53, 47, 0.2); /* Switch track when off. */
+  --fill-muted: #ecebe7; /* Muted blocks: image placeholders while art loads, skeletons, the cover's quiet blocks. Never behind text that needs contrast. */
+  --dot: rgba(55, 53, 47, 0.16); /* The dot grid of .lu-wall canvases: the only texture in the kit, monochrome, for heroes and demo grounds. */
+  --tag-gray: #f1f1ef; /* Soft label background for chips and project tags (gray). Text on it is always ink; use a tag colour to group, never to signal state. */
+  --tag-brown: #f4eeee; /* Soft label background for chips and project tags (brown). Text on it is always ink; use a tag colour to group, never to signal state. */
+  --tag-orange: #fbecdd; /* Soft label background for chips and project tags (orange). Text on it is always ink; use a tag colour to group, never to signal state. */
+  --tag-yellow: #fbf3db; /* Soft label background for chips and project tags (yellow). Text on it is always ink; use a tag colour to group, never to signal state. */
+  --tag-green: #edf3ec; /* Soft label background for chips and project tags (green). Text on it is always ink; use a tag colour to group, never to signal state. */
+  --tag-blue: #e7f3f8; /* Soft label background for chips and project tags (blue). Text on it is always ink; use a tag colour to group, never to signal state. */
+  --tag-purple: #f6f3f9; /* Soft label background for chips and project tags (purple). Text on it is always ink; use a tag colour to group, never to signal state. */
+  --tag-pink: #faf1f5; /* Soft label background for chips and project tags (pink). Text on it is always ink; use a tag colour to group, never to signal state. */
+  --tag-red: #fdebec; /* Soft label background for chips and project tags (red). Text on it is always ink; use a tag colour to group, never to signal state. */
+  --success: #3f7a57; /* 'Available for work' dot and success text on bg and surface, always with a word beside it. */
+  --danger: #c4332e; /* Form errors on bg and surface, always with a message. */
+  --shadow-glass: 0 0 0 1px rgba(15, 15, 15, 0.04), 0 3px 6px rgba(15, 15, 15, 0.05), 0 12px 32px rgba(15, 15, 15, 0.08); /* Every floating glass element and solid card at rest: a hairline ring plus two soft layers. */
+  --shadow-lift: 0 0 0 1px rgba(15, 15, 15, 0.05), 0 8px 16px rgba(15, 15, 15, 0.08), 0 28px 60px rgba(15, 15, 15, 0.14); /* Hovered cards and raised sheets. */
+  --shadow-rim: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(55, 53, 47, 0.06); /* Inner edge light on every glass element, layered under shadow-glass. */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #191919;
+    --surface: #202020;
+    --surface-raised: #2a2a2a;
+    --ink: #ededeb;
+    --ink-secondary: #9b9a97;
+    --hairline: rgba(255, 255, 255, 0.09);
+    --glass-fill: rgba(32, 32, 32, 0.45);
+    --glass-fill-strong: rgba(38, 38, 38, 0.72);
+    --glass-stroke: rgba(255, 255, 255, 0.12);
+    --glass-specular: rgba(255, 255, 255, 0.22);
+    --glass-shade: rgba(0, 0, 0, 0.4);
+    --accent: #ededeb;
+    --on-accent: #191918;
+    --accent-tint: rgba(255, 255, 255, 0.08);
+    --control-off: rgba(255, 255, 255, 0.16);
+    --fill-muted: #2c2c2c;
+    --dot: rgba(255, 255, 255, 0.10);
+    --tag-gray: #2f2f2f;
+    --tag-brown: #4a3228;
+    --tag-orange: #5c3b23;
+    --tag-yellow: #564328;
+    --tag-green: #243d30;
+    --tag-blue: #143a4e;
+    --tag-purple: #3c2d49;
+    --tag-pink: #4e2c3c;
+    --tag-red: #522e2a;
+    --success: #5fb37e;
+    --danger: #ff7369;
+    --shadow-glass: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 3px 6px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.5);
+    --shadow-lift: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 8px 16px rgba(0, 0, 0, 0.5), 0 28px 60px rgba(0, 0, 0, 0.65);
+    --shadow-rim: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.45);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #191919;
+  --surface: #202020;
+  --surface-raised: #2a2a2a;
+  --ink: #ededeb;
+  --ink-secondary: #9b9a97;
+  --hairline: rgba(255, 255, 255, 0.09);
+  --glass-fill: rgba(32, 32, 32, 0.45);
+  --glass-fill-strong: rgba(38, 38, 38, 0.72);
+  --glass-stroke: rgba(255, 255, 255, 0.12);
+  --glass-specular: rgba(255, 255, 255, 0.22);
+  --glass-shade: rgba(0, 0, 0, 0.4);
+  --accent: #ededeb;
+  --on-accent: #191918;
+  --accent-tint: rgba(255, 255, 255, 0.08);
+  --control-off: rgba(255, 255, 255, 0.16);
+  --fill-muted: #2c2c2c;
+  --dot: rgba(255, 255, 255, 0.10);
+  --tag-gray: #2f2f2f;
+  --tag-brown: #4a3228;
+  --tag-orange: #5c3b23;
+  --tag-yellow: #564328;
+  --tag-green: #243d30;
+  --tag-blue: #143a4e;
+  --tag-purple: #3c2d49;
+  --tag-pink: #4e2c3c;
+  --tag-red: #522e2a;
+  --success: #5fb37e;
+  --danger: #ff7369;
+  --shadow-glass: 0 0 0 1px rgba(255, 255, 255, 0.05), 0 3px 6px rgba(0, 0, 0, 0.4), 0 12px 32px rgba(0, 0, 0, 0.5);
+  --shadow-lift: 0 0 0 1px rgba(255, 255, 255, 0.07), 0 8px 16px rgba(0, 0, 0, 0.5), 0 28px 60px rgba(0, 0, 0, 0.65);
+  --shadow-rim: inset 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 -1px 0 rgba(0, 0, 0, 0.45);
+}
+
+:root {
+  --space-1: 4px; /* Icon-to-label gap. */
+  --space-2: 8px; /* Gap between chips; nav lens inset. */
+  --space-3: 12px; /* Button vertical padding; tight stacks. */
+  --space-4: 16px; /* Glass panel padding (compact); card inner gaps. */
+  --space-5: 24px; /* Glass panel padding (regular); grid gutter. */
+  --space-6: 32px; /* Card padding on project cards. */
+  --space-7: 48px; /* Gap between heading and section content. */
+  --space-8: 64px; /* Page side margin on desktop. */
+  --space-9: 120px; /* Vertical rhythm between page sections. */
+  --radius-sm: 12px; /* Inputs, small thumbnails. */
+  --radius-md: 20px; /* Glass panels, images inside cards. */
+  --radius-lg: 28px; /* Project cards. */
+  --radius-xl: 40px; /* Hero glass slab, large sheets. */
+  --radius-pill: 999px; /* Buttons, chips, nav capsule and its lens. Concentric rule: an inner radius = outer radius minus the inset. */
+  --blur-thin: 10px; /* Chips and small controls over busy imagery. */
+  --blur-regular: 24px; /* Nav capsule, buttons, captions. */
+  --blur-thick: 44px; /* Panels carrying paragraphs of text; sheets. */
+  --glass-saturate: 180%; /* Colour boost behind glass so screenshots and drawings stay vivid through it. */
+  --dur-press: 110ms; /* Card press dip. */
+  --dur-exit: 180ms; /* Anything leaving: filtered-out cards, closing toast, page swap out. Exits are faster than entrances. */
+  --dur-jelly: 560ms; /* Hover responses (card rise, arrow nudge, fills) and fade-ins of returning grid items. */
+  --dur-morph: 640ms; /* Things changing shape or place: nav lens, grid reflow, sheet opening from its button, toast arrival, nav compacting. */
+  --dur-enter: 700ms; /* First-screen entrance, scroll reveal, page swap in. */
+  --dur-stagger: 60ms; /* Delay between siblings in a scroll reveal (the hero entrance uses 70ms). */
+  --dur-toast: 2800ms; /* How long a toast stays before floating away. */
+  --ease-jelly: cubic-bezier(0.34, 1.56, 0.64, 1); /* Overshoot curve, used sparingly: kept for consumers who need a CSS-only spring. The kit itself no longer uses it on hover. */
+  --ease-settle: cubic-bezier(0.22, 1, 0.36, 1); /* Calm arrival: reveals, entrances, fades, colour changes. */
+  --ease-press: cubic-bezier(0.3, 0, 0.4, 1); /* Reserved for press feedback in CSS-only contexts. */
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1); /* Leaving: accelerate out, never bounce out. */
+  --spring-jelly: stiffness 460, damping 16; /* The soft press on buttons, chips, nav and segment items. */
+  --spring-lens: stiffness 260, damping 20; /* Position of the liquid lens in NavBar and SegmentedControl; its speed drives the stretch. */
+  --spring-lens-width: stiffness 300, damping 22; /* Width of the lens as it reshapes to the next item. */
+  --spring-knob: stiffness 480, damping 22; /* Switch knob travel and the swell while held. */
+  --layer-nav: 50; /* Floating nav capsule. */
+  --layer-sheet: 100; /* Sheet and its backdrop. */
+  --layer-toast: 120; /* Toasts, above everything. */
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-text: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --text-display: 700 80px/84px var(--font-display); /* Hero name only, once per page. */
+  --text-title-1: 700 44px/48px var(--font-display); /* Section headings. */
+  --text-title-2: 600 28px/34px var(--font-display); /* Project card titles, case-study subheads. */
+  --text-headline: 600 17px/22px var(--font-text); /* Buttons, nav items, emphasised lines. */
+  --text-body: 400 17px/26px var(--font-text); /* All reading copy. */
+  --text-callout: 400 15px/22px var(--font-text); /* Card descriptions, secondary paragraphs. */
+  --text-caption: 500 13px/18px var(--font-text); /* Meta lines, chip labels. */
+  --text-label-mono: 500 12px/16px var(--font-mono); /* Stack labels and code snippets. */
+}
+
+.display {
+  font-family: var(--font-display);
+  font-size: 80px;
+  line-height: 84px;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+.title-1 {
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 48px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.title-2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 34px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.headline {
+  font-family: var(--font-text);
+  font-size: 17px;
+  line-height: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.body {
+  font-family: var(--font-text);
+  font-size: 17px;
+  line-height: 26px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.callout {
+  font-family: var(--font-text);
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.caption {
+  font-family: var(--font-text);
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+}
