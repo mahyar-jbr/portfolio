@@ -72,7 +72,7 @@ export const about = {
  * `paragraph` is his own, lightly edited for flow and grammar with his phrasing
  * kept (2026-09-22): forced into CS in Grade 11, hated it, found a new way of
  * thinking; from drawing imaginary creatures to turning ideas into code; his
- * inner child; searching for greatness. Change it only with him.
+ * inner child. Change it only with him.
  *
  * Photos are his (public/about/), resized to ≤2400px and stripped of all
  * metadata (the originals carry GPS). `position` is the focal point frames crop
@@ -170,6 +170,6 @@ export const aboutSection: { kicker: string; title: string; chapters: StoryChapt
     },
   ],
   paragraph:
-    'My journey started in Grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here I am, always building something to keep my inner child happy and to keep searching for greatness. Thanks for reading.',
+    'My journey started in Grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here I am, always building something to keep my inner child happy. Thanks for reading.',
   // No "Also into" line (Mahyar, 2026-09-22): the story says it.
 };
