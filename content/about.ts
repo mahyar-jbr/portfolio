@@ -85,8 +85,11 @@ export interface StoryPhoto {
   alt: string;
   /** CSS object-position: where he is in the photo. */
   position: string;
-  /** The small glass caption on the photo: where, or what. */
-  caption: { text: string; kind: 'place' | 'activity' | 'event' };
+  /**
+   * The small glass caption on the photo: where, or what. `kind` picks its
+   * glyph (About.tsx): a place, a sport, training, or an event.
+   */
+  caption: { text: string; kind: 'place' | 'sport' | 'training' | 'event' };
 }
 
 export interface StoryChapter {
@@ -126,7 +129,7 @@ export const aboutSection: { kicker: string; title: string; chapters: StoryChapt
           height: 1024,
           alt: 'Mahyar playing tennis on an outdoor court',
           position: '48% 70%',
-          caption: { text: 'Tennis', kind: 'activity' },
+          caption: { text: 'Tennis', kind: 'sport' },
         },
       ],
     },
@@ -141,7 +144,7 @@ export const aboutSection: { kicker: string; title: string; chapters: StoryChapt
           height: 2031,
           alt: 'Mahyar outside after a run',
           position: '50% 55%',
-          caption: { text: 'After a run', kind: 'activity' },
+          caption: { text: 'After a run', kind: 'training' },
         },
       ],
     },

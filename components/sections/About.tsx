@@ -3,7 +3,7 @@ import type { CSSProperties } from 'react';
 import StoryScroll from '@/components/about/StoryScroll';
 import BrandIcon, { brandFor } from '@/components/lucent/BrandIcon';
 import Glyph, { type GlyphName } from '@/components/lucent/Glyph';
-import { aboutSection as about } from '@/content/about';
+import { aboutSection as about, type StoryPhoto } from '@/content/about';
 
 /**
  * About — a short story: Travel, Play, Train, Build, then a coda with his
@@ -24,9 +24,10 @@ import { aboutSection as about } from '@/content/about';
  * It arrives the way every section does: as it scrolls into view, each part
  * rises in (the kit's data-reveal).
  */
-const CAPTION_GLYPH: Record<'place' | 'activity' | 'event', GlyphName> = {
+const CAPTION_GLYPH: Record<StoryPhoto['caption']['kind'], GlyphName> = {
   place: 'pin',
-  activity: 'activity',
+  sport: 'tennis-ball',
+  training: 'dumbbell',
   event: 'flag',
 };
 

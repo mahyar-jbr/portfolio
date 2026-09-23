@@ -3,7 +3,9 @@
  *
  * Paths marked (kit) are copied from the Lucent kit's own markup. The rest follow
  * the kit's icon rule — "an open set with the same geometry (Lucide) on the web" —
- * for facts the kit's sample page had no glyph for.
+ * for facts the kit's sample page had no glyph for. Core Lucide has no tennis
+ * ball, so that one comes from Lucide Lab, the Lucide team's companion set drawn
+ * to the same guidelines.
  */
 const GLYPHS = {
   /* hero properties (kit) */
@@ -35,7 +37,9 @@ const GLYPHS = {
   link: '<path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/>',
   code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
   layers: '<path d="m12 3 9 4.5-9 4.5-9-4.5z"/><path d="m3 12 9 4.5 9-4.5"/><path d="m3 16.5 9 4.5 9-4.5"/>',
-  activity: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  /* About photo captions: sport, training (Lucide Lab: tennis-ball; Lucide: dumbbell) */
+  'tennis-ball': '<path d="M2 12c5.5 0 10-4.5 10-10"/><circle cx="12" cy="12" r="10"/><path d="M22 12c-5.5 0-10 4.5-10 10"/>',
+  dumbbell: '<path d="M17.596 12.768a2 2 0 1 0 2.829-2.829l-1.768-1.767a2 2 0 0 0 2.828-2.829l-2.828-2.828a2 2 0 0 0-2.829 2.828l-1.767-1.768a2 2 0 1 0-2.829 2.829z"/><path d="m2.5 21.5 1.4-1.4"/><path d="m20.1 3.9 1.4-1.4"/><path d="M5.343 21.485a2 2 0 1 0 2.829-2.828l1.767 1.768a2 2 0 1 0 2.829-2.829l-6.364-6.364a2 2 0 1 0-2.829 2.829l1.768 1.767a2 2 0 0 0-2.828 2.829z"/><path d="m9.6 14.4 4.8-4.8"/>',
 } as const;
 
 export type GlyphName = keyof typeof GLYPHS;
