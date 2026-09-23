@@ -3,7 +3,7 @@ import Formula, { SIGMA } from '@/components/hero/Formula';
 import SigmaMorph from '@/components/hero/SigmaMorph';
 import Button from '@/components/lucent/Button';
 import type { GlyphName } from '@/components/lucent/Glyph';
-import { enterStyle, Properties, type HeroProperty } from '@/components/lucent/Hero';
+import { Properties, type HeroProperty } from '@/components/lucent/Hero';
 import Tag from '@/components/lucent/Tag';
 import TransitionLink from '@/components/lucent/TransitionLink';
 import { hero } from '@/content/site';
@@ -47,14 +47,12 @@ export default function Hero() {
       );
     } else if ('interests' in p) {
       value = (
-        <span className="hero-interests">
+        <>
           <TransitionLink className="lu-link" href={p.href}>
             {p.value}
           </TransitionLink>
-          {p.interests.map((t) => (
-            <Tag key={t}>{t}</Tag>
-          ))}
-        </span>
+          {p.interests.map((t) => ` · ${t}`).join('')}
+        </>
       );
     }
     return { label: p.label, glyph: GLYPH[p.id], value };
@@ -69,9 +67,6 @@ export default function Hero() {
         <div className="hero-sticky">
           <div className="hero-line">
             <Formula spoken={hero.formula.spoken} />
-            <p className="hero-eq-caption" data-enter="" style={enterStyle(1)}>
-              {hero.formula.caption}
-            </p>
             <h1 className="hero-title">
               <span className="sr-only">{hero.name}</span>
               <span className="hero-name" aria-hidden="true">
@@ -105,12 +100,6 @@ export default function Hero() {
               </div>
             </div>
           </div>
-          <span className="hero-cue" aria-hidden="true">
-            {hero.formula.cue}
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 9l6 6 6-6" />
-            </svg>
-          </span>
         </div>
       </div>
       <SigmaMorph />

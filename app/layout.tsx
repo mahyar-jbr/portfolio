@@ -48,13 +48,17 @@ export const viewport: Viewport = {
      the same query SigmaMorph and site.css use).
    - failsafe: if the page's scripts never bring the stage to life (blocked or
      failed bundle), `sigma` is withdrawn and the hero falls back to its resting
-     stack, so the name and buttons can never stay invisible. */
+     stack, so the name and buttons can never stay invisible.
+   - a refresh of the home page starts at the opening, not wherever the browser
+     would restore to, and drops a leftover #section from in-site navigation.
+     A first visit to a /#section link still goes straight to it. */
 const BOOT = `(function(){var d=document.documentElement;d.classList.add('js');
-if(!window.matchMedia||!matchMedia('(prefers-reduced-motion: no-preference) and (min-height: 560px)').matches)return;
+try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&location.pathname==='/'){history.scrollRestoration='manual';if(location.hash)history.replaceState(history.state,'',location.pathname+location.search);addEventListener('load',function(){scrollTo(0,0);setTimeout(function(){history.scrollRestoration='auto';},0);});}}catch(e){}
+if(!window.matchMedia||!matchMedia('(prefers-reduced-motion: no-preference) and (min-height: 600px)').matches)return;
 d.classList.add('sigma');
 setTimeout(function(){var h=document.querySelector('[data-sigma-hero]');if(h&&!h.classList.contains('is-live'))d.classList.remove('sigma');},4000);})();`;
 
-const navItems =[sections.work, sections.experience, sections.drawings, sections.contact].map((s) => ({
+const navItems = [sections.work, sections.experience, sections.drawings, sections.contact].map((s) => ({
   id: s.id,
   label: s.nav,
 }));

@@ -26,7 +26,7 @@ import { useEffect } from 'react';
  */
 
 /** When the stage can run at all. The same query gates the CSS. */
-const STAGE_QUERY = '(prefers-reduced-motion: no-preference) and (min-height: 560px)';
+const STAGE_QUERY = '(prefers-reduced-motion: no-preference) and (min-height: 600px)';
 
 const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -103,9 +103,12 @@ export default function SigmaMorph() {
         const y = lerp(geo.dy, 0, inOutSine(slide)); /* x and y ease apart: a slight arc */
         const s = lerp(geo.s0, 1, t);
         /* the M's glyph is turned 90° in its box; turning the box back −90° shows the upright Σ */
-        const turn = -90 + 90 * inOutCubic(clamp((p - 0.22) / 0.45));
+        const turnT = clamp((p - 0.22) / 0.45);
+        const turn = -90 + 90 * inOutCubic(turnT);
         fly!.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px) scale(${s.toFixed(4)}) rotate(${turn.toFixed(2)}deg)`;
 
+        /* which Σ is on screen: the formula's (at rest), the flying copy (moving), the name's (arrived) */
+        hero!.dataset.sigmaAt = slide <= 0 ? 'formula' : slide >= 1 && turnT >= 1 ? 'name' : 'move';
         hero!.classList.toggle('is-landed', p >= 0.97);
         /* while the opening fills the screen, no nav section is "current" */
         root.classList.toggle('hero-in-view', hero!.getBoundingClientRect().bottom > window.innerHeight * 0.45);
@@ -156,6 +159,7 @@ export default function SigmaMorph() {
         ro.disconnect();
         if (raf) cancelAnimationFrame(raf);
         hero!.classList.remove('is-live', 'is-landed');
+        delete hero!.dataset.sigmaAt;
         hero!.style.removeProperty('--p');
         root.classList.remove('sigma', 'hero-in-view');
         fly!.style.transform = '';

@@ -54,8 +54,7 @@ export const hero = {
   formula: {
     /** What a screen reader hears instead of the typeset formula. */
     spoken: 'y equals sigma of the sum of w i times x i, plus b',
-    caption: 'A neuron: sum, then activate.',
-    cue: 'Scroll',
+    // No caption and no scroll cue under it (Mahyar, 2026-09-22): the formula stands alone.
   },
 
   properties: [
@@ -65,12 +64,13 @@ export const hero = {
     { id: 'now', label: 'Now', value: 'AI Solutions Engineer co-op at FGF Brands', status: true },
     { id: 'studying', label: 'Studying', value: `${education.credential}, ${education.institution}` },
     { id: 'based', label: 'Based', value: identity.location, timeZone: 'America/Toronto' },
-    // Interests added by Mahyar 2026-09-22. "I draw" leads because it links to a
-    // section of the page; the rest are tags.
+    // Interests from Mahyar, 2026-09-22. One plain line like every other row —
+    // mixed link-and-tag capsules read as two different things. "Drawing" leads
+    // and links, because it has a section of its own further down.
     {
       id: 'also',
       label: 'Also',
-      value: 'I draw',
+      value: 'Drawing',
       href: '#drawings',
       interests: ['Gym', 'Football', 'Anime', 'DC and Marvel', 'Series and movies'],
     },
