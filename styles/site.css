@@ -76,9 +76,13 @@ img {
   padding-inline: var(--space-4);
   pointer-events: none;
 }
+/* Isolated so the hover pill's z-index -1 (below) keeps it under the kit's ink
+   lens yet above the capsule's own fill, even where the glass falls back to a
+   solid one. */
 .site-nav .lu-nav {
   pointer-events: auto;
   max-width: 100%;
+  isolation: isolate;
 }
 /* Toasts drop in just under the capsule (its bottom sits at 76px) rather than
    over it: the kit gives the toast region and the nav the same top edge, and a
@@ -195,13 +199,9 @@ html:not(.js) .site-theme {
 }
 /* Hover (components/lucent/NavHover.tsx): a soft pill in the kit's hover fill,
    with the lens's shape and inset, under the item the pointer is on. It paints
-   beneath the kit's ink lens, so on the current item the lens covers it:
-   z-index -1 inside the capsule, which is isolated so that holds even where
-   the glass falls back to a solid fill. It fades in as a hover fill does and
-   out as an exit does. */
-.site-nav .lu-nav {
-  isolation: isolate;
-}
+   beneath the kit's ink lens (z-index -1 in the isolated capsule), so on the
+   current item the lens covers it. It fades in as a hover fill does and out as
+   an exit does. */
 .site-nav-hover {
   position: absolute;
   z-index: -1;
@@ -223,6 +223,16 @@ html:not(.js) .site-theme {
 .site-nav .lu-nav.is-compact .site-nav-hover {
   top: 4px;
   bottom: 4px;
+}
+/* In dark, over a bright screenshot under the clear glass, the 8% wash all but
+   vanishes: there the pill takes the glass's lit edge (white at 12%) instead. */
+:root[data-theme='dark'] .site-nav-hover {
+  background: var(--glass-stroke);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .site-nav-hover {
+    background: var(--glass-stroke);
+  }
 }
 @media (hover: none), (pointer: coarse) {
   .site-nav-hover {

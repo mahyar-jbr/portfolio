@@ -39,15 +39,21 @@ export default function NavHover({ nav }: { nav: RefObject<HTMLElement | null> }
         let x = 0;
         let w = 0;
         let vel = 0;
-        /* the run of items, so the spring's overshoot never carries the pill out
-           past the capsule's rounded ends: there it stops and takes the rest in
-           the squeeze */
+        /* the run of items: past either end the spring's overshoot is squeezed
+           into the last few pixels, so the pill eases to a stop short of the
+           capsule's rounded ends rather than swinging out past them or hitting
+           a wall */
         let lo = 0;
         let hi = 0;
+        const EDGE = 2;
+        const give = (d: number) => EDGE * (1 - Math.exp(-d / EDGE));
         function paint() {
-          /* the kit lens's stretch (lens() in bundle.js), at half strength */
-          const s = Math.min(Math.abs(vel) / 2600, 0.28) / 2;
-          const left = Math.min(Math.max(x, lo), hi - w);
+          /* the kit lens's stretch (lens() in bundle.js), at a quarter strength:
+             enough to read as moving, without a pulse at every item it passes */
+          const s = Math.min(Math.abs(vel) / 2600, 0.28) / 4;
+          let left = x;
+          if (x < lo) left = lo - give(lo - x);
+          else if (x + w > hi) left = hi - w + give(x + w - hi);
           const sx = (1 + s * 0.35).toFixed(3);
           const sy = (1 - s).toFixed(3);
           pill.style.transform = `translateX(${left.toFixed(2)}px) scale(${sx}, ${sy})`;
@@ -63,12 +69,14 @@ export default function NavHover({ nav }: { nav: RefObject<HTMLElement | null> }
           paint();
         });
 
-        let current: HTMLElement | null = null;
+        /* the item the pill is drawn on, kept while it fades out */
+        let on: HTMLElement | null = null;
+        let shown = false;
         let point: { x: number; y: number } | null = null;
 
         /* measured fresh every time, as the kit's lens does: compacting and the
            name coming or going both move the items */
-        function show(item: HTMLElement, instant = false) {
+        function place(item: HTMLElement, instant: boolean) {
           const cr = root!.getBoundingClientRect();
           const box = (el: Element) => {
             const r = el.getBoundingClientRect();
@@ -80,14 +88,21 @@ export default function NavHover({ nav }: { nav: RefObject<HTMLElement | null> }
           lo = first.x;
           hi = last.x + last.w;
           const m = box(item);
-          const appearing = !current;
-          current = item;
-          xs.to(m.x, instant || appearing);
-          ws.to(m.w, instant || appearing);
+          on = item;
+          xs.to(m.x, instant);
+          ws.to(m.w, instant);
+        }
+        function show(item: HTMLElement, instant = false) {
+          /* It fades in where the pointer lands instead of travelling in from
+             somewhere else. Back before it has faded out, though, it glides on
+             from where it still shows rather than jumping while half visible. */
+          const appearing = !shown && +getComputedStyle(pill).opacity < 0.05;
+          shown = true;
+          place(item, instant || appearing);
           pill.classList.add('is-shown');
         }
         function hide() {
-          current = null;
+          shown = false;
           pill.classList.remove('is-shown');
         }
 
@@ -96,7 +111,7 @@ export default function NavHover({ nav }: { nav: RefObject<HTMLElement | null> }
         function track(target: Element | null) {
           const item = target?.closest<HTMLElement>('.lu-nav-item');
           if (item) {
-            if (item !== current) show(item);
+            if (!shown || item !== on) show(item);
           } else if (target?.closest('.lu-nav-brand')) {
             hide();
           }
@@ -115,14 +130,17 @@ export default function NavHover({ nav }: { nav: RefObject<HTMLElement | null> }
         };
 
         /* The capsule tightens while scrolling and the name opens in it, with the
-           pointer resting where it was: look again at what is under it. */
+           pointer resting where it was: look again at what is under it. Shown or
+           still fading out, the pill keeps to its item as the items move. */
         const ro = new ResizeObserver(() => {
-          if (!current || !point) return;
-          const under = document.elementFromPoint(point.x, point.y);
-          const item = under?.closest<HTMLElement>('.lu-nav-item');
-          if (item && root.contains(item)) show(item, true);
-          else if (under && root.contains(under) && !under.closest('.lu-nav-brand')) show(current, true);
-          else hide();
+          if (!on) return;
+          if (shown && point) {
+            const under = document.elementFromPoint(point.x, point.y);
+            const item = under?.closest<HTMLElement>('.lu-nav-item');
+            if (item && root.contains(item)) on = item;
+            else if (!under || !root.contains(under) || under.closest('.lu-nav-brand')) hide();
+          }
+          place(on, true);
         });
 
         root.addEventListener('pointerover', onPointer);
