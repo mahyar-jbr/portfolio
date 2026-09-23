@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import BrandIcon, { brandFor } from './BrandIcon';
 
 /**
  * Tag — a soft label background with ink text. Tags group; they never signal
@@ -19,5 +20,19 @@ export default function Tag({
       {dot && <span className="lu-dot" />}
       {children}
     </span>
+  );
+}
+
+/**
+ * A tool as a tag: its name, led by the brand's real mark when it has one
+ * (Python, React, Claude…). Generic terms (Graphs, RAG, SSE) stay words.
+ */
+export function ToolTag({ name }: { name: string }) {
+  const brand = brandFor(name);
+  return (
+    <Tag>
+      {brand && <BrandIcon name={brand} />}
+      {name}
+    </Tag>
   );
 }

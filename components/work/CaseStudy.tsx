@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import type { ReactNode } from 'react';
+import BrandIcon, { brandFor, type BrandName } from '@/components/lucent/BrandIcon';
 import Button from '@/components/lucent/Button';
 import Glyph, { type GlyphName } from '@/components/lucent/Glyph';
 import ProjectCard from '@/components/lucent/ProjectCard';
-import Tag from '@/components/lucent/Tag';
+import { ToolTag } from '@/components/lucent/Tag';
 import CardArt, { cardArtClass } from '@/components/work/CardArt';
 import { pagedProjects } from '@/content/projects';
 import type { BriefProject, CaseStudyProject, ExternalLink, ProjectStatus, Shot } from '@/content/types';
@@ -50,6 +51,8 @@ const hasReason = (why: string) => !/NOT IN REPO|TODO|Mahyar to supply/i.test(wh
 
 interface MetaItem {
   glyph: GlyphName;
+  /** A brand's own mark in place of the glyph, when the value names one (GitHub). */
+  brand?: BrandName;
   label: string;
   value: ReactNode;
 }
@@ -61,6 +64,7 @@ function linkFacts(links: ExternalLink[]): MetaItem[] {
       const code = /github/i.test(l.href);
       return {
         glyph: code ? 'code' : 'link',
+        brand: brandFor(l.label),
         label: code ? 'Code' : 'Live',
         value: (
           <a className="lu-link" href={l.href}>
@@ -106,7 +110,7 @@ function CaseHero({
         <dl className="lu-meta">
           {meta.map((m) => (
             <div key={m.label}>
-              <Glyph name={m.glyph} />
+              {m.brand ? <BrandIcon name={m.brand} /> : <Glyph name={m.glyph} />}
               <dt>{m.label}</dt>
               <dd>{m.value}</dd>
             </div>
@@ -117,7 +121,7 @@ function CaseHero({
               <dt>Stack</dt>
               <dd>
                 {stack.map((s) => (
-                  <Tag key={s}>{s}</Tag>
+                  <ToolTag key={s} name={s} />
                 ))}
               </dd>
             </div>

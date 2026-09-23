@@ -841,3 +841,32 @@ html:not(.js) .site-theme {
     aspect-ratio: 4 / 3;
   }
 }
+
+/* ---------- Brand icons (components/lucent/BrandIcon.tsx) ----------
+   Other companies' real marks, one colour in currentColor like the kit's
+   glyphs. Each SVG is as tall as its box and only as wide as its mark. In a tag
+   it stands at the text's size, the tag's own gap after it; everywhere else it
+   fills the kit's glyph box: 40px on a contact tile, 18px in the case-study
+   meta row, 14px on an About caption. */
+.lu-tag > .brand-icon {
+  flex: none;
+  width: auto;
+  height: 1em;
+  /* in the case-study stack, undo the meta row's sizing of its own glyphs */
+  margin: 0;
+  grid-row: auto;
+  color: inherit;
+}
+/* The email tile's Gmail mark, where the envelope was: in place of the
+   envelope's opening flap, it lifts a touch on hover, on the kit's timing. */
+.lu-contact-tile.is-primary .brand-icon {
+  transition: transform var(--dur-jelly) var(--ease-settle);
+}
+.lu-contact-tile.is-primary:hover .brand-icon {
+  transform: translateY(-2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lu-contact-tile.is-primary:hover .brand-icon {
+    transform: none;
+  }
+}

@@ -1,8 +1,14 @@
+import BrandIcon, { brandFor } from './BrandIcon';
+
 /**
  * ContactTiles — each way to reach him as a small tile with its own glyph instead
- * of a plain text link: an envelope for email (its flap lifts on hover), a
- * contribution grid for GitHub, a profile card for LinkedIn, a page for the
- * resume. Glyphs are line art in currentColor, never hand-drawn company logos.
+ * of a plain text link: Gmail's, GitHub's and LinkedIn's own marks, and a page
+ * for the resume. The marks are the brands' official ones (BrandIcon), as the
+ * kit allows, never drawings of them; the page is line art. All in currentColor.
+ *
+ * The email tile shows Gmail's mark because the address is a Gmail one (Mahyar,
+ * 2026-09-23); it lifts a touch on hover (styles/site.css "Brand icons"). Any
+ * other address gets the kit's envelope back, whose flap lifts on hover.
  *
  * The email tile is the one ink tile (is-primary): Lucent.auto() copies the
  * address and shows the "Email copied" toast, or shows the address itself if the
@@ -14,39 +20,17 @@ export interface ContactLink {
   href: string;
 }
 
-const GRID_OPACITY = [
-  0.18, 0.45, 1, 0.3, 0.7, 0.5, 0.18, 0.8, 1, 0.3, 1, 0.6, 0.3, 0.18, 0.9, 0.3, 0.9, 0.5, 0.7, 0.18, 0.7, 0.3, 1, 0.45, 0.6,
-];
-
 function GlyphFor({ label }: { label: string }) {
-  const common = { viewBox: '0 0 40 40', 'aria-hidden': true } as const;
-  switch (label) {
-    case 'GitHub':
-      return (
-        <svg {...common}>
-          {GRID_OPACITY.map((o, i) => (
-            <rect key={i} x={1 + (i % 5) * 8} y={1 + Math.floor(i / 5) * 8} width="6" height="6" rx="1.6" fill="currentColor" fillOpacity={o} />
-          ))}
-        </svg>
-      );
-    case 'LinkedIn':
-      return (
-        <svg {...common} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-          <rect x="3" y="7" width="34" height="26" rx="5" />
-          <circle cx="13" cy="17" r="4" fill="currentColor" stroke="none" />
-          <path d="M21 15h10M21 20h7" />
-          <path d="M9 27h22" strokeOpacity=".4" />
-        </svg>
-      );
-    default: /* Resume */
-      return (
-        <svg {...common} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M11 3h13l9 9v23a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-          <path d="M24 3v9h9" />
-          <path d="M14 20h13M14 25h13M14 30h8" strokeOpacity=".5" />
-        </svg>
-      );
-  }
+  const brand = brandFor(label);
+  if (brand) return <BrandIcon name={brand} />;
+  /* Resume */
+  return (
+    <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M11 3h13l9 9v23a2 2 0 0 1-2 2H11a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+      <path d="M24 3v9h9" />
+      <path d="M14 20h13M14 25h13M14 30h8" strokeOpacity=".5" />
+    </svg>
+  );
 }
 
 function Go() {
@@ -74,10 +58,14 @@ export default function ContactTiles({
         aria-label={`Copy email address ${email.address}`}
       >
         <span className="lu-contact-glyph">
-          <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <rect x="3" y="8" width="34" height="25" rx="5" />
-            <path className="lu-glyph-flap" d="M5 11l15 11 15-11" />
-          </svg>
+          {/@gmail\.com$/i.test(email.address) ? (
+            <BrandIcon name="gmail" />
+          ) : (
+            <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="8" width="34" height="25" rx="5" />
+              <path className="lu-glyph-flap" d="M5 11l15 11 15-11" />
+            </svg>
+          )}
         </span>
         <span className="lu-contact-label">{email.label}</span>
         <span className="lu-contact-value">{email.value}</span>

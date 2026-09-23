@@ -1,5 +1,5 @@
 import Glyph from './Glyph';
-import Tag from './Tag';
+import Tag, { ToolTag } from './Tag';
 
 /**
  * ExperienceList — one row per role, newest first. The collapsed list is the
@@ -53,7 +53,7 @@ export default function ExperienceList({ id, rows }: { id: string; rows: Experie
                 {row.tags.length > 0 && (
                   <div className="lu-exp-stack">
                     {row.tags.slice(0, 4).map((t) => (
-                      <Tag key={t}>{t}</Tag>
+                      <ToolTag key={t} name={t} />
                     ))}
                   </div>
                 )}

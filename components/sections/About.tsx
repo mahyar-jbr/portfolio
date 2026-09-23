@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import StoryScroll from '@/components/about/StoryScroll';
+import BrandIcon, { brandFor } from '@/components/lucent/BrandIcon';
 import Glyph, { type GlyphName } from '@/components/lucent/Glyph';
 import { aboutSection as about } from '@/content/about';
 
@@ -49,23 +50,27 @@ export default function About() {
                   data-reveal=""
                   style={step(i)}
                 >
-                  {c.photos.map((ph) => (
-                    <span className="story-ph" key={ph.src}>
-                      <Image
-                        src={ph.src}
-                        alt={ph.alt}
-                        fill
-                        sizes="(max-width: 760px) 100vw, 480px"
-                        priority={i === 0}
-                        style={{ objectPosition: ph.position }}
-                      />
-                      {/* Liquid Glass over the photo: where, or what (kit: glass belongs over imagery) */}
-                      <span className="story-cap lu-glass is-clear">
-                        <Glyph name={CAPTION_GLYPH[ph.caption.kind]} />
-                        {ph.caption.text}
+                  {c.photos.map((ph) => {
+                    /* an event named for a brand (OpenAI) carries its real mark instead of the flag */
+                    const brand = brandFor(ph.caption.text);
+                    return (
+                      <span className="story-ph" key={ph.src}>
+                        <Image
+                          src={ph.src}
+                          alt={ph.alt}
+                          fill
+                          sizes="(max-width: 760px) 100vw, 480px"
+                          priority={i === 0}
+                          style={{ objectPosition: ph.position }}
+                        />
+                        {/* Liquid Glass over the photo: where, or what (kit: glass belongs over imagery) */}
+                        <span className="story-cap lu-glass is-clear">
+                          {brand ? <BrandIcon name={brand} /> : <Glyph name={CAPTION_GLYPH[ph.caption.kind]} />}
+                          {ph.caption.text}
+                        </span>
                       </span>
-                    </span>
-                  ))}
+                    );
+                  })}
                 </figure>
               ))}
               {/* the coda: every photo at once, like a contact sheet */}
