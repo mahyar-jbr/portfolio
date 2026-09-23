@@ -112,8 +112,11 @@ export default function SigmaMorph() {
         /* which Σ is on screen: the formula's (at rest), the flying copy (moving), the name's (arrived) */
         hero!.dataset.sigmaAt = slide <= 0 ? 'formula' : slide >= 1 && turnT >= 1 ? 'name' : 'move';
         hero!.classList.toggle('is-landed', p >= 0.97);
-        /* while the opening fills the screen, no nav section is "current" */
-        root.classList.toggle('hero-in-view', hero!.getBoundingClientRect().bottom > window.innerHeight * 0.45);
+        /* No nav item is "current" until its section arrives: through the opening
+           and the About story, the lens rests. The kit's scroll spy would
+           otherwise default to the first item, Work. (Same 45% line it uses.) */
+        const work = document.getElementById('work');
+        root.classList.toggle('hero-in-view', !!work && work.getBoundingClientRect().top > window.innerHeight * 0.45);
       }
 
       const schedule = () => {

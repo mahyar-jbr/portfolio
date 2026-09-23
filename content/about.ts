@@ -56,31 +56,93 @@ export const about = {
 };
 
 /**
- * The About section on the home page (added 2026-09-22), right after the hero:
- * photos of Mahyar, a short paragraph about him and his goal, and what he's into.
+ * The About section on the home page, right after the hero, told as a story
+ * (2026-09-22): Travel → Play → Train → Build, then a coda with his paragraph.
+ * The hero's M opens onto the first photo.
  *
- * `paragraph` is Mahyar's own (2026-09-22), lightly edited for flow with his
- * phrasing kept: forced into CS in grade 11, hated it, found a new way of
- * thinking; from drawing imaginary creatures to turning ideas into code; the
- * inner child; searching for greatness. Change it only with him.
+ * Mahyar gave the chapters as Play, Train, Travel, Build. Travel leads because
+ * its photo is the one that can fill a screen: the M-window grows until the
+ * opening photo covers the viewport, and Preikestolen is 1350×2400 with him
+ * centred, where the tennis shot is a 576×1024 export with him small in frame.
+ * Swap the order back if a full-resolution tennis photo arrives.
  *
- * PLACEHOLDERS until Mahyar sends them:
- *   - `photos` — public/about/photo-1…5.jpg are neutral stand-ins. Replace the
- *     files (4:5 portrait works best for the first; any aspect for the rest),
- *     then update each `alt` and flip `placeholder` off.
- * The first photo is the one the hero's M opens onto.
+ * Lines are his, lightly edited: "travel" (on top of Preikestolen, Norway) ·
+ * "i also really like to play sport like football and tennis" · "run and lift
+ * weights" · "build random stuff" (the OpenAI and TMLS hackathons).
+ *
+ * `paragraph` is his own, lightly edited for flow with his phrasing kept: forced
+ * into CS in grade 11, hated it, found a new way of thinking; from drawing
+ * imaginary creatures to turning ideas into code; the inner child; searching for
+ * greatness. Change it only with him.
+ *
+ * Photos are his (public/about/), resized to ≤2400px and stripped of all
+ * metadata (the originals carry GPS). `position` is the focal point frames crop
+ * around, so he stays in shot at any aspect.
  */
+export interface StoryPhoto {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  /** CSS object-position: where he is in the photo. */
+  position: string;
+}
+
 export const aboutSection = {
   kicker: 'About',
   title: 'A bit about me',
+  chapters: [
+    {
+      id: 'travel',
+      label: 'Travel',
+      line: 'I love to travel. This is me on top of Preikestolen, in Norway.',
+      photos: [
+        {
+          src: '/about/preikestolen.jpg',
+          width: 1350,
+          height: 2400,
+          alt: 'Mahyar standing on top of Preikestolen with his arms open, above the fjord in Norway',
+          position: '50% 62%',
+        },
+      ],
+    },
+    {
+      id: 'play',
+      label: 'Play',
+      line: 'I really like playing sports, like football and tennis.',
+      photos: [
+        { src: '/about/tennis.jpg', width: 576, height: 1024, alt: 'Mahyar playing tennis on an outdoor court', position: '48% 70%' },
+      ],
+    },
+    {
+      id: 'train',
+      label: 'Train',
+      line: 'I run and lift weights.',
+      photos: [{ src: '/about/run.jpg', width: 1206, height: 2031, alt: 'Mahyar outside after a run', position: '50% 55%' }],
+    },
+    {
+      id: 'build',
+      label: 'Build',
+      line: 'And I build random stuff, like at the OpenAI and TMLS hackathons.',
+      photos: [
+        {
+          src: '/about/hackathon-openai.jpg',
+          width: 2400,
+          height: 1800,
+          alt: 'Mahyar taking a selfie with his team at the OpenAI hackathon',
+          position: '62% 55%',
+        },
+        {
+          src: '/about/hackathon-tmls.jpg',
+          width: 1800,
+          height: 2400,
+          alt: 'Mahyar talking with his team at the TMLS hackathon',
+          position: '88% 28%',
+        },
+      ],
+    },
+  ] satisfies { id: string; label: string; line: string; photos: StoryPhoto[] }[],
   paragraph:
     'This journey started in grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here we are: always building something, to keep the inner child happy and keep searching for greatness. Thanks for reading.',
-  interests: ['Drawing', 'Gym', 'Football', 'Anime', 'DC and Marvel', 'Series and movies'],
-  photos: [
-    { src: '/about/photo-1.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
-    { src: '/about/photo-2.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
-    { src: '/about/photo-3.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
-    { src: '/about/photo-4.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
-    { src: '/about/photo-5.jpg', width: 1600, height: 2000, alt: 'Placeholder for a photo of Mahyar', placeholder: true },
-  ],
+  // No "Also into" line (Mahyar, 2026-09-22): the story says it.
 };

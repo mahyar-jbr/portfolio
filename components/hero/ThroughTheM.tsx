@@ -97,8 +97,15 @@ export default function ThroughTheM() {
     const glyph = win?.querySelector<SVGTextElement>('[data-mwin-glyph]');
     const image = win?.querySelector<SVGImageElement>('[data-mwin-image]');
     const img = win?.querySelector<HTMLImageElement>('[data-mwin-img]');
-    const frame = document.querySelector<HTMLElement>('[data-about-portrait]');
-    if (!hero || !stage || !sticky || !mBox || !mGlyph || !win || !svg || !glyph || !image || !img || !frame) return;
+    const media = document.querySelector<HTMLElement>('[data-about-portrait]');
+    const storyStage = document.querySelector<HTMLElement>('[data-story] .about-stage');
+    const storySticky = document.querySelector<HTMLElement>('[data-story] .about-sticky');
+    const firstFig = media?.querySelector<HTMLElement>('.story-fig');
+    if (!hero || !stage || !sticky || !mBox || !mGlyph || !win || !svg || !glyph || !image || !img || !media || !firstFig || !storyStage || !storySticky)
+      return;
+    /* the photo settles into the story's frame when it is pinned, else into its first photo */
+    let frame: HTMLElement = media;
+    const target = () => (media.getBoundingClientRect().width > 0 ? media : firstFig);
 
     let focal: { x: number; y: number; r: number } | null = null;
     let raf = 0;
@@ -106,7 +113,23 @@ export default function ThroughTheM() {
     const off = () => {
       win.dataset.mode = '';
       hero.style.removeProperty('--q');
-      frame.classList.remove('is-covered');
+      media.classList.remove('is-covered');
+      firstFig.classList.remove('is-covered');
+    };
+
+    /* object-fit: cover with the photo's own focal point, for the SVG image
+       (preserveAspectRatio can only anchor at the centre or an edge) */
+    const iw = Number(image.dataset.w);
+    const ih = Number(image.dataset.h);
+    const [px, py] = (image.dataset.pos ?? '50% 50%').split(' ').map((v) => parseFloat(v) / 100);
+    const cover = (W: number, H: number) => {
+      const k = Math.max(W / iw, H / ih);
+      const dw = iw * k;
+      const dh = ih * k;
+      image.setAttribute('x', `${(W - dw) * px}`);
+      image.setAttribute('y', `${(H - dh) * py}`);
+      image.setAttribute('width', `${dw}`);
+      image.setAttribute('height', `${dh}`);
     };
 
     function frameTick() {
@@ -116,6 +139,7 @@ export default function ThroughTheM() {
         return;
       }
       focal ??= deepestPoint();
+      frame = target();
 
       const W = window.innerWidth;
       const H = window.innerHeight;
@@ -126,9 +150,14 @@ export default function ThroughTheM() {
 
       /* after the pin: the photo settles into the portrait as About scrolls in */
       const stageEnd = span.top + span.dist;
-      const fr = frame!.getBoundingClientRect();
-      const settleDist = Math.max(1, frame!.getBoundingClientRect().top + window.scrollY - stageEnd - H * 0.12);
-      const s = clamp((window.scrollY - stageEnd) / settleDist);
+      const fr = frame.getBoundingClientRect();
+      /* It lands as the story pins (the frame stops moving there); in the plain
+         sequence, as the first photo reaches the top eighth of the screen. */
+      const pinnedStory = getComputedStyle(storySticky!).position === 'sticky';
+      const settleEnd = pinnedStory
+        ? storyStage!.getBoundingClientRect().top + window.scrollY
+        : fr.top + window.scrollY - H * 0.12;
+      const s = clamp((window.scrollY - stageEnd) / Math.max(1, settleEnd - stageEnd));
 
       if (q <= 0.06) {
         off();
@@ -138,11 +167,10 @@ export default function ThroughTheM() {
       if (q < 1) {
         /* the window: the M, in place, growing about its deepest point */
         win!.dataset.mode = 'window';
-        frame!.classList.add('is-covered');
+        frame.classList.add('is-covered');
         svg!.setAttribute('width', `${W}`);
         svg!.setAttribute('height', `${H}`);
-        image!.setAttribute('width', `${W}`);
-        image!.setAttribute('height', `${H}`);
+        cover(W, H);
 
         const mb = mBox!.getBoundingClientRect();
         const F = parseFloat(getComputedStyle(mGlyph!).fontSize);
@@ -176,19 +204,19 @@ export default function ThroughTheM() {
         /* the photo, full screen, settling into the portrait's live position */
         win!.dataset.mode = 'settle';
         win!.style.setProperty('--full', '1');
-        frame!.classList.add('is-covered');
+        frame.classList.add('is-covered');
         const t = inOutCubic(s);
         img!.style.left = `${lerp(0, fr.left, t)}px`;
         img!.style.top = `${lerp(0, fr.top, t)}px`;
         img!.style.width = `${lerp(W, fr.width, t)}px`;
         img!.style.height = `${lerp(H, fr.height, t)}px`;
-        img!.style.borderRadius = `${lerp(0, parseFloat(getComputedStyle(frame!).borderTopLeftRadius), t)}px`;
+        img!.style.borderRadius = `${lerp(0, parseFloat(getComputedStyle(frame).borderTopLeftRadius), t)}px`;
         return;
       }
 
       /* arrived: the real portrait takes over */
       win!.dataset.mode = '';
-      frame!.classList.remove('is-covered');
+      frame.classList.remove('is-covered');
     }
 
     const schedule = () => {
