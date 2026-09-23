@@ -356,7 +356,7 @@ Three-person team. `git log -400 --format="%an <%ae>" | sort | uniq -c`:
 | --- | --- | --- |
 | **Mahyar Jaberi** (two identities: `jaberi.mahyar@gmail.com` 106 + `107087318+mahyar-jbr@users.noreply.github.com` 50) | **156** | **77.6%** |
 | Kasra Bashizadeh | 30 | 14.9% |
-| Aydin (`aidinthr82@gmail.com`) | 15 | 7.5% |
+| Aydin ([withheld: private]) | 15 | 7.5% |
 
 - 50 merged pull requests, branch names up to `#52`. **Every PR branch is under `mahyar-jbr/`** — Kasra and Aydin committed on branches in Mahyar's namespace or directly.
 - Timeline: first commit 2026-05-21, last 2026-06-08 — **19 days**. Peak day 2026-05-31 with 57 commits; 2026-06-02 with 32; 2026-06-06 with 25.

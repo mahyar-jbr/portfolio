@@ -443,7 +443,7 @@ FGF Brands" who "provided the operational context, customer-spec data structure,
 and decision matrix" [README.md]. `UNVERIFIED:` no FGF-supplied artifact is in the
 repo. All seed data is synthetic — the seed script author's own commits describe it
 as "4 demo scenarios" [commit `ed352b5`], and `users` rows carry `@maridian.com`
-addresses with password `pass123` (see §10).
+addresses with password ([withheld: private]) (see §10).
 
 **Measured outcomes:** none. Every dollar figure the system reports is computed
 from seeded prices [api/routers/production.py:246, api/tools/recovery_value.py]
@@ -457,12 +457,12 @@ study.
 `git shortlog -sne HEAD` (245 commits, 9 identities / 6 people):
 
 ```
-102  bahar-oveis <oveisgharan.b@gmail.com>
+102  bahar-oveis <[withheld: private]>
  41  Mahyar Jaberi <jaberi.mahyar@gmail.com>
  33  Mahyar Jaberi <107087318+mahyar-jbr@users.noreply.github.com>
- 24  Elham <elhamrazi99@gmail.com>
- 21  Matin Mehrabani <matin.mehrabani1397@gmail.com>
- 13  sabayazdani <saba.yzdn26@gmail.com>
+ 24  Elham <[withheld: private]>
+ 21  Matin Mehrabani <[withheld: private]>
+ 13  sabayazdani <[withheld: private]>
   9  r <r@r>
   1  Elham Razi <47900695+elhamrazi@users.noreply.github.com>
   1  Matin Mehrabani <46069027+matinmehrabani@users.noreply.github.com>
@@ -712,8 +712,8 @@ Commit `0a88cc0` (2026-05-29) moved it to an env var, but the prior state is
 permanently in history:
 
 ```
--_MAILTRAP_TOKEN  = "83eedddb86ac4ea224dbeaf3ab769d8d"
--_TEST_RECIPIENT  = "maridian.agent@gmail.com"
+-_MAILTRAP_TOKEN  = [withheld: private]
+-_TEST_RECIPIENT  = [withheld: private]
 ```
 
 (from `git show 0a88cc0 -- api/routers/production.py`). It was live in
@@ -722,7 +722,7 @@ permanently in history:
 does nothing — `git log -p` still shows it, and this repo is already public enough
 to have a README written for LinkedIn.
 
-Also exposed by the same diff: the operational mailbox **maridian.agent@gmail.com**.
+Also exposed by the same diff: the operational mailbox ([withheld: private]).
 
 ### Other credentials
 
@@ -730,7 +730,7 @@ Also exposed by the same diff: the operational mailbox **maridian.agent@gmail.co
   **not** tracked (`git ls-files | grep env` → only the two `.env.example` files).
   It presumably holds a live `ANTHROPIC_API_KEY` — never publish it, and check
   whether the key it holds was ever used in a screenshot or log.
-- Every seeded user row carries the plaintext password `pass123`
+- Every seeded user row carries the plaintext password ([withheld: private])
   ([data/sentinel.db].users, 50 rows). Synthetic, but a committed database file
   full of `password` columns reads badly in a security-conscious review. It is also
   reachable in the published repo via `data/sentinel.db`.
@@ -754,10 +754,9 @@ Also exposed by the same diff: the operational mailbox **maridian.agent@gmail.co
 
 ### Third-party / confidentiality
 
-- **Real company names as customer records:** Loblaws, Tim Hortons, Metro, Sobeys,
-  Bulk Barn, Second Harvest — with fabricated SLA thresholds, order quantities, and
+- **Real company names as customer records:** [withheld: private] — with fabricated SLA thresholds, order quantities, and
   defect rates attached ([data/sentinel.db].customers; commit `9ea27b3`). This data
-  is invented, but a page showing "Loblaws — SLA breached, 4% defect rate" is a
+  is invented, but a page showing "<retailer> — SLA breached, 4% defect rate" is a
   named real company attached to a fabricated quality failure. Label it clearly as
   synthetic, or rename the accounts, before publishing screenshots.
 - **FGF Brands** is named as a partner throughout [README.md, CONTRIBUTORS.md,
@@ -787,7 +786,7 @@ Also exposed by the same diff: the operational mailbox **maridian.agent@gmail.co
 
 ## 11. Open questions for Mahyar
 
-1. **The Mailtrap token `83eedddb…` is in git history (commit `14de528`→`0a88cc0`).
+1. **The Mailtrap token is in git history (commit `14de528`→`0a88cc0`).
    Has it been rotated?** If not, rotate it before the case study goes live.
 2. **Is the Railway API coming back?** It currently 404s. Do you redeploy it, or do
    you rewrite the README to describe a decommissioned demo and lead with the
@@ -838,6 +837,6 @@ Also exposed by the same diff: the operational mailbox **maridian.agent@gmail.co
     piece?
 21. **Are you comfortable publishing `docs/internal/` (the daily ownership grid names
     who owned what and when it slipped)?** Have the other four seen it?
-22. **The seeded customers are real companies (Loblaws, Tim Hortons, Metro) attached
+22. **The seeded customers are real companies ([withheld: private]) attached
     to fabricated SLA breaches.** Rename them for public screenshots, or label the
     data as synthetic prominently?
