@@ -1,5 +1,5 @@
+import RoleList from '@/components/experience/RoleList';
 import Button from '@/components/lucent/Button';
-import ExperienceList from '@/components/lucent/ExperienceList';
 import Section from '@/components/lucent/Section';
 import { roles } from '@/content/experience';
 import { contact, sections } from '@/content/site';
@@ -7,9 +7,9 @@ import { contact, sections } from '@/content/site';
 const { experience } = sections;
 
 /**
- * Experience — the list is the skim, each open row the read. A role with no
- * bullets yet (one that has just started) opens to its one line of context
- * rather than to invented responsibilities.
+ * Experience — where he has worked, as an iOS inset grouped list led by each
+ * company's own logo. The list is the skim, each open row the read; the rows
+ * rise in one after another as the section arrives.
  */
 export default function Experience() {
   const resume = contact.links.find((l) => l.label === 'Resume' && l.status === 'live');
@@ -27,18 +27,7 @@ export default function Experience() {
         )
       }
     >
-      <ExperienceList
-        id="exp"
-        rows={roles.map((r) => ({
-          monogram: r.monogram,
-          title: r.title,
-          subline: r.subline ?? `${r.company} · ${r.location}`,
-          when: r.period,
-          now: r.current,
-          lines: r.bullets.length ? r.bullets : [r.context],
-          tags: r.stack ?? [],
-        }))}
-      />
+      <RoleList id="exp" roles={roles} />
     </Section>
   );
 }

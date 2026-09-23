@@ -50,8 +50,17 @@ export interface Role {
    * doesn't describe the role (a lab and its supervisor, a product and its URL).
    */
   subline?: string;
-  /** Two letters for the row's monogram. Letters, never a company logo. */
+  /**
+   * Two letters for the company's tile: the fallback for a company without a
+   * supplied `logo`. Letters are never drawn into a logo.
+   */
   monogram: string;
+  /**
+   * The company's own logo, supplied by Mahyar (2026-09-23): a web copy in
+   * public/experience/, cropped to the mark and never recoloured or redrawn.
+   * `width` and `height` are the file's pixels.
+   */
+  logo?: { src: string; width: number; height: number };
   /** The role he is in today — carries the "Now" tag. At most one. */
   current?: boolean;
   /** True for roles not yet started — renders an "Incoming" treatment. */

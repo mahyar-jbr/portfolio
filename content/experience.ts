@@ -18,6 +18,7 @@ export const roles: Role[] = [
     period: 'Sept 2026 – Present',
     location: 'Toronto, ON (Hybrid)',
     monogram: 'FG',
+    logo: { src: '/experience/fgf.png', width: 104, height: 104 },
     current: true,
     context: 'A one-year co-op term building AI agent systems.',
     // From his LinkedIn, cut to three and stripped of adjectives ("scalable"). The
@@ -53,6 +54,7 @@ export const roles: Role[] = [
     period: 'Aug 2023 – Aug 2026',
     location: 'Richmond Hill, ON',
     monogram: 'PV',
+    logo: { src: '/experience/pet-valu.jpg', width: 156, height: 156 },
     positions: [
       { title: 'Assistant Manager', since: 'Aug 2025' },
       { title: 'Retail Sales Associate', since: 'Aug 2023' },
@@ -71,6 +73,7 @@ export const roles: Role[] = [
     period: 'May – Aug 2025',
     location: 'Toronto, ON (Hybrid)',
     monogram: 'NV',
+    logo: { src: '/experience/nova-ventures.png', width: 81, height: 83 },
     context: 'A goalkeeper analytics platform for competitive soccer teams.',
     bullets: [
       'Built backend API endpoints in Python and FastAPI for a goalkeeper analytics platform, exposing per-session performance data to the coaching dashboard.',
@@ -87,6 +90,7 @@ export const roles: Role[] = [
     period: 'Mar – Aug 2024',
     location: 'Sweden (Remote)',
     monogram: 'ST',
+    logo: { src: '/experience/sepantech.jpg', width: 116, height: 116 },
     context: 'A course-management platform for healthcare and physiotherapy professionals.',
     bullets: [
       'Built core features for a course-management platform used by 500+ healthcare and physiotherapy professionals across Sweden: enrollment, progress tracking and automated certification.',
