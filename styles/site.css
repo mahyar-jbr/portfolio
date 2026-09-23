@@ -9,6 +9,18 @@
  * versions of the kit's first-paint motion. Every value is a Lucent token.
  */
 
+/* ---------- Type on non-Apple devices ----------
+   The kit's faces are Apple's system fonts; everywhere else its stack fell to
+   Arial or Roboto, which flattens the name at display sizes. Inter (loaded in
+   app/layout.tsx) stands in right after Apple's faces, so Apple devices never
+   use it; its optical-size axis picks the Display cut at the name's size. */
+:root {
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', var(--font-inter, 'Helvetica Neue'),
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-text: -apple-system, BlinkMacSystemFont, 'SF Pro Text', var(--font-inter, 'Helvetica Neue'),
+    'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
 /* ---------- Page ---------- */
 html,
 body {
@@ -67,6 +79,12 @@ img {
 .site-nav .lu-nav {
   pointer-events: auto;
   max-width: 100%;
+}
+/* Toasts drop in just under the capsule (its bottom sits at 76px) rather than
+   over it: the kit gives the toast region and the nav the same top edge, and a
+   clear-glass toast over the nav's labels can't be read. */
+.lu-toast-region {
+  top: calc(env(safe-area-inset-top, 0px) + 84px);
 }
 /* The lens is aria-hidden decoration: it must never take a click meant for an item. */
 .site-nav .lu-lens {
@@ -207,8 +225,33 @@ img {
   /* room for the descenders of y and J */
   padding-bottom: 0.08em;
 }
-.site-hero .hero-name > span {
+.site-hero .hero-line,
+.site-hero .hero-line > span {
   display: block;
+}
+/* The keynote title: each line rises from behind a clean edge at its foot
+   (just under the descenders), the second 120ms after the first, half again
+   as long as the kit's entrance so the name settles rather than pops; the
+   card and buttons follow as it lands (--enter-i 6 and 7). It plays once per
+   load, and reduced motion gets a 150ms fade instead. */
+@media (prefers-reduced-motion: no-preference) {
+  .site-hero .hero-line {
+    clip-path: inset(-0.4em -0.4em -0.22em -0.4em);
+  }
+  .site-hero .hero-line > span {
+    animation: hero-rise calc(var(--dur-enter) * 1.5) var(--ease-settle) backwards;
+    animation-delay: calc(60ms + var(--line, 0) * 120ms);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-hero .hero-name {
+    animation: site-fade 150ms ease backwards;
+  }
+}
+@keyframes hero-rise {
+  from {
+    transform: translateY(1.2em);
+  }
 }
 
 .hero-card {
@@ -355,6 +398,16 @@ img {
 @media (prefers-reduced-motion: reduce) {
   .clock-strip {
     transition: none;
+  }
+}
+
+/* ---- Sheets ----
+   The kit sizes the sheet's content box to min(640px, 100%), so on a phone
+   its padding pushed the panel past the screen. There the whole panel,
+   padding included, takes the width. */
+@media (max-width: 720px) {
+  .lu-sheet {
+    box-sizing: border-box;
   }
 }
 

@@ -49,7 +49,10 @@ export const hero = {
   name: identity.fullName,
 
   properties: [
-    { id: 'role', label: 'Role', value: identity.roleTitle },
+    // Was "Role: AI Agent & Full-Stack Engineer", which read like a second job
+    // title next to Now (Mahyar, 2026-09-23). Builds says what he makes, in the
+    // tagline's own words; roleTitle still heads the page title and previews.
+    { id: 'builds', label: 'Builds', value: 'AI agent systems and full-stack products' },
     // Was "Incoming AI Solutions Engineer at FGF · September 2026". He started in
     // September, so it now reads as the present. Plain text, NOT the kit's green
     // status tag: in Lucent a green dot means "Available for work", which under his

@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter } from 'next/font/google';
 import '@/design-system/lucent/bundle.css';
 import '@/styles/tokens.css';
 import '@/styles/site.css';
@@ -60,6 +61,11 @@ if(location.pathname==='/')d.classList.add('name-in-view');
 if(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference) and (min-height: 600px)').matches)d.classList.add('pin');
 setTimeout(function(){if(!d.classList.contains('hero-wired'))d.classList.remove('name-in-view');var s=document.querySelector('[data-story]');if(s&&!s.classList.contains('is-live'))d.classList.remove('pin');},4000);})();`;
 
+/* Inter stands in for Apple's system faces on every other device (styles/site.css,
+   "Type on non-Apple devices"). Its opsz axis carries the Display cut. It is
+   exposed as --font-inter on :root, where the kit's font tokens are defined. */
+const inter = Inter({ subsets: ['latin'], axes: ['opsz'], display: 'swap' });
+
 const navItems = [sections.work, sections.experience, sections.drawings, sections.contact].map((s) => ({
   id: s.id,
   label: s.nav,
@@ -71,6 +77,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: BOOT }} />
+        <style dangerouslySetInnerHTML={{ __html: `:root{--font-inter:${inter.style.fontFamily}}` }} />
       </head>
       <body className="lu-root">
         <a className="site-skip" href="#main">

@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import NavHandoff from '@/components/hero/NavHandoff';
 import Button from '@/components/lucent/Button';
 import type { GlyphName } from '@/components/lucent/Glyph';
@@ -5,9 +6,9 @@ import { enterStyle, Properties, type HeroProperty } from '@/components/lucent/H
 import LiveClock from '@/components/lucent/LiveClock';
 import { hero } from '@/content/site';
 
-/** Each property's glyph (kit: role, now, studying, based). */
+/** Each property's glyph. */
 const GLYPH: Record<(typeof hero.properties)[number]['id'], GlyphName> = {
-  role: 'role',
+  builds: 'layers',
   now: 'now',
   studying: 'studying',
   based: 'pin',
@@ -15,8 +16,11 @@ const GLYPH: Record<(typeof hero.properties)[number]['id'], GlyphName> = {
 
 /**
  * The opening: his name set huge in ink on two lines, then the details as an
- * iOS card and the two actions. They rise in once with the kit's entrance;
- * everything else is quiet. The page reads the same without scripts.
+ * iOS card and the two actions.
+ *
+ * The name comes in like a keynote title: each line rises from behind a clean
+ * edge at its foot, then the card and buttons follow (styles/site.css). The
+ * page reads the same without scripts.
  */
 export default function Hero() {
   const properties: HeroProperty[] = hero.properties.map((p) => {
@@ -38,13 +42,18 @@ export default function Hero() {
   return (
     <section className="lu-hero site-hero" id="top" aria-label="Introduction">
       <div className="lu-hero-inner hero-grid">
-        <h1 className="hero-name" data-enter="" style={enterStyle(0)}>
-          <span>{first}</span> <span>{last.join(' ')}</span>
+        <h1 className="hero-name">
+          <span className="hero-line" style={{ '--line': 0 } as CSSProperties}>
+            <span>{first}</span>
+          </span>{' '}
+          <span className="hero-line" style={{ '--line': 1 } as CSSProperties}>
+            <span>{last.join(' ')}</span>
+          </span>
         </h1>
-        <div className="hero-card" data-enter="" style={enterStyle(1)}>
+        <div className="hero-card" data-enter="" style={enterStyle(6)}>
           <Properties items={properties} className="hero-props" tiles />
         </div>
-        <div className="lu-hero-actions hero-actions" data-enter="" style={enterStyle(2)}>
+        <div className="lu-hero-actions hero-actions" data-enter="" style={enterStyle(7)}>
           <Button variant="filled" href={primary.href}>
             {primary.label}
           </Button>
