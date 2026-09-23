@@ -1,23 +1,24 @@
 import Image from 'next/image';
 import type { Project } from '@/content/types';
+import LoopVideo from './LoopVideo';
 
 /**
  * What fills a project card. The kit's rule: real screenshots where they exist,
  * cropped from the top (the kit's cover crop keeps the top of shots[0]);
- * otherwise a diagram of the idea rather than a stock picture. A soon card
- * (nothing to show yet) gets art that says nothing about the work: abstract
- * shapes under the frost, never a blurred real screenshot.
+ * otherwise a diagram of the idea rather than a stock picture. The one card with
+ * nothing to show, MoneyMind, loops its face instead, the gator at his desk,
+ * because Mahyar chose to show him (2026-09-23); its screenshots and details
+ * stay off until launch.
  *
  * Diagrams are monochrome line art in ink on the dot canvas, like the kit's
  * graph-research card. Only the research brief, which has nothing built to
  * show yet, still draws one.
  */
 
-/** The art container's own classes: a diagram sits on the dot canvas, an unfrosted soon card on the plain raised ground. */
+/** The art container's own classes: a diagram sits on the dot canvas, a banner loop in a box of its own. */
 export function cardArtClass(project: Project): string | undefined {
   if (project.page === 'case-study' && project.shots?.length) return undefined;
-  // frosted: the kit's .is-stealth card gives the art its raised ground
-  if (project.page === 'none') return project.frost ? undefined : 'art-canvas';
+  if (project.page === 'none') return project.video ? 'art-video' : 'art-canvas';
   return 'art-canvas lu-wall';
 }
 
@@ -26,19 +27,8 @@ export default function CardArt({ project, priority }: { project: Project; prior
     const shot = project.shots[0];
     return <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 720px) 100vw, 1152px" priority={priority} />;
   }
-  if (project.page === 'none') return project.frost ? <Bars /> : null;
+  if (project.page === 'none') return project.video ? <LoopVideo video={project.video} /> : null;
   return project.slug === 'graph-rag-fhir' ? <Graph /> : null;
-}
-
-/** Frosted soon card: a rising bar chart, abstract enough to say "money" and nothing else (kit). */
-function Bars() {
-  return (
-    <div className="art-bars" aria-hidden="true">
-      {[48, 44, 56, 64, 74, 88].map((h, i) => (
-        <i key={i} style={{ height: `${h}%` }} />
-      ))}
-    </div>
-  );
 }
 
 /** Graph retrieval: a small node graph (kit). */

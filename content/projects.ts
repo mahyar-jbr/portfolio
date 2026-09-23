@@ -193,8 +193,10 @@ const bowlwise: CaseStudyProject = {
 
 // HELD BACK (2026-09-22). MoneyMind is becoming a co-founded product. Since
 // 2026-09-23 Mahyar shows it by name, but only as the "Coming soon" card
-// `moneymind` below: its screenshots, characters and details stay off every public
-// page until launch. This verified write-up is kept, unrendered, for that day.
+// `moneymind` below: its screenshots and details stay off every public page until
+// launch. The one thing shown is the product's face, its gator, as that card's
+// banner (Mahyar's choice, 2026-09-23). This verified write-up is kept,
+// unrendered, for launch day.
 export const heldBack: CaseStudyProject = {
   slug: 'moneymind',
   name: 'MoneyMind',
@@ -595,9 +597,10 @@ const tacticalDna: CaseStudyProject = {
 
 /**
  * The co-founded product MoneyMind grew into, shown by name since 2026-09-23 as a
- * low-key "Coming soon" card and nothing more. The frost stays over abstract art
- * (Lucent kit, MoneyMind asset group): never a screenshot, and no page, so
- * /work/moneymind 404s until `heldBack` replaces this at launch.
+ * low-key "Coming soon" card and nothing more. Its banner is the product's face,
+ * the gator at his desk, which Mahyar chose to show (2026-09-23). Still never a
+ * screenshot or a detail, and no page, so /work/moneymind 404s until `heldBack`
+ * replaces this at launch.
  */
 const moneymind: SoonProject = {
   slug: 'moneymind',
@@ -608,7 +611,14 @@ const moneymind: SoonProject = {
   year: '2026',
   status: { label: 'Coming soon', kind: 'soon' },
   cardLine: 'An AI money coach',
-  frost: true,
+  // Mahyar's clip (a-gator-desk.mp4), cut to a 3.9s loop that ends where it starts.
+  video: {
+    src: '/work/moneymind/gator-desk.mp4',
+    poster: '/work/moneymind/gator-desk.jpg',
+    width: 1280,
+    height: 720,
+    description: 'A gator in a suit reads The Swamp Times at his desk, behind a nameplate that says A. Gator.',
+  },
 };
 
 /**

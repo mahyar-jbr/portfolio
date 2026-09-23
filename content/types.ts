@@ -181,8 +181,26 @@ export interface SoonProject extends Omit<ProjectCard, 'cardLine' | 'year'> {
   page: 'none';
   cardLine?: string;
   year?: string;
-  /** Lay the kit's stealth frost over abstract art, for a product whose look stays private until launch. */
-  frost?: boolean;
+  /**
+   * A short silent loop as the card's banner, in place of its name. Only what
+   * Mahyar chose to show: a character, never a screenshot of the product.
+   */
+  video?: CardVideo;
+}
+
+/** A soon card's banner loop. The files are cut to loop cleanly and carry no audio track. */
+export interface CardVideo {
+  src: string;
+  /** The loop's first frame: shown until it plays, and instead of it under reduced motion or without scripts. */
+  poster: string;
+  width: number;
+  height: number;
+  /**
+   * What the clip shows, in a line. The card hides the clip from screen readers,
+   * since its caption already names the project, so nothing reads this out; it
+   * says what the file is.
+   */
+  description: string;
 }
 
 /**

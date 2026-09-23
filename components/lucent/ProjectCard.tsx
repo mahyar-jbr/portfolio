@@ -10,8 +10,7 @@ import type { ProjectStatus } from '@/content/types';
  *
  * Soon: a card with no href has nowhere to go yet, so it is a plain block rather
  * than a link — no arrow, no hover lift, no press dip (site.css .is-soon) — and
- * must not look clickable. `frost` lays the kit's stealth frost over its art;
- * never a real screenshot under it: blur can be undone by eye.
+ * must not look clickable.
  */
 
 /** Which glyph carries each kind of status (kit: store, flask, timer; spark for a soon card). */
@@ -42,8 +41,6 @@ interface Props {
   /** Space-separated filter tags (SkillChip filter groups). */
   tags?: string;
   feature?: boolean;
-  /** The kit's stealth frost over the art (abstract shapes only). */
-  frost?: boolean;
   className?: string;
 }
 
@@ -56,14 +53,12 @@ export default function ProjectCard({
   artClassName,
   tags,
   feature,
-  frost,
   className,
 }: Props) {
   const soon = !href;
   const cls = [
     'lu-card',
     feature && 'is-feature',
-    frost && 'is-stealth',
     soon && 'is-soon',
     title.length > LONG_TITLE && 'is-long-title',
     className,
@@ -73,7 +68,6 @@ export default function ProjectCard({
   const body = (
     <>
       <div className={artClassName ? `lu-card-art ${artClassName}` : 'lu-card-art'}>{art}</div>
-      {frost && <div className="lu-card-frost" />}
       <span className="lu-card-label has-icon">
         <Glyph name={STATUS_GLYPH[status.kind]} />
         {status.label}

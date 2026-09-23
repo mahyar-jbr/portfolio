@@ -46,7 +46,6 @@ export default function Work() {
             status={p.status}
             tags={p.kind}
             feature={featureFirst && i === 0}
-            frost={p.page === 'none' && p.frost}
             art={<CardArt project={p} priority={i === 0} />}
             artClassName={cardArtClass(p)}
           />
