@@ -4,6 +4,7 @@ import SigmaMorph from '@/components/hero/SigmaMorph';
 import Button from '@/components/lucent/Button';
 import type { GlyphName } from '@/components/lucent/Glyph';
 import { Properties, type HeroProperty } from '@/components/lucent/Hero';
+import LiveClock from '@/components/lucent/LiveClock';
 import { hero } from '@/content/site';
 
 /** Each property's glyph (kit: role, now, studying, based). */
@@ -30,10 +31,10 @@ export default function Hero() {
   const properties: HeroProperty[] = hero.properties.map((p) => {
     let value: HeroProperty['value'] = p.value;
     if ('timeZone' in p) {
-      /* Lucent.liveTime keeps a quiet local clock; empty until the runtime fills it. */
+      /* a quiet local clock whose digits roll when the minute changes */
       value = (
         <>
-          {p.value} <time data-live="" data-tz={p.timeZone} />
+          {p.value} <LiveClock timeZone={p.timeZone} />
         </>
       );
     }
@@ -71,7 +72,7 @@ export default function Hero() {
               <span className="sigma-glyph">{SIGMA}</span>
             </span>
             <div className="hero-below">
-              <Properties items={properties} className="hero-props" />
+              <Properties items={properties} className="hero-props" tiles />
               <div className="lu-hero-actions hero-actions">
                 <Button variant="filled" href={primary.href}>
                   {primary.label}

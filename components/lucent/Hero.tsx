@@ -22,14 +22,34 @@ export interface HeroProperty {
 
 export const enterStyle = (i: number) => ({ '--enter-i': i }) as CSSProperties;
 
-/** The property list on its own (dl.lu-props), for heroes that lay out their own opening. */
-export function Properties({ items, className, style }: { items: HeroProperty[]; className?: string; style?: CSSProperties }) {
+/**
+ * The property list on its own (dl.lu-props), for heroes that lay out their own
+ * opening. With `tiles`, each glyph sits in a small tile — the look of an iOS
+ * inset grouped list (styled by the page, styles/site.css).
+ */
+export function Properties({
+  items,
+  className,
+  style,
+  tiles,
+}: {
+  items: HeroProperty[];
+  className?: string;
+  style?: CSSProperties;
+  tiles?: boolean;
+}) {
   return (
     <dl className={className ? `lu-props ${className}` : 'lu-props'} style={style}>
       {items.map((p) => (
         <div key={p.label}>
           <dt>
-            <Glyph name={p.glyph} />
+            {tiles ? (
+              <span className="prop-tile">
+                <Glyph name={p.glyph} />
+              </span>
+            ) : (
+              <Glyph name={p.glyph} />
+            )}
             {p.label}
           </dt>
           <dd>{p.value}</dd>

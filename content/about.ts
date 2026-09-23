@@ -85,9 +85,18 @@ export interface StoryPhoto {
   alt: string;
   /** CSS object-position: where he is in the photo. */
   position: string;
+  /** The small glass caption on the photo: where, or what. */
+  caption: { text: string; kind: 'place' | 'activity' | 'event' };
 }
 
-export const aboutSection = {
+export interface StoryChapter {
+  id: string;
+  label: string;
+  line: string;
+  photos: StoryPhoto[];
+}
+
+export const aboutSection: { kicker: string; title: string; chapters: StoryChapter[]; paragraph: string } = {
   kicker: 'About',
   title: 'A bit about me',
   chapters: [
@@ -102,6 +111,7 @@ export const aboutSection = {
           height: 2400,
           alt: 'Mahyar standing on top of Preikestolen with his arms open, above the fjord in Norway',
           position: '50% 62%',
+          caption: { text: 'Preikestolen, Norway', kind: 'place' },
         },
       ],
     },
@@ -110,14 +120,30 @@ export const aboutSection = {
       label: 'Play',
       line: 'I really like playing sports, like football and tennis.',
       photos: [
-        { src: '/about/tennis.jpg', width: 576, height: 1024, alt: 'Mahyar playing tennis on an outdoor court', position: '48% 70%' },
+        {
+          src: '/about/tennis.jpg',
+          width: 576,
+          height: 1024,
+          alt: 'Mahyar playing tennis on an outdoor court',
+          position: '48% 70%',
+          caption: { text: 'Tennis', kind: 'activity' },
+        },
       ],
     },
     {
       id: 'train',
       label: 'Train',
       line: 'I run and lift weights.',
-      photos: [{ src: '/about/run.jpg', width: 1206, height: 2031, alt: 'Mahyar outside after a run', position: '50% 55%' }],
+      photos: [
+        {
+          src: '/about/run.jpg',
+          width: 1206,
+          height: 2031,
+          alt: 'Mahyar outside after a run',
+          position: '50% 55%',
+          caption: { text: 'After a run', kind: 'activity' },
+        },
+      ],
     },
     {
       id: 'build',
@@ -130,6 +156,7 @@ export const aboutSection = {
           height: 1800,
           alt: 'Mahyar taking a selfie with his team at the OpenAI hackathon',
           position: '62% 55%',
+          caption: { text: 'OpenAI hackathon', kind: 'event' },
         },
         {
           src: '/about/hackathon-tmls.jpg',
@@ -137,10 +164,11 @@ export const aboutSection = {
           height: 2400,
           alt: 'Mahyar talking with his team at the TMLS hackathon',
           position: '88% 28%',
+          caption: { text: 'TMLS hackathon', kind: 'event' },
         },
       ],
     },
-  ] satisfies { id: string; label: string; line: string; photos: StoryPhoto[] }[],
+  ],
   paragraph:
     'My journey started in Grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here I am, always building something to keep my inner child happy and to keep searching for greatness. Thanks for reading.',
   // No "Also into" line (Mahyar, 2026-09-22): the story says it.

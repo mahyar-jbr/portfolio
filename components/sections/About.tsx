@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
 import StoryScroll from '@/components/about/StoryScroll';
+import Glyph, { type GlyphName } from '@/components/lucent/Glyph';
 import { aboutSection as about } from '@/content/about';
 
 /**
@@ -11,8 +12,10 @@ import { aboutSection as about } from '@/content/about';
  * One set of markup, two layouts (styles/site.css "About"):
  * - Pinned (desktop, with scripts and motion): a frame on the left, the text on
  *   the right. The section holds while the page scrolls through it; each step's
- *   photo cross-fades into the frame as its line takes over, under a small
- *   Travel · Play · Train · Build index (StoryScroll). The coda turns the frame
+ *   photo cross-fades into the frame as its line takes over, under the kit's
+ *   Liquid Glass segmented control (Travel · Play · Train · Build), whose lens
+ *   follows along and can be used to jump between steps (StoryScroll). Each
+ *   photo carries a small glass caption, like Apple Photos Memories. The coda turns the frame
  *   into a contact sheet of every photo beside the paragraph.
  * - Resting (phones, reduced motion, no script): the same story as a plain
  *   sequence — photo, line; photo, line — then the paragraph.
@@ -20,6 +23,12 @@ import { aboutSection as about } from '@/content/about';
  * It arrives the way every section does: as it scrolls into view, each part
  * rises in (the kit's data-reveal).
  */
+const CAPTION_GLYPH: Record<'place' | 'activity' | 'event', GlyphName> = {
+  place: 'pin',
+  activity: 'activity',
+  event: 'flag',
+};
+
 export default function About() {
   const { chapters } = about;
   const coda = chapters.length;
@@ -50,6 +59,11 @@ export default function About() {
                         priority={i === 0}
                         style={{ objectPosition: ph.position }}
                       />
+                      {/* Liquid Glass over the photo: where, or what (kit: glass belongs over imagery) */}
+                      <span className="story-cap lu-glass is-clear">
+                        <Glyph name={CAPTION_GLYPH[ph.caption.kind]} />
+                        {ph.caption.text}
+                      </span>
                     </span>
                   ))}
                 </figure>
@@ -71,13 +85,15 @@ export default function About() {
                   {about.title}
                 </h2>
               </div>
-              <ol className="story-index" aria-hidden="true">
+              {/* the kit's Liquid Glass segmented control: its lens follows the story as
+                  it scrolls, and choosing a step scrolls the story there (StoryScroll) */}
+              <div className="lu-seg story-seg" role="radiogroup" aria-label="Story">
                 {chapters.map((c, i) => (
-                  <li key={c.id} data-step={i}>
+                  <button key={c.id} type="button" className="lu-seg-item" role="radio" aria-checked={i === 0} data-value={i}>
                     {c.label}
-                  </li>
+                  </button>
                 ))}
-              </ol>
+              </div>
               {chapters.map((c, i) => (
                 <div key={c.id} className="story-text" data-step={i} data-reveal="" style={step(i)}>
                   <p className="lu-kicker">{c.label}</p>

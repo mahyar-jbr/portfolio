@@ -111,10 +111,6 @@ img {
   grid-auto-rows: auto;
   align-items: start;
 }
-/* The live clock's separator only appears once the clock has a time to show. */
-.lu-props time[data-live]:not(:empty)::before {
-  content: '· ';
-}
 
 /* ---------- Entrance ----------
    The CSS form of Lucent.enter(): fade and rise 12px, 70ms apart, on
@@ -288,6 +284,112 @@ img {
 .hero-props > div:hover {
   background: none;
 }
+
+/* The details as one card, the way iOS groups settings: a solid surface
+   (content sits on surface, not glass), rows separated by hairlines inset past
+   the icon, each glyph in a small tile. Radii stay concentric: 20px card, 8px
+   tiles. */
+.lu-props.hero-props {
+  display: block;
+  max-width: none;
+  padding: 4px 0;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-glass);
+  overflow: hidden;
+}
+.lu-props.hero-props > div {
+  position: relative;
+  box-sizing: border-box;
+  grid-template-columns: 140px minmax(0, 1fr);
+  min-height: 48px;
+  margin: 0;
+  padding: 8px var(--space-4);
+  border-radius: 0;
+}
+.lu-props.hero-props > div + div::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: calc(var(--space-4) + 28px + var(--space-3));
+  height: 1px;
+  background: var(--hairline);
+}
+.lu-props.hero-props dt {
+  gap: var(--space-3);
+  font-size: 15px;
+}
+.prop-tile {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: var(--surface-raised);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.lu-props .prop-tile svg {
+  width: 16px;
+  height: 16px;
+}
+@media (max-width: 720px) {
+  .lu-props.hero-props > div {
+    grid-template-columns: 118px minmax(0, 1fr);
+    padding-inline: var(--space-3);
+  }
+  .lu-props.hero-props > div + div::before {
+    left: calc(var(--space-3) + 28px + var(--space-3));
+  }
+}
+/* On phones the value gets the full width under its label, the way iOS
+   Contacts stacks a field's label over its value — no two-line wraps. */
+@media (max-width: 560px) {
+  .lu-props.hero-props > div {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2px;
+    padding-block: 10px;
+  }
+  .lu-props.hero-props dt {
+    font-size: 13px;
+  }
+  .lu-props.hero-props dd {
+    padding-left: calc(28px + var(--space-3));
+  }
+}
+
+/* The local clock (LiveClock): when the minute changes, each changed digit
+   rolls to its new value on the kit's spring, like the iOS clock. Every
+   character sits in the same clipped box so digits and separators align. */
+.hero-clock {
+  --clock-lh: 1.3em;
+  color: var(--ink-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.hero-clock:not(:empty)::before {
+  content: '· ';
+}
+.clock-face {
+  display: inline-flex;
+}
+.clock-ch {
+  display: inline-block;
+  height: var(--clock-lh);
+  line-height: var(--clock-lh);
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.clock-strip {
+  display: block;
+  transition: translate var(--dur-morph) var(--ease-spring);
+}
+@media (prefers-reduced-motion: reduce) {
+  .clock-strip {
+    transition: none;
+  }
+}
 .hero-actions {
   justify-content: center;
   margin-top: 0;
@@ -460,8 +562,30 @@ img {
   box-shadow: var(--shadow-glass);
 }
 .story-fig.is-sheet,
-.story-index {
+.story-seg {
   display: none;
+}
+/* Each photo's caption: a small Liquid Glass capsule floating on the image,
+   like Apple Photos Memories — glass over imagery, where the kit wants it. */
+.story-cap {
+  --lu-r: var(--radius-pill);
+  position: absolute;
+  left: var(--space-3);
+  bottom: var(--space-3);
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px 6px 10px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.story-cap svg {
+  flex: none;
+  width: 14px;
+  height: 14px;
 }
 .story-text {
   grid-column: 2;
@@ -590,27 +714,11 @@ img {
     grid-column: 1;
     grid-row: 1;
   }
-  .sigma .story-index {
+  /* the kit's Liquid Glass segmented control, its lens following the story */
+  .sigma .story-seg {
+    display: inline-flex;
     grid-row: 2;
-    display: flex;
-    gap: var(--space-5);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    line-height: 16px;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-secondary);
-  }
-  .sigma .story-index li {
-    opacity: 0.45;
-    transition: opacity var(--dur-jelly) var(--ease-settle), color var(--dur-jelly) var(--ease-settle);
-  }
-  .sigma .story-index li.is-active {
-    opacity: 1;
-    color: var(--ink);
+    justify-self: start;
   }
   .sigma .story-text,
   .sigma .story-text.is-coda {
