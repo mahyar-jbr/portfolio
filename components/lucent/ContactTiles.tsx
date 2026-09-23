@@ -3,8 +3,9 @@ import BrandIcon, { brandFor } from './BrandIcon';
 /**
  * ContactTiles — each way to reach him as a small tile with its own glyph instead
  * of a plain text link: Gmail's, GitHub's and LinkedIn's own marks, and a page
- * for the resume. The marks are the brands' official ones (BrandIcon), as the
- * kit allows, never drawings of them; the page is line art. All in currentColor.
+ * for the resume. The marks are the brands' official ones in their own colours
+ * (BrandIcon), as the kit allows, never drawings of them; the page is line art
+ * in currentColor.
  *
  * The email tile shows Gmail's mark because the address is a Gmail one (Mahyar,
  * 2026-09-23); it lifts a touch on hover (styles/site.css "Brand icons"). Any

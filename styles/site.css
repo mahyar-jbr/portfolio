@@ -843,11 +843,11 @@ html:not(.js) .site-theme {
 }
 
 /* ---------- Brand icons (components/lucent/BrandIcon.tsx) ----------
-   Other companies' real marks, one colour in currentColor like the kit's
-   glyphs. Each SVG is as tall as its box and only as wide as its mark. In a tag
-   it stands at the text's size, the tag's own gap after it; everywhere else it
-   fills the kit's glyph box: 40px on a contact tile, 18px in the case-study
-   meta row, 14px on an About caption. */
+   Other companies' real marks, in their owners' own colours. Each SVG is as
+   tall as its box and only as wide as its mark. In a tag it stands at the
+   text's size, the tag's own gap after it; everywhere else it fills the kit's
+   glyph box: 40px on a contact tile, 18px in the case-study meta row, 14px on
+   an About caption. */
 .lu-tag > .brand-icon {
   flex: none;
   width: auto;
@@ -855,7 +855,26 @@ html:not(.js) .site-theme {
   /* in the case-study stack, undo the meta row's sizing of its own glyphs */
   margin: 0;
   grid-row: auto;
-  color: inherit;
+}
+/* A mark that is black or too dark for a dark ground carries its owner's
+   version for one (brand-dark), shown with the dark theme: picked with the
+   toggle, or followed from the system when the visitor hasn't picked. */
+.brand-icon .brand-dark {
+  display: none;
+}
+:root[data-theme='dark'] .brand-icon .brand-light {
+  display: none;
+}
+:root[data-theme='dark'] .brand-icon .brand-dark {
+  display: inline;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .brand-icon .brand-light {
+    display: none;
+  }
+  :root:not([data-theme='light']) .brand-icon .brand-dark {
+    display: inline;
+  }
 }
 /* The email tile's Gmail mark, where the envelope was: in place of the
    envelope's opening flap, it lifts a touch on hover, on the kit's timing. */
