@@ -58,22 +58,21 @@ export const about = {
 /**
  * The About section on the home page, right after the hero, told as a story
  * (2026-09-22): Travel → Play → Train → Build, then a coda with his paragraph.
- * The hero's M opens onto the first photo.
  *
  * Mahyar gave the chapters as Play, Train, Travel, Build. Travel leads because
- * its photo is the one that can fill a screen: the M-window grows until the
- * opening photo covers the viewport, and Preikestolen is 1350×2400 with him
+ * it is the strongest opening image: Preikestolen is 1350×2400 with him
  * centred, where the tennis shot is a 576×1024 export with him small in frame.
- * Swap the order back if a full-resolution tennis photo arrives.
+ * Swap the order back if he prefers, or when a full-resolution tennis photo
+ * arrives.
  *
  * Lines are his, lightly edited: "travel" (on top of Preikestolen, Norway) ·
  * "i also really like to play sport like football and tennis" · "run and lift
  * weights" · "build random stuff" (the OpenAI and TMLS hackathons).
  *
- * `paragraph` is his own, lightly edited for flow with his phrasing kept: forced
- * into CS in grade 11, hated it, found a new way of thinking; from drawing
- * imaginary creatures to turning ideas into code; the inner child; searching for
- * greatness. Change it only with him.
+ * `paragraph` is his own, lightly edited for flow and grammar with his phrasing
+ * kept (2026-09-22): forced into CS in Grade 11, hated it, found a new way of
+ * thinking; from drawing imaginary creatures to turning ideas into code; his
+ * inner child; searching for greatness. Change it only with him.
  *
  * Photos are his (public/about/), resized to ≤2400px and stripped of all
  * metadata (the originals carry GPS). `position` is the focal point frames crop
@@ -143,6 +142,6 @@ export const aboutSection = {
     },
   ] satisfies { id: string; label: string; line: string; photos: StoryPhoto[] }[],
   paragraph:
-    'This journey started in grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here we are: always building something, to keep the inner child happy and keep searching for greatness. Thanks for reading.',
+    'My journey started in Grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here I am, always building something to keep my inner child happy and to keep searching for greatness. Thanks for reading.',
   // No "Also into" line (Mahyar, 2026-09-22): the story says it.
 };
