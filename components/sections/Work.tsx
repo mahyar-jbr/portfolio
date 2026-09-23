@@ -7,10 +7,11 @@ import { sections } from '@/content/site';
 const { work } = sections;
 
 /**
- * Projects — the skim layer: two cards of each kind, filterable by kind. Each
- * card is a real screenshot (or a diagram of the idea), a status label with a
- * glyph, the name and one line. The case study is one click away; a project with
- * nothing to show yet is a "soon" card that opens nothing.
+ * Projects — the skim layer: two cards of each kind, filterable by kind. A card
+ * with a page is a real screenshot (or a diagram of the idea), a status label with
+ * a glyph, the name and one line, and its case study is one click away. A project
+ * with nothing to show yet is a "soon" card that opens nothing: its name, its
+ * status, and a line only if it has one, over art that says nothing about it.
  *
  * Filter chips are a SkillChip filter group: cards filtered out fade and shrink
  * in dur-exit, the rest glide over dur-morph, returners fade in. With an odd

@@ -1008,19 +1008,30 @@ a:hover > svg.site-out {
     aspect-ratio: 4 / 3;
   }
 }
-/* A 4:3 card under about 350px wide has no room for a long name: "Graph-Native
-   Retrieval for Clinical LLM Agents" wraps to four lines and its caption climbs
-   under the status label. Cards get that narrow on small phones and in the two
-   columns just past the 720px break; there they go square. */
-@media (max-width: 380px) {
-  .lu-card,
-  .lu-card.is-feature,
-  .case-next .lu-card {
-    aspect-ratio: 1;
+/* A long name (ProjectCard's is-long-title: "Graph-Native Retrieval for Clinical
+   LLM Agents") runs to four lines at the kit's 24px on a card under 400px wide,
+   and its caption buries the art and climbs under the status label. Cards get
+   that narrow on phones and in the two columns just past the 720px break. Only
+   that card gives, measured on its own width: a smaller name under 400px, no
+   meta line under 340px. On phones under 350px the name still takes four lines,
+   and there, where the card stands alone in its row, it goes square. Every other
+   card keeps the kit's 4:3 and 24px. */
+.lu-card.is-long-title {
+  container: card / inline-size;
+}
+@container card (max-width: 400px) {
+  .is-long-title .lu-card-title {
+    font-size: 20px;
+    line-height: 24px;
   }
 }
-@media (min-width: 721px) and (max-width: 800px) {
-  .lu-grid > .lu-card:not(.is-feature) {
+@container card (max-width: 340px) {
+  .is-long-title .lu-card-meta {
+    display: none;
+  }
+}
+@media (max-width: 349px) {
+  .lu-card.is-long-title {
     aspect-ratio: 1;
   }
 }

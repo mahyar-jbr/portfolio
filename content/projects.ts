@@ -556,10 +556,10 @@ const graphRag: BriefProject = {
   year: '2026',
   status: { label: 'In progress', kind: 'progress' },
   cardLine: 'Directed studies, York Data Mining Lab',
-  // The name already says "graph-native retrieval for clinical LLM agents"; the lede
-  // says where and what instead, from the facts below. No outcome until there is one.
-  lede:
-    'Directed studies at the York Data Mining Lab: a graph traversal tool over FHIR references, to be evaluated on FHIR-AgentBench.',
+  // The name says what it is, the facts row where, and `building` what; the lede is
+  // the question the work asks. No outcome until there is one. Also the page's meta
+  // description.
+  lede: 'Does an agent answering clinical questions do better when it can follow the references between FHIR records?',
   role: 'Directed studies, EECS 4070',
   facts: [
     { label: 'Lab', value: 'York Data Mining Lab' },
@@ -568,7 +568,8 @@ const graphRag: BriefProject = {
   ],
   building: [
     'A graph traversal tool over FHIR references, for clinical LLM agents.',
-    'An evaluation on FHIR-AgentBench, measured against published baselines.',
+    // U+2011, a non-breaking hyphen: the benchmark's name never splits across lines.
+    'An evaluation on FHIR\u2011AgentBench, measured against published baselines.',
   ],
 };
 

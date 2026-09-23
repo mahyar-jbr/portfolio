@@ -14,7 +14,7 @@ import type { ProjectStatus } from '@/content/types';
  * never a real screenshot under it: blur can be undone by eye.
  */
 
-/** Which glyph carries each kind of status (kit: store, flask, timer). */
+/** Which glyph carries each kind of status (kit: store, flask, timer; spark for a soon card). */
 const STATUS_GLYPH: Record<ProjectStatus['kind'], GlyphName> = {
   live: 'store',
   soon: 'spark',
@@ -22,6 +22,12 @@ const STATUS_GLYPH: Record<ProjectStatus['kind'], GlyphName> = {
   research: 'flask',
   hackathon: 'timer',
 };
+
+/**
+ * A name longer than this runs to three or four lines on a card under 400px wide
+ * and buries the art, so its card sets it smaller there (site.css .is-long-title).
+ */
+const LONG_TITLE = 24;
 
 interface Props {
   /** The project's page. Absent on a soon card, which opens nothing. */
@@ -54,7 +60,14 @@ export default function ProjectCard({
   className,
 }: Props) {
   const soon = !href;
-  const cls = ['lu-card', feature && 'is-feature', frost && 'is-stealth', soon && 'is-soon', className]
+  const cls = [
+    'lu-card',
+    feature && 'is-feature',
+    frost && 'is-stealth',
+    soon && 'is-soon',
+    title.length > LONG_TITLE && 'is-long-title',
+    className,
+  ]
     .filter(Boolean)
     .join(' ');
   const body = (
