@@ -13,8 +13,8 @@ type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & { href: str
  * Every internal link on the site. Two behaviours the kit asks for:
  *
  * - In-page anchors (#work) take the page to the section on a journey
- *   (lib/journey.ts) instead of jumping, and leave the URL alone — the kit's
- *   data-scroll-to behaviour.
+ *   (lib/journey.ts) instead of jumping. Like the kit's data-scroll-to they add
+ *   no history entry; once the page lands, the address names the section.
  * - Route changes play the Lucent page swap (Lucent.transition): old view out in
  *   dur-exit, new view up 8px in dur-enter. One to a section of another page
  *   (/#work from a case study) arrives on the section inside the swap.

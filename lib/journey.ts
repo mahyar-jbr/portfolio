@@ -16,13 +16,17 @@
  *   it is set down just under a third of a screen short of the section and
  *   glides the rest: the old view drifts off the way the page is moving as it
  *   fades, the new one arrives and settles. The capsule and the theme button
- *   stay put, live, over it (styles/site.css, "Navigation journey").
+ *   stay put, live, over it (styles/site.css, "Navigation journey"). Without
+ *   view transitions the page dips out and back instead, as the kit's page
+ *   swap does without them, and is set down just as short.
  * - Reduced motion: the page is simply there, under a fade of 150ms at most.
  *
- * Either way the lens goes straight to the section's item, and the section
- * takes focus once it has landed (keyboards and screen readers continue from
- * it). A wheel, a touch or a scrolling key hands the page straight back; a
- * click on another link sets a new course from wherever the page is.
+ * Either way the lens goes straight to the section's item. Once the page has
+ * landed, the section takes focus (keyboards and screen readers continue from
+ * it) and the address names it. A wheel, a touch or a scrolling key hands the
+ * page straight back, except the momentum of a flick made just before the
+ * click, which the journey rides out; a click on another link sets a new course
+ * from wherever the page is.
  */
 import { prefersReducedMotion } from './lucent';
 
@@ -32,13 +36,23 @@ const NEAR = 1.5;
 const LAND = 0.3;
 /**
  * The glide is a spring, critically damped so the page never swings past its
- * section, at 20 rad/s (stiffness 400): a screen's glide is within 2px of it
- * in about 0.4s, the last stretch of a far journey in 0.25s. The kit's lens
- * spring (260) took half a second over a short hop, longer than a far journey.
+ * section. A hop within reach moves at 26 rad/s: a screen in about a third of a
+ * second, most of it in the first 150ms, where 20 took half a second over two
+ * thirds of a screen (Safari's own smooth scroll takes 0.2s). The last stretch
+ * of a far journey keeps 20 rad/s (stiffness 400), settling in 0.28s as the
+ * cross-fade ends. A glide is done once it is within 1px and nearly still:
+ * closer than that, nothing the eye can see moves.
  */
+const OMEGA_NEAR = 26;
 const OMEGA = 20;
 /** However the page shifts under it, a glide lands within this long (ms). */
 const LIMIT = 2500;
+/**
+ * Wheel events further apart than this (ms) belong to separate gestures. A
+ * trackpad sends them every 8 to 17ms; the rest is room for a page busy
+ * setting down a cross-fade, which holds them back (see fileWheel).
+ */
+const GAP = 200;
 
 type Nav = HTMLElement & { __luLens?: Lucent.LensApi };
 
@@ -47,6 +61,8 @@ interface Glide {
   /** where the page is on the spring (px, fractional) and how fast it moves (px/s) */
   x: number;
   v: number;
+  /** how stiff the spring is (rad/s) */
+  omega: number;
   /** where the section was last frame, and the scroll position we last set */
   to: number;
   written: number;
@@ -57,8 +73,14 @@ interface Glide {
 
 let glide: Glide | null = null;
 let fold: ViewTransition | null = null;
+/** the fade out or back in of a far journey without view transitions */
+let dip: Animation | null = null;
+/** the frame that keeps a landed page in place while a flick's momentum drains */
+let stayRaf = 0;
 /** bumped by every new journey and every stop, so a late callback knows it is stale */
 let course = 0;
+/** when the current journey began (performance.now()) */
+let begun = 0;
 let arrival: { path: string; hash: string; at: number } | null = null;
 
 const root = () => document.documentElement;
@@ -82,6 +104,62 @@ function scrollToY(y: number): void {
   window.scrollTo({ top: y, behavior: 'instant' });
 }
 
+/* ---------- Momentum ----------
+ * A flick on a trackpad goes on sending wheel events after the fingers lift,
+ * slowing, for up to a second; and once a gesture has begun unprevented,
+ * browsers send the rest of it uncancellable. A reader who flicks and then
+ * clicks the nav hasn't taken the page back. So every wheel event is filed
+ * into gestures: one goes on while its events keep coming (within GAP of each
+ * other), the same way, and no faster. A pause, a turn or a push starts a new
+ * one. A journey begun while a gesture was coming in rides out its momentum:
+ * it swallows the events it can, and holds its course over the ones it can't.
+ * The next gesture hands the page back. */
+
+interface Gesture {
+  sign: number;
+  /** when its last event was sent (Event.timeStamp), and when the page got it */
+  at: number;
+  seen: number;
+  /** its speed and the one before (px/ms) */
+  speed: number;
+  was: number;
+}
+let gesture: Gesture | null = null;
+/** the gesture a journey began in */
+let coast: Gesture | null = null;
+
+function fileWheel(e: WheelEvent) {
+  const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? viewport() : 1);
+  if (!dy) return;
+  const now = performance.now();
+  const g = gesture;
+  const dt = g ? e.timeStamp - g.at : Infinity;
+  /* A page busy for a moment gets the events sent meanwhile late, or merged
+     into one, so the pause between two events is the shorter of the two
+     measures: between their sending, and between their arrival. */
+  const same = !!g && Math.sign(dy) === g.sign && Math.min(dt, now - g.seen) < GAP;
+  /* speed, not size, for the same reason */
+  const speed = Math.abs(dy) / (same ? Math.max(dt, 8) : 16);
+  if (g && same && speed <= Math.max(g.speed, g.was) * 1.5 + 0.2) {
+    g.was = g.speed;
+    g.speed = speed;
+    g.at = e.timeStamp;
+    g.seen = now;
+  } else {
+    gesture = { sign: Math.sign(dy), at: e.timeStamp, seen: now, speed, was: speed };
+  }
+}
+
+/** The gesture still coming in at `now`, if any. */
+function live(now: number): Gesture | null {
+  return gesture && now - gesture.seen < GAP ? gesture : null;
+}
+
+/** Whether the gesture the journey began in is still coming in. */
+function coasting(now: number): boolean {
+  return !!coast && coast === live(now);
+}
+
 /* ---------- Focus ----------
  * The section takes focus where the page lands, so Tab and a screen reader go
  * on from it. It isn't a control, so it gets no ring (site.css). A key still
@@ -92,11 +170,13 @@ let held = false;
 function onKeyState(e: Event) {
   held = e.type === 'keydown';
 }
-/* from the first keystroke on, so the Enter that starts a journey is seen */
+/* From the first keystroke on, so the Enter that starts a journey is seen, and
+   the first wheel event, so a flick is known before the click after it. */
 if (typeof window !== 'undefined') {
   window.addEventListener('keydown', onKeyState, true);
   window.addEventListener('keyup', onKeyState, true);
   window.addEventListener('blur', onKeyState);
+  window.addEventListener('wheel', fileWheel, { capture: true, passive: true });
 }
 
 function focusOn(el: HTMLElement): void {
@@ -125,9 +205,12 @@ function focusOn(el: HTMLElement): void {
  * is and fades as the hero comes back (NavHandoff). */
 let hold: { lens: Lucent.LensApi; select: Lucent.LensApi['select'] } | null = null;
 
+const navLens = () => document.querySelector<Nav>('.site-nav .lu-nav')?.__luLens ?? null;
+
 function holdLens(el: HTMLElement): void {
   releaseLens();
-  const lens = document.querySelector<Nav>('.site-nav .lu-nav')?.__luLens;
+  unfollow?.();
+  const lens = navLens();
   if (!lens) return;
   const item = lens.items.find((it) => it.getAttribute('href') === `#${el.id}`) ?? null;
   if (item && lens.current !== item) lens.select(item);
@@ -139,10 +222,54 @@ function holdLens(el: HTMLElement): void {
   hold = { lens, select };
 }
 
-function releaseLens(): void {
-  if (!hold) return;
-  hold.lens.select = hold.select;
+/** Lets the spy move the lens again; returns the lens it held, if any. */
+function releaseLens(): Lucent.LensApi | null {
+  if (!hold) return null;
+  const { lens } = hold;
+  lens.select = hold.select;
   hold = null;
+  return lens;
+}
+
+/* The kit's scroll spy, run once (bundle.js, liquidNav): the last item whose
+   section's top has passed 45% of the screen, else the first. The kit's runs
+   on scrolling, and not for 900ms after a click on an item, so on its own it
+   can leave the lens on an item the page has left. */
+function spy(lens: Lucent.LensApi): void {
+  let best: HTMLElement | null = null;
+  for (const it of lens.items) {
+    const href = it.getAttribute('href') ?? '';
+    const target = href.length > 1 && href[0] === '#' ? document.getElementById(href.slice(1)) : null;
+    if (!target) continue;
+    best ??= it;
+    if (target.getBoundingClientRect().top < window.innerHeight * 0.45) best = it;
+  }
+  if (best && best !== lens.current) lens.select(best);
+}
+
+/* After the reader takes the page back, the lens follows it through the rest
+   of the kit's 900ms hold. */
+let unfollow: (() => void) | null = null;
+function follow(lens: Lucent.LensApi): void {
+  spy(lens);
+  const left = begun + 1000 - performance.now();
+  if (left <= 0) return;
+  let raf = 0;
+  const onScroll = () => {
+    raf ||= requestAnimationFrame(() => {
+      raf = 0;
+      spy(lens);
+    });
+  };
+  const end = () => {
+    window.removeEventListener('scroll', onScroll);
+    cancelAnimationFrame(raf);
+    if (unfollow === end) unfollow = null;
+  };
+  unfollow?.();
+  unfollow = end;
+  window.addEventListener('scroll', onScroll, { passive: true });
+  setTimeout(end, left);
 }
 
 /* ---------- Handing the page back ---------- */
@@ -158,15 +285,29 @@ function controlAt(x: number, y: number): HTMLElement | null {
   return null;
 }
 
-function onWheel() {
-  stop();
+/* fileWheel has already filed this event: it either went on the gesture the
+   journey began in, or began another */
+function onWheel(e: WheelEvent) {
+  if (!e.deltaY) return;
+  if (coast && coast === gesture) {
+    if (e.cancelable) e.preventDefault();
+    return;
+  }
+  handBack();
 }
 function onKey(e: KeyboardEvent) {
-  if (SCROLL_KEYS.has(e.key)) stop();
+  if (SCROLL_KEYS.has(e.key)) handBack();
 }
 /* A press on the capsule may be the next journey: its click sets the course. */
 function onPointer(e: PointerEvent) {
-  if (!controlAt(e.clientX, e.clientY)) stop();
+  if (!controlAt(e.clientX, e.clientY)) handBack();
+}
+/* The window changing size (a phone turned) moves the page under the glide
+   for a few frames as the layout settles (Safari even puts it back near where
+   it was, and the gallery repacks). That's not the reader. */
+let resizedAt = -Infinity;
+function onResize() {
+  resizedAt = performance.now();
 }
 /* Through the cross-fade a view transition takes every click (the target is
    <html>), so a click on the capsule is passed on to the link under it. */
@@ -182,30 +323,89 @@ let listening = false;
 function listen() {
   if (listening) return;
   listening = true;
-  window.addEventListener('wheel', onWheel, { passive: true });
+  /* not passive: it swallows the momentum it can */
+  window.addEventListener('wheel', onWheel, { capture: true, passive: false });
   window.addEventListener('keydown', onKey);
   window.addEventListener('pointerdown', onPointer, true);
   window.addEventListener('click', onClick, true);
+  window.addEventListener('resize', onResize);
 }
 function unlisten() {
   if (!listening) return;
   listening = false;
-  window.removeEventListener('wheel', onWheel);
+  window.removeEventListener('wheel', onWheel, true);
   window.removeEventListener('keydown', onKey);
   window.removeEventListener('pointerdown', onPointer, true);
   window.removeEventListener('click', onClick, true);
+  window.removeEventListener('resize', onResize);
+}
+/** Stops listening once nothing is moving the page. */
+function idle() {
+  if (!glide && !fold && !dip && !stayRaf) unlisten();
 }
 
-/** Ends the journey where the page is: a scroll or a touch took over. */
+/** Ends whatever the journey is doing, where the page is. */
 function stop(): void {
   course++;
   if (glide) cancelAnimationFrame(glide.raf);
   glide = null;
+  cancelAnimationFrame(stayRaf);
+  stayRaf = 0;
   const f = fold;
   fold = null;
   f?.skipTransition();
+  const d = dip;
+  dip = null;
+  if (d) {
+    d.cancel();
+    if (!f) root().classList.remove('site-journey');
+  }
   unlisten();
   releaseLens();
+}
+
+/** The reader has taken the page: the journey ends where it is, and the lens follows the reader. */
+function handBack(): void {
+  stop();
+  coast = null;
+  const lens = navLens();
+  if (lens) follow(lens);
+}
+
+/* ---------- Landing ---------- */
+
+/* The address names the section, without a new history entry: a copied link
+   opens it, and Back still leaves the page. The hero (#top) is the page itself. */
+function address(el: HTMLElement): void {
+  const hash = el.id === 'top' ? '' : `#${el.id}`;
+  if (window.location.hash === hash) return;
+  window.history.replaceState(null, '', hash || window.location.pathname + window.location.search);
+}
+
+/* The page stays on the section while the momentum of the flick it began in
+   drains (it can't all be cancelled, see Momentum): nothing that comes after
+   drifts it off. */
+function stay(el: HTMLElement): void {
+  listen();
+  const step = (now: number) => {
+    stayRaf = 0;
+    if (!coasting(now) || now - begun > LIMIT) return idle();
+    const to = destination(el);
+    if (Math.abs(window.scrollY - to) > 0.5) scrollToY(to);
+    stayRaf = requestAnimationFrame(step);
+  };
+  stayRaf = requestAnimationFrame(step);
+}
+
+/** The page is on the section: the lens and the address say so, and the section takes focus. */
+function land(el: HTMLElement): void {
+  const lens = releaseLens();
+  /* #top has no item: the lens shows what scrolling there would */
+  if (lens && !lens.items.some((it) => it.getAttribute('href') === `#${el.id}`)) spy(lens);
+  address(el);
+  focusOn(el);
+  if (coasting(performance.now())) stay(el);
+  else idle();
 }
 
 /* ---------- The glide ---------- */
@@ -217,30 +417,30 @@ function run(now: number) {
   const moved = window.scrollY - g.written;
   if (Math.abs(moved) > 2) {
     /* The browser held what's on screen in place as the page above it changed
-       height (scroll anchoring): the section moved by as much, so carry on from
-       there. Anything else moving the page (the scrollbar, find in page) is the
+       height (scroll anchoring), or moved it as the window changed size: carry
+       on from there. A flick's momentum the journey rides out is written over.
+       Anything else moving the page (the scrollbar, find in page) is the
        reader, who has it now. */
-    if (Math.abs(moved - (to - g.to)) > 2) {
-      stop();
+    if (performance.now() - resizedAt < 300 || Math.abs(moved - (to - g.to)) <= 2) g.x += moved;
+    else if (!coasting(now)) {
+      handBack();
       return;
     }
-    g.x += moved;
   }
   g.to = to;
   const dt = g.last ? Math.min((now - g.last) / 1000, 0.1) : 1 / 60;
   g.last = now;
   /* the critically damped spring's exact step: e(t) = (e + (v + ωe)t)·e^(−ωt) */
+  const w = g.omega;
   const e = g.x - to;
-  const b = g.v + OMEGA * e;
-  const decay = Math.exp(-OMEGA * dt);
+  const b = g.v + w * e;
+  const decay = Math.exp(-w * dt);
   g.x = to + (e + b * dt) * decay;
-  g.v = (g.v - OMEGA * b * dt) * decay;
-  if ((Math.abs(g.x - to) < 0.5 && Math.abs(g.v) < 20) || now - g.start > LIMIT) {
+  g.v = (g.v - w * b * dt) * decay;
+  if ((Math.abs(g.x - to) < 1 && Math.abs(g.v) < 40) || now - g.start > LIMIT) {
     scrollToY(to);
     glide = null;
-    if (!fold) unlisten();
-    releaseLens();
-    focusOn(g.el);
+    land(g.el);
     return;
   }
   scrollToY(g.x);
@@ -249,16 +449,20 @@ function run(now: number) {
 }
 
 /** Glides to `el` from where the page is at `v` px/s; one already under way just changes course. */
-function glideTo(el: HTMLElement, v: number) {
+function glideTo(el: HTMLElement, v: number, omega: number) {
   listen();
+  /* a landed page held against momentum gives way to the new course */
+  cancelAnimationFrame(stayRaf);
+  stayRaf = 0;
   if (glide) {
     glide.el = el;
+    glide.omega = omega;
     glide.to = destination(el);
     glide.start = performance.now();
     return;
   }
   const y = window.scrollY;
-  glide = { el, x: y, v, to: destination(el), written: y, start: performance.now(), last: 0, raf: 0 };
+  glide = { el, x: y, v, omega, to: destination(el), written: y, start: performance.now(), last: 0, raf: 0 };
   glide.raf = requestAnimationFrame(run);
 }
 
@@ -272,7 +476,9 @@ function canFade(): boolean {
 }
 
 /* The kit's reveal would raise what the page lands on a second time after the
-   fade: in the view the journey lands in, it arrives at rest. */
+   fade, or row by row as a glide passes it, rising on for most of a second
+   after the page has stopped: on the way and in the view the journey lands
+   in, it arrives at rest. */
 function settleInView(from: number, to: number) {
   const vh = viewport();
   const lo = Math.min(0, to - from);
@@ -296,20 +502,25 @@ function fade(update: () => void): ViewTransition {
     if (fold === vt) fold = null;
     if (!fold) {
       html.classList.remove('site-journey');
-      if (!glide) unlisten();
+      html.style.removeProperty('--journey-drift');
     }
+    idle();
   });
   return vt;
+}
+
+/** Where a far journey sets the page down: `stretch` px short of the section, and which way it's going. */
+function shortOf(to: number): { dir: number; stretch: number } {
+  const from = window.scrollY;
+  return { dir: Math.sign(to - from), stretch: Math.min(Math.abs(to - from), Math.round(viewport() * LAND)) };
 }
 
 function travel(el: HTMLElement, to: number) {
   stop();
   const id = course;
-  const from = window.scrollY;
-  const dir = Math.sign(to - from);
-  const land = Math.min(Math.abs(to - from), Math.round(viewport() * LAND));
-  const start = to - dir * land;
-  root().style.setProperty('--journey-drift', `${-dir * land}px`);
+  const { dir, stretch } = shortOf(to);
+  const start = to - dir * stretch;
+  root().style.setProperty('--journey-drift', `${-dir * stretch}px`);
   const vt = fade(() => {
     /* a journey begun since (a second click within a frame) has the page */
     if (course !== id) return;
@@ -319,9 +530,49 @@ function travel(el: HTMLElement, to: number) {
   /* arriving at the speed a spring would carry it the last stretch, so the
      new view picks up the old one's drift and settles */
   const go = () => {
-    if (course === id) glideTo(el, dir * OMEGA * land);
+    if (course === id) glideTo(el, dir * OMEGA * stretch, OMEGA);
   };
   vt.ready.then(go, go);
+}
+
+/* Without View Transitions (Safari before 18, Firefox before 144), or with one
+   of the kit's already running: the kit's page swap without them
+   (Lucent.transition), not a glide through everything in between. The page
+   dips out, is set down as short of the section, and comes back as it glides
+   the rest. Only the page fades; the capsule and the theme button stay. */
+function dipTo(el: HTMLElement, to: number) {
+  stop();
+  const id = course;
+  const html = root();
+  const main = document.querySelector<HTMLElement>('main') ?? document.body;
+  const { dir, stretch } = shortOf(to);
+  const start = to - dir * stretch;
+  html.classList.add('site-journey');
+  listen();
+  const out = main.animate({ opacity: [1, 0] }, { duration: 140, easing: 'ease-in', fill: 'forwards' });
+  dip = out;
+  out.finished.then(
+    () => {
+      if (course !== id) return;
+      scrollToY(start);
+      settleInView(start, to);
+      const ease = getComputedStyle(html).getPropertyValue('--ease-settle').trim() || 'ease-out';
+      const back = main.animate({ opacity: [0, 1] }, { duration: 320, easing: ease });
+      out.cancel();
+      dip = back;
+      glideTo(el, dir * OMEGA * stretch, OMEGA);
+      back.finished.then(
+        () => {
+          if (dip !== back) return;
+          dip = null;
+          if (!fold) html.classList.remove('site-journey');
+          idle();
+        },
+        () => {},
+      );
+    },
+    () => {},
+  );
 }
 
 /** Reduced motion: no travel, the page is there (a fade of at most 150ms). */
@@ -334,30 +585,33 @@ function jump(el: HTMLElement, to: number) {
     fade(() => {
       if (course === id) scrollToY(to);
     }).finished.finally(() => {
-      if (course === id) releaseLens();
+      if (course === id) land(el);
     });
   } else {
     scrollToY(to);
-    releaseLens();
+    land(el);
   }
-  focusOn(el);
 }
 
 /** Takes the page to `el`, a section (or #top). */
 export function journeyTo(el: HTMLElement): void {
   warm(el);
   const to = destination(el);
+  begun = performance.now();
+  coast = live(begun);
   if (prefersReducedMotion()) {
     jump(el, to);
     return;
   }
   const y = glide ? glide.x : window.scrollY;
-  if (Math.abs(to - y) > viewport() * NEAR && canFade()) {
-    travel(el, to);
+  if (Math.abs(to - y) > viewport() * NEAR) {
+    if (canFade()) travel(el, to);
+    else dipTo(el, to);
   } else {
     /* a fade still waiting to set the page down would move it under this glide */
-    if (fold && !glide) stop();
-    glideTo(el, 0);
+    if ((fold || dip) && !glide) stop();
+    settleInView(window.scrollY, to);
+    glideTo(el, 0, OMEGA_NEAR);
   }
   holdLens(el);
 }
@@ -397,6 +651,10 @@ export function arrive(): void {
   const el = document.getElementById(decodeURIComponent(a.hash.slice(1)));
   if (!el) return;
   stop();
+  begun = performance.now();
+  coast = live(begun);
   scrollToY(destination(el));
   focusOn(el);
+  /* a flick made on the page before, still coming in */
+  if (coasting(begun)) stay(el);
 }

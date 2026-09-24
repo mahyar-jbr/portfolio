@@ -1066,9 +1066,11 @@ html.hero-intro-again .site-hero {
   }
 }
 /* The About story is set to where the page lands, not cross-faded through
-   the steps it skipped. */
+   the steps it skipped. The closing line is named too: its own rule
+   (.pin .story-text.is-coda) outranks the plain one. */
 .site-journey .story-fig,
-.site-journey .story-text {
+.site-journey .story-text,
+.site-journey .story-text.is-coda {
   transition: none;
 }
 /* Reduced motion: no drift, a 150ms fade. */
