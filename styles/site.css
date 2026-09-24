@@ -1749,7 +1749,7 @@ html:not(.js) .wall-open:hover .wall-mat {
   transform: none;
 }
 /* while a drawing is in the room, its place on the wall is empty */
-.is-lifted {
+.wall-lifted {
   visibility: hidden;
 }
 .wall figcaption {
@@ -1847,6 +1847,8 @@ html:not(.js) .wall-open:hover .wall-mat {
   color: var(--paper-ink);
 }
 
+/* phones: a row has room for two portraits at most (Wall); one alone hangs
+   at the height of the pair above it (its cap), centred on the line */
 @media (max-width: 600px) {
   .wall-line {
     column-gap: var(--space-3);
@@ -1855,13 +1857,24 @@ html:not(.js) .wall-open:hover .wall-mat {
     display: none;
   }
   .wall-break.is-phone,
-  .strip-break {
+  .strip-break:not(.is-narrow) {
     display: block;
     flex-basis: 100%;
     height: 0;
   }
+  .wall-piece[data-cap] {
+    max-width: var(--cap);
+    margin-inline: auto;
+  }
   .wall-strip {
     row-gap: var(--space-3);
+  }
+}
+@media (max-width: 430px) {
+  .strip-break.is-narrow {
+    display: block;
+    flex-basis: 100%;
+    height: 0;
   }
 }
 
@@ -1919,6 +1932,15 @@ html:not(.js) .wall-open:hover .wall-mat {
   touch-action: pan-y pinch-zoom;
   -webkit-user-select: none;
   user-select: none;
+}
+/* zoomed in, a finger pans the drawing every way; the pager waits (Room) */
+.room[data-zoomed] .room-stage {
+  touch-action: pan-x pan-y pinch-zoom;
+}
+/* the label is for reading, so its words can be selected (Room doesn't drag from it) */
+.room-stage .room-plate {
+  -webkit-user-select: text;
+  user-select: text;
 }
 .room-track {
   display: flex;
@@ -2107,6 +2129,18 @@ html:not(.js) .wall-open:hover .wall-mat {
 }
 
 /* ---- the wall label: title, then medium and year, where it hung, and his line ---- */
+/* Positioned, so it paints over the mat's lift shadow (the mat is positioned
+   too, and would otherwise paint over it): in dark mode that shadow reaches
+   the title and greys it. While the drawing flies in from the wall or back to
+   it (Room sets data-moving), it passes over the label instead. */
+.room-plate,
+.room-label {
+  position: relative;
+}
+.room[data-moving] .room-stage,
+.room[data-moving] .room-mat {
+  z-index: 1;
+}
 .room-plate {
   flex: none;
   box-sizing: border-box;
@@ -2163,7 +2197,9 @@ html:not(.js) .wall-open:hover .wall-mat {
 .room-label {
   padding: 0 var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
 }
-/* the story's panels, in order under its label: where you are, and a way to jump */
+/* the story's panels, in order under its label: where you are, and a way to
+   jump. Each is the art itself, so it is never dimmed or tinted: the one on
+   show wears the ring, as in the kit's lightbox process steps. */
 .room-panels {
   display: flex;
   align-items: flex-end;
@@ -2180,8 +2216,9 @@ html:not(.js) .wall-open:hover .wall-mat {
   background: var(--paper);
   box-shadow: var(--shadow-glass);
   cursor: pointer;
-  opacity: 0.5;
-  transition: opacity var(--dur-jelly) var(--ease-settle);
+  transition:
+    box-shadow var(--dur-jelly) var(--ease-settle),
+    transform var(--dur-jelly) var(--ease-settle);
 }
 .room-panel img {
   display: block;
@@ -2193,12 +2230,18 @@ html:not(.js) .wall-open:hover .wall-mat {
   font-size: 11px;
   color: var(--paper-ink);
 }
-.room-panel:hover,
-.room-panel[aria-current] {
-  opacity: 1;
+@media (hover: hover) {
+  .room-panel:not([aria-current]):hover {
+    box-shadow: var(--shadow-lift);
+    transform: translateY(-1px);
+  }
 }
+/* the kit's ring, set off the paper by a hair of the room's ground: the paper
+   is white in both themes, and so is the dark theme's ring */
 .room-panel[aria-current] {
-  box-shadow: 0 0 0 2px var(--accent);
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 4px var(--accent);
 }
 
 /* Wide screens: the label hangs beside the drawing at its foot, the way a
@@ -2241,6 +2284,89 @@ html:not(.js) .wall-open:hover .wall-mat {
   }
 }
 
+/* Short and wide, below the wide layout (a phone turned on its side): the
+   label moves beside the drawing here too, or stacked below it the drawing
+   would come out a stamp. Height is what's short, so the drawing takes all of
+   it: the glass bar leaves the top of the stage for the top of the label's
+   column, where it floats over nothing, and the label is set a size smaller in
+   a narrower column. The drawing is centred in what's left; the label keeps
+   its place under the bar. */
+@media (max-width: 999px) and (max-height: 560px) and (min-aspect-ratio: 4 / 3) {
+  .room {
+    /* at its narrowest, still wide enough for "Watch it being made 0:30" below */
+    --plate: clamp(224px, 28vw, 248px);
+    --side: max(var(--space-5), env(safe-area-inset-right, 0px));
+  }
+  .room-bar {
+    top: calc(var(--space-3) + env(safe-area-inset-top, 0px));
+    left: calc(100% - var(--side) - var(--plate));
+    transform: none;
+  }
+  .room-layout {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+  .room[data-set='story'] .room-layout {
+    grid-template-columns: minmax(0, 1fr) calc(var(--plate) + var(--side));
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .room[data-set='pieces'] .room-slide,
+  .room[data-set='story'] .room-slide {
+    flex-direction: row;
+    align-items: stretch;
+    gap: var(--space-5);
+    padding: var(--space-4) var(--side) calc(var(--space-4) + env(safe-area-inset-bottom, 0px))
+      max(var(--space-5), env(safe-area-inset-left, 0px));
+  }
+  .room[data-set='story'] .room-slide {
+    padding-right: var(--space-5);
+  }
+  /* the drawing takes the frame's room, whatever a wide screen's rules said */
+  .room[data-set] .room-frame {
+    flex: 1 1 0;
+    min-width: 0;
+    display: grid;
+    place-items: center;
+    container-type: size;
+  }
+  .room[data-set='pieces'] .room-art {
+    width: min(100cqw - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ar), var(--nat) * 2);
+  }
+  .room-slide > .room-plate {
+    flex: 0 0 var(--plate);
+    align-self: flex-end;
+    margin: 0;
+  }
+  .room-label {
+    align-self: end;
+    padding: 0 var(--side) calc(var(--space-4) + env(safe-area-inset-bottom, 0px)) 0;
+  }
+  .room-plate h2 {
+    font-size: 19px;
+    line-height: 24px;
+  }
+  .room-meta,
+  .room-credit {
+    font: var(--text-caption);
+    font-weight: 400;
+  }
+  .room-note {
+    margin-top: var(--space-2);
+    font-size: 15px;
+    line-height: 20px;
+  }
+  .room .room-watch.is-small {
+    margin-top: var(--space-3);
+    padding-inline: var(--space-3);
+    font-size: 14px;
+  }
+  .room-panels {
+    margin-top: var(--space-3);
+  }
+  .room-panel {
+    height: 32px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .room-video,
   .room-mat[data-video='on'] .room-video,
@@ -2254,7 +2380,8 @@ html:not(.js) .wall-open:hover .wall-mat {
   .room .lu-btn {
     transition-duration: 150ms;
   }
-  .wall-open:hover .wall-mat {
+  .wall-open:hover .wall-mat,
+  .room-panel:not([aria-current]):hover {
     transform: none;
   }
 }

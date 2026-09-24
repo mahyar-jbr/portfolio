@@ -10,10 +10,15 @@ import { clock } from './shared';
  *
  * It is only ever asked for: nothing loads until "Watch it being made" is
  * pressed (the video has no src before that), and it plays once. Its poster is
- * the drawing already on screen, which is also its first frame, so it arrives
- * without a flash and costs nothing extra. When it ends it gives way to the
- * finished drawing again. It pauses while the tab is hidden and stops (and
- * stops downloading) when the piece is left or the room closes.
+ * the drawing already on screen, so it costs nothing extra. The recordings open
+ * on the finished drawing before the canvas clears, but that opening frame is
+ * the drawing app's export, not the scan: close for The Pilgrim and Fracture,
+ * a little off for What Remains, and for Coronation heavier in line and a
+ * touch narrower. So the video dissolves in over the drawing when it starts
+ * playing (site.css, .room-video) rather than cutting to it, and dissolves out
+ * again when it ends and gives way to the finished drawing. It pauses while
+ * the tab is hidden and stops (and stops downloading) when the piece is left
+ * or the room closes.
  */
 export type TimelapseState = 'idle' | 'loading' | 'playing' | 'paused';
 
@@ -59,6 +64,10 @@ export default function Timelapse({
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const [state, setState] = useState<TimelapseState>('idle');
+  /* What the viewer last asked for. The video's own events arrive a task
+     later, so a pause (or a play) the page asked for before "Show the
+     drawing" can't bring the player back after it. */
+  const want = useRef<'play' | 'idle'>('idle');
   const [time, setTime] = useState(0);
   const scrubbing = useRef(false);
   const report = useRef(onState);
@@ -82,15 +91,17 @@ export default function Timelapse({
       raf = v.paused ? 0 : requestAnimationFrame(tick);
     };
     const onPlaying = () => {
+      if (want.current === 'idle') return;
       set('playing');
       if (!raf) raf = requestAnimationFrame(tick);
     };
     const onPause = () => {
-      if (v.ended || !v.getAttribute('src')) return;
+      if (v.ended || !v.getAttribute('src') || want.current === 'idle') return;
       set('paused');
     };
     /* it plays once, then gives the room back to the finished drawing */
     const onEnded = () => {
+      want.current = 'idle';
       setTime(v.duration || duration);
       set('idle');
       ended.current();
@@ -101,20 +112,26 @@ export default function Timelapse({
         v.pause();
       } else if (resumeOnShow) {
         resumeOnShow = false;
-        v.play().catch(() => {});
+        if (want.current === 'play') v.play().catch(() => {});
       }
     };
 
     handle.current = {
       start() {
+        want.current = 'play';
         if (!v.getAttribute('src')) v.src = src;
         else v.currentTime = 0;
         setTime(0);
         set('loading');
-        /* refused (Low Power Mode, a blocked play): the capsule stays, paused, for a second try */
-        v.play().catch(() => set('paused'));
+        /* refused (Low Power Mode, a blocked play): the capsule stays, paused, for a second try;
+           cut short by "Show the drawing" while it loads: nothing to show */
+        v.play().catch(() => {
+          if (want.current !== 'idle') set('paused');
+        });
       },
+      /* final: whatever the video reports after this, the room shows the drawing */
       stop() {
+        want.current = 'idle';
         v.pause();
         set('idle');
       },
@@ -142,8 +159,10 @@ export default function Timelapse({
   const toggle = () => {
     const v = video.current;
     if (!v) return;
-    if (v.paused) v.play().catch(() => {});
-    else v.pause();
+    if (v.paused) {
+      want.current = 'play';
+      v.play().catch(() => {});
+    } else v.pause();
   };
 
   const seek = (t: number) => {

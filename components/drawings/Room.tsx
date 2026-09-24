@@ -58,7 +58,7 @@ interface Slide {
   alt: string;
 }
 
-/** The largest image the room asks for: about 2000px, whatever the screen. */
+/** The largest image the room asks for: about 2000px, whatever the screen, and only once the viewer zooms in. */
 const MAX_FULL = 2048;
 
 const ICON_X = (
@@ -92,15 +92,19 @@ function cssValue(name: string, fallback: string): string {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback;
 }
 
-/** The large image for a slide, as wide as it is shown (through Next's optimiser), never past MAX_FULL. */
-function fullImage(s: Slide, shownWidth: number) {
+/**
+ * The large image for a slide, through Next's optimiser: as wide as it is
+ * shown, which is all the eye gets until the viewer zooms in (`deep`); then
+ * the largest there is, about 2000px, never past MAX_FULL.
+ */
+function fullImage(s: Slide, shownWidth: number, deep: boolean) {
   const { props } = getImageProps({
     src: s.src,
     width: s.width,
     height: s.height,
     alt: '',
     quality: 85,
-    sizes: `${Math.ceil(shownWidth)}px`,
+    sizes: `${deep ? MAX_FULL : Math.ceil(shownWidth)}px`,
   });
   const srcSet = props.srcSet
     ?.split(', ')
@@ -136,8 +140,13 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
   const heading = useRef(1);
   /** what each slide's large image resolved to: the time-lapse's poster */
   const [loaded, setLoaded] = useState<Record<number, string>>({});
+  /** the slides zoomed in on (a pinch): their large image is the largest there is */
+  const [deep, setDeep] = useState<Set<number>>(() => new Set());
+  const [zoomed, setZoomed] = useState(false);
   const [tl, setTl] = useState<TimelapseState>('idle');
   const [watched, setWatched] = useState(false);
+  /** the kit's runtime has arrived (it may not have when a drawing opens on a slow network) */
+  const [kit, setKit] = useState(false);
 
   const dialog = useRef<HTMLDialogElement>(null);
   const stage = useRef<HTMLDivElement>(null);
@@ -155,6 +164,10 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
   /** the room is up, from showModal until it is tidied away */
   const live = useRef(false);
   const tlHandle = useRef<TimelapseHandle | null>(null);
+
+  /** the drawing on show, for work that finishes after a render (the kit arriving late) */
+  const showing = useRef(0);
+  showing.current = view?.index ?? 0;
 
   const slides: Slide[] = !view
     ? []
@@ -241,6 +254,7 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
           : series.panels.map((_, i) => root.querySelector<HTMLImageElement>(`[data-open="story"] [data-panel="${i}"] img`));
       thumbs.current = imgs.map((im) => (im && im.complete && im.naturalWidth ? im.currentSrc : ''));
       setWanted(new Set([k]));
+      setDeep(new Set());
       heading.current = 1;
       setLoaded({});
       setWidths([]);
@@ -271,6 +285,18 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     pos.current = L ? (L.spring(k, 'lens', paint) as Spring) : null;
     paint(k);
     measure();
+    setKit(Boolean(L));
+    /* opened before the kit's runtime arrived (a slow network, a quick tap): until it does, the pager
+       moves without a spring (a drag still follows the finger); then it takes the spring, where it is */
+    if (!L)
+      loadLucent()
+        .then((K) => {
+          if (!live.current || pos.current) return;
+          pos.current = K.spring(showing.current, 'lens', paint) as Spring;
+          paint(showing.current);
+          setKit(true);
+        })
+        .catch(() => {});
 
     const reduced = prefersReducedMotion();
     const mat = mats.current[k];
@@ -288,7 +314,9 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     const from = place && mat && !reduced ? placeOnWall(place, mat, view.set === 'story') : null;
     if (from && place && mat) {
       lifted.current = place;
-      place.classList.add('is-lifted');
+      place.classList.add('wall-lifted');
+      /* in flight, the drawing passes over its label (site.css) */
+      d.dataset.moving = '';
       mat
         .animate([{ transform: from }, { transform: 'none' }], {
           duration: cssNumber('--dur-morph', 640) + 80,
@@ -298,7 +326,8 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
         .finished.catch(() => {})
         .finally(() => {
           if (closing.current) return;
-          lifted.current?.classList.remove('is-lifted');
+          delete d.dataset.moving;
+          lifted.current?.classList.remove('wall-lifted');
           lifted.current = null;
         });
     } else fadeIn(mat, 0);
@@ -315,7 +344,7 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     const L = window.Lucent;
     if (!view || !L) return;
     dialog.current?.querySelectorAll<HTMLElement>('.lu-btn').forEach((b) => L.jelly(b, { amount: 0.7 }));
-  }, [view, tl]);
+  }, [view, tl, kit]);
 
   /* the large image of the drawing on show; once it has arrived, the next one along too (only that
      one), so the next move finds it ready */
@@ -331,6 +360,26 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     });
   }, [view, shownLoaded, count]);
 
+  /* Zoomed in (a pinch, on a phone or a trackpad), the drawing on show swaps to the largest image
+     there is, so the hatching stays sharp under the fingers; it keeps it once it has it. Unzoomed,
+     the image as wide as it is shown is all the eye can get, and a fifth to a half of the bytes. */
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!opened || !vv) return;
+    const check = () => setZoomed(vv.scale > 1.05);
+    check();
+    vv.addEventListener('resize', check);
+    return () => {
+      vv.removeEventListener('resize', check);
+      setZoomed(false);
+    };
+  }, [opened]);
+  useEffect(() => {
+    if (!view || !zoomed) return;
+    const k = view.index;
+    setDeep((d) => (d.has(k) ? d : new Set(d).add(k)));
+  }, [view, zoomed]);
+
   /* ---------- close ---------- */
   const finish = useCallback(() => {
     if (!live.current) return;
@@ -339,8 +388,9 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     const set = view?.set;
     const k = view?.index ?? 0;
     if (d?.open) d.close();
+    if (d) delete d.dataset.moving;
     document.documentElement.classList.remove('lu-locked');
-    lifted.current?.classList.remove('is-lifted');
+    lifted.current?.classList.remove('wall-lifted');
     lifted.current = null;
     pos.current = null;
     setView(null);
@@ -368,9 +418,10 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     fadeOut(bg.current, reduced ? 150 : 320);
     const to = place && mat && !reduced ? placeOnWall(place, mat, view.set === 'story') : null;
     if (to && place && mat) {
-      lifted.current?.classList.remove('is-lifted');
+      lifted.current?.classList.remove('wall-lifted');
       lifted.current = place;
-      place.classList.add('is-lifted');
+      place.classList.add('wall-lifted');
+      if (dialog.current) dialog.current.dataset.moving = '';
       /* exits are quicker than entrances, and never bounce */
       mat
         .animate([{ transform: 'none' }, { transform: to }], { duration: 380, easing: cssValue('--ease-settle', 'ease-out'), fill: 'forwards' })
@@ -416,14 +467,43 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     return () => document.removeEventListener('keydown', listen);
   }, [opened]);
 
-  const drag = useRef<{ x: number; y: number; base: number; moving: boolean; samples: [number, number][] } | null>(null);
+  const drag = useRef<{
+    x: number;
+    y: number;
+    base: number;
+    at: number;
+    moving: boolean;
+    samples: [number, number][];
+  } | null>(null);
+  /** the fingers down on the stage: a second one makes the gesture a pinch, the browser's zoom, not a move or a tap */
+  const fingers = useRef(new Set<number>());
+  /* a gesture that turns out not to be the pager's: whatever it moved goes back */
+  const letGo = () => {
+    const d = drag.current;
+    drag.current = null;
+    if (!d?.moving) return;
+    if (pos.current) pos.current.to(index);
+    else paint(index);
+  };
   const onPointerDown = (e: ReactPointerEvent) => {
-    if (!e.isPrimary || e.button !== 0 || (e.target as Element).closest('button, input, .room-player')) return;
-    drag.current = { x: e.clientX, y: e.clientY, base: pos.current?.x ?? index, moving: false, samples: [[e.timeStamp, e.clientX]] };
+    /* the first finger down starts a new gesture, whatever became of the last one's */
+    if (e.isPrimary) fingers.current.clear();
+    fingers.current.add(e.pointerId);
+    if (fingers.current.size > 1) {
+      letGo();
+      return;
+    }
+    /* zoomed in, a finger pans the drawing and the pager stands aside (site.css, data-zoomed) until it is zoomed
+       back out */
+    if (zoomed || !e.isPrimary || e.button !== 0) return;
+    /* the label is for reading (and selecting), not a handle */
+    if ((e.target as Element).closest('button, input, .room-player, .room-plate')) return;
+    const base = pos.current?.x ?? index;
+    drag.current = { x: e.clientX, y: e.clientY, base, at: base, moving: false, samples: [[e.timeStamp, e.clientX]] };
   };
   const onPointerMove = (e: ReactPointerEvent) => {
     const d = drag.current;
-    if (!d || !pos.current) return;
+    if (!d) return;
     const dx = e.clientX - d.x;
     if (!d.moving) {
       if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(e.clientY - d.y)) return;
@@ -434,11 +514,14 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     /* past either end it gives, but only a little */
     if (x < 0) x *= 0.3;
     else if (x > count - 1) x = count - 1 + (x - (count - 1)) * 0.3;
-    pos.current.to(x, true);
+    d.at = x;
+    if (pos.current) pos.current.to(x, true);
+    else paint(x);
     d.samples.push([e.timeStamp, e.clientX]);
     if (d.samples.length > 5) d.samples.shift();
   };
   const onPointerUp = (e: ReactPointerEvent) => {
+    fingers.current.delete(e.pointerId);
     const d = drag.current;
     drag.current = null;
     if (!d) return;
@@ -446,7 +529,7 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
       const [t0, x0] = d.samples[0];
       /* drawings per second, held to a calm throw so the spring's one overshoot stays soft */
       const v = Math.max(-3, Math.min(3, -((e.clientX - x0) / Math.max(1, e.timeStamp - t0)) * (1000 / step.current)));
-      const x = pos.current?.x ?? index;
+      const x = pos.current?.x ?? d.at;
       /* where the throw would carry it, one drawing at most */
       const aim = Math.round(x + v * 0.18);
       go(Math.max(index - 1, Math.min(index + 1, aim)), v);
@@ -467,7 +550,8 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
      momentum keeps sending wheel events, so it counts again only after a pause */
   const wheel = useRef({ sum: 0, last: 0, spent: false });
   const onWheel = (e: ReactWheelEvent) => {
-    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    /* zoomed in, a sideways swipe pans the drawing */
+    if (zoomed || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
     const w = wheel.current;
     if (e.timeStamp - w.last > 180) {
       w.sum = 0;
@@ -487,43 +571,46 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
   const onTlEnd = useCallback(() => setWatched(true), []);
 
   /* ---------- the labels ---------- */
-  const piecePlate = (p: ArtPiece, i: number): ReactNode => (
-    <div className="room-plate">
-      <h2 id={`room-title-${i}`}>{p.title}</h2>
-      <p className="room-meta">
-        {p.medium} · {p.year}
-      </p>
-      {p.exhibition && <p className="room-credit">{p.exhibition}</p>}
-      {p.note && <p className="room-note">{p.note}</p>}
-      {p.timelapse && (
-        <button
-          type="button"
-          className={`lu-btn is-small room-watch${i === index && tl === 'loading' ? ' is-loading' : ''}`}
-          data-on={i === index && tl !== 'idle' ? '' : undefined}
-          onClick={() => (tl === 'idle' ? tlHandle.current?.start() : tlHandle.current?.stop())}
-        >
-          {/* the button says what it will do: start the recording, or go back to the drawing */}
-          {i === index && tl !== 'idle' ? (
-            <span>Show the drawing</span>
-          ) : (
-            <>
-              {ICON_WATCH}
-              <span>{i === index && watched ? 'Watch it again' : 'Watch it being made'}</span>
-              <span className="room-watch-time" aria-hidden="true">
-                {clock(p.timelapse.duration)}
-              </span>
-              <span className="sr-only">, {Math.round(p.timelapse.duration)} seconds</span>
-            </>
-          )}
-          <span className="lu-dots" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-        </button>
-      )}
-    </div>
-  );
+  const piecePlate = (p: ArtPiece, i: number): ReactNode => {
+    const on = i === index && tl !== 'idle';
+    const offer = i === index && watched ? 'Watch it again' : 'Watch it being made';
+    return (
+      <div className="room-plate">
+        <h2 id={`room-title-${i}`}>{p.title}</h2>
+        <p className="room-meta">
+          {p.medium} · {p.year}
+        </p>
+        {p.exhibition && <p className="room-credit">{p.exhibition}</p>}
+        {p.note && <p className="room-note">{p.note}</p>}
+        {p.timelapse && (
+          <button
+            type="button"
+            className={`lu-btn is-small room-watch${i === index && tl === 'loading' ? ' is-loading' : ''}`}
+            data-on={on ? '' : undefined}
+            /* its name is what it says, with the length read out in words rather than "0:30" */
+            aria-label={on ? undefined : `${offer}, ${Math.round(p.timelapse.duration)} seconds`}
+            onClick={() => (tl === 'idle' ? tlHandle.current?.start() : tlHandle.current?.stop())}
+          >
+            {/* the button says what it will do: start the recording, or go back to the drawing */}
+            {on ? (
+              <span>Show the drawing</span>
+            ) : (
+              <>
+                {ICON_WATCH}
+                <span>{offer}</span>
+                <span className="room-watch-time">{clock(p.timelapse.duration)}</span>
+              </>
+            )}
+            <span className="lu-dots" aria-hidden="true">
+              <i />
+              <i />
+              <i />
+            </span>
+          </button>
+        )}
+      </div>
+    );
+  };
 
   const storyPlate = (
     <div className="room-plate">
@@ -562,6 +649,7 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
       className="room"
       tabIndex={-1}
       data-set={view?.set}
+      data-zoomed={zoomed || undefined}
       aria-labelledby={view ? (view.set === 'story' ? 'room-title-story' : `room-title-${index}`) : undefined}
       onCancel={(e) => {
         e.preventDefault();
@@ -613,15 +701,15 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
               onPointerMove={onPointerMove}
               onPointerUp={onPointerUp}
               onWheel={onWheel}
-              onPointerCancel={() => {
-                drag.current = null;
-                pos.current?.to(index);
+              onPointerCancel={(e) => {
+                fingers.current.delete(e.pointerId);
+                letGo();
               }}
             >
               <div className="room-track" ref={track}>
                 {slides.map((s, i) => {
                   const w = widths[i];
-                  const big = w > 0 && wanted.has(i) ? fullImage(s, w) : null;
+                  const big = w > 0 && wanted.has(i) ? fullImage(s, w, deep.has(i)) : null;
                   const piece = view.set === 'pieces' ? pieces[i] : null;
                   const tlp = piece && i === index ? piece.timelapse : undefined;
                   return (

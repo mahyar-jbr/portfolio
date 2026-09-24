@@ -9,13 +9,17 @@ import type { Series } from './shared';
  * the pieces in a row share one height, so their tops and feet line up and
  * nothing is left over at the ends (each takes width in proportion to its
  * aspect ratio: site.css, Drawings). Portraits hang together, then the two
- * landscapes; on phones two to a row, and the last one on its own.
+ * landscapes. On phones a row has room for two portraits at most: the first
+ * two hang as a pair, Coronation hangs alone at their height (a portrait
+ * beside a landscape would come out a stamp), and each landscape takes the
+ * width.
  *
  * Godfall closes the wall as what it is: one work, a story in five panels, on
  * one sheet in reading order, numbered as it is read (the same numbers the
- * story reader counts in). The whole sheet is a
- * single entry that opens the story at the panel you tapped (the first, from
- * the keyboard).
+ * story reader counts in): in one row, in two on phones, and on the narrowest
+ * phones as a comic page reads, two, two, then the last, so no panel comes out
+ * narrower than about 90px. The whole sheet is a single entry that opens the
+ * story at the panel you tapped (the first, from the keyboard).
  *
  * The markup is complete without scripts: every piece and every panel shows,
  * in order, with its caption. Room adds the opened view.
@@ -23,9 +27,13 @@ import type { Series } from './shared';
 
 /** Where the rows break: after these pieces on wide screens, and on phones. */
 const BREAK_WIDE = [2];
-const BREAK_PHONE = [1, 3];
-/** And the strip: its panels in one row, or two on phones. */
-const STRIP_BREAK_PHONE = 1;
+const BREAK_PHONE = [1, 2, 3];
+/** And the strip: its panels in one row, two on phones, three on the narrowest. */
+const STRIP_BREAKS_PHONE = [1];
+const STRIP_BREAKS_NARROW = [1, 3];
+/** The widest phone and the widest narrow phone (site.css, Drawings), in px. */
+const PHONE = 600;
+const NARROW = 430;
 
 /** The page column (Lucent .lu-page) at its widest, and the wall's gaps and mats (site.css, Drawings), in px. */
 const COLUMN = 1152;
@@ -51,38 +59,74 @@ function rowsOf(n: number, breaks: number[]): number[][] {
   return rows;
 }
 
+/** An image's width in its row: `frac` of what the row has once its gaps and mats (`fixed`) are taken off. */
+interface Share {
+  frac: number;
+  fixed: number;
+  /** a portrait alone in its row: the most its mat may take, so it hangs at the height of the row above */
+  cap?: string;
+}
+
 /**
- * Each image's `sizes`, from the row it hangs in: its share of the row is its
- * aspect ratio over the row's, so the browser fetches a thumbnail as wide as
- * it is shown and no wider.
+ * How each image hangs, row by row: its share of a row is its aspect ratio
+ * over the row's, so a row comes out one height. A portrait alone in its row
+ * would fill the width and tower over the rest, so it takes the row above's
+ * height instead, centred on the line.
  */
-function sizesFor(ars: number[], breaksWide: number[], breaksPhone: number[], gutter: (gap: number, count: number) => number) {
-  const share = (breaks: number[], gap: number) => {
-    const out: { frac: number; fixed: number }[] = [];
-    for (const row of rowsOf(ars.length, breaks)) {
-      const sum = row.reduce((a, i) => a + ars[i], 0);
-      for (const i of row) out[i] = { frac: ars[i] / sum, fixed: gutter(gap, row.length) };
+function hang(
+  ars: number[],
+  breaks: number[],
+  gap: number,
+  gutter: (gap: number, count: number) => number,
+  mat: number,
+) {
+  const out: Share[] = [];
+  let above: { sum: number; fixed: number } | null = null;
+  for (const row of rowsOf(ars.length, breaks)) {
+    const sum = row.reduce((a, i) => a + ars[i], 0);
+    const fixed = gutter(gap, row.length);
+    if (row.length === 1 && ars[row[0]] < 1 && above) {
+      const frac = ars[row[0]] / above.sum;
+      const cap = `calc((100% - ${above.fixed}px) * ${frac.toFixed(4)} + ${2 * mat}px)`;
+      out[row[0]] = { frac, fixed: above.fixed, cap };
+      continue;
     }
-    return out;
-  };
-  const wide = share(breaksWide, GAP_WIDE);
-  const phone = share(breaksPhone, GAP_PHONE);
-  return ars.map((_, i) => {
-    const w = wide[i];
-    const p = phone[i];
+    for (const i of row) out[i] = { frac: ars[i] / sum, fixed };
+    above = { sum, fixed };
+  }
+  return out;
+}
+
+/**
+ * Each image's `sizes`, from the row it hangs in at each width, so the
+ * browser fetches a thumbnail as wide as it is shown and no wider. `tiers`
+ * run from the narrowest screens up, each to its max width; `wide` is how it
+ * hangs above them.
+ */
+function sizesFor(tiers: { upTo: number; shares: Share[] }[], wide: Share[]) {
+  /* below the widest column the page is 90vw wide (lu-page's 5vw gutters), phones too */
+  const fluid = (x: Share) => `calc(${(x.frac * 90).toFixed(2)}vw - ${Math.floor(x.frac * x.fixed)}px)`;
+  return wide.map((w, i) => {
     const px = Math.ceil(w.frac * (COLUMN - w.fixed));
-    /* below the widest column the page is 90vw wide (lu-page's 5vw gutters), phones too */
-    const fluid = (x: { frac: number; fixed: number }) =>
-      `calc(${(x.frac * 90).toFixed(2)}vw - ${Math.floor(x.frac * x.fixed)}px)`;
-    return `(max-width: 600px) ${fluid(p)}, (max-width: 1280px) ${fluid(w)}, ${px}px`;
+    const below = tiers.map((t) => `(max-width: ${t.upTo}px) ${fluid(t.shares[i])}`);
+    return [...below, `(max-width: 1280px) ${fluid(w)}`, `${px}px`].join(', ');
   });
 }
 
 export default function Wall({ pieces, series }: { pieces: ArtPiece[]; series: Series }) {
   const pieceArs = pieces.map((p) => ratio(p.width, p.height));
-  const pieceSizes = sizesFor(pieceArs, BREAK_WIDE, BREAK_PHONE, (gap, n) => gap * (n - 1) + 2 * MAT * n);
+  const matted = (gap: number, n: number) => gap * (n - 1) + 2 * MAT * n;
+  const piecePhone = hang(pieceArs, BREAK_PHONE, GAP_PHONE, matted, MAT);
+  const pieceSizes = sizesFor([{ upTo: PHONE, shares: piecePhone }], hang(pieceArs, BREAK_WIDE, GAP_WIDE, matted, MAT));
   const panelArs = series.panels.map((p) => ratio(p.width, p.height));
-  const panelSizes = sizesFor(panelArs, [], [STRIP_BREAK_PHONE], (_, n) => STRIP_GAP * (n - 1) + 2 * STRIP_PAD);
+  const onSheet = (gap: number, n: number) => gap * (n - 1) + 2 * STRIP_PAD;
+  const panelSizes = sizesFor(
+    [
+      { upTo: NARROW, shares: hang(panelArs, STRIP_BREAKS_NARROW, STRIP_GAP, onSheet, 0) },
+      { upTo: PHONE, shares: hang(panelArs, STRIP_BREAKS_PHONE, STRIP_GAP, onSheet, 0) },
+    ],
+    hang(panelArs, [], STRIP_GAP, onSheet, 0),
+  );
   const n = series.panels.length;
 
   return (
@@ -90,7 +134,13 @@ export default function Wall({ pieces, series }: { pieces: ArtPiece[]; series: S
       <div className="wall-line" role="list">
         {pieces.map((p, i) => (
           <Fragment key={p.image}>
-            <figure className="wall-piece" role="listitem" style={{ '--ar': pieceArs[i].toFixed(4) } as CSSProperties} data-reveal="">
+            <figure
+              className="wall-piece"
+              role="listitem"
+              style={{ '--ar': pieceArs[i].toFixed(4), '--cap': piecePhone[i].cap } as CSSProperties}
+              data-cap={piecePhone[i].cap ? '' : undefined}
+              data-reveal=""
+            >
               <button
                 type="button"
                 className="wall-open"
@@ -150,7 +200,11 @@ export default function Wall({ pieces, series }: { pieces: ArtPiece[]; series: S
                     {k + 1}
                   </span>
                 </span>
-                {k === STRIP_BREAK_PHONE && <span className="strip-break" aria-hidden="true" />}
+                {STRIP_BREAKS_PHONE.includes(k) ? (
+                  <span className="strip-break" aria-hidden="true" />
+                ) : (
+                  STRIP_BREAKS_NARROW.includes(k) && <span className="strip-break is-narrow" aria-hidden="true" />
+                )}
               </Fragment>
             ))}
           </span>
