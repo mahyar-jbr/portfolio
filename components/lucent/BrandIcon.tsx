@@ -24,6 +24,13 @@ import { useId } from 'react';
  * on it, Docker's blue 2.7:1), has a `dark` version: the owner's own for dark
  * grounds wherever it publishes one. SQLite publishes none, so its is the mark
  * in one colour, white. The theme swaps it in (styles/site.css "Brand icons").
+ * With those, every mark has a part at 3:1 or more on the dark tag (#2f2f2f).
+ * On the light tag (#f1f1ef) two marks that pages show have none: Claude's
+ * clay is 2.8:1 there, scikit-learn's blue and orange 2.8:1 and 1.9:1
+ * (Tailwind's, Anaconda's, conda's and StatsBomb's fall under too, on no page
+ * today). They stay in the colours their owners give them for light grounds:
+ * each still reads at tag size, and no mark carries meaning alone, since every
+ * one is aria-hidden beside its name in text.
  *
  * No mark means plain words, never a stand-in. These names are on the site
  * without one (UNMARKED): JavaScript has no owner's logo (the yellow JS square
@@ -38,7 +45,7 @@ import { useId } from 'react';
  * dolphin is only for Oracle's licensees, and the badges anyone may show must
  * link to mysql.com (mysql.com/about/legal/logos.html).
  *
- * The table is about 75KB, so this stays a server component: nothing marked
+ * The table is about 85KB, so this stays a server component: nothing marked
  * 'use client' imports it, the table never reaches the client bundle, and a
  * page carries only the marks it shows.
  */
@@ -48,11 +55,6 @@ interface Brand {
   name: string;
   /** Other ways a label writes it: 'CSS3' for CSS. */
   aliases?: string[];
-  /**
-   * The name is also an everyday word ('react', 'python', 'railway'), so it
-   * counts only written as the brand writes it. See brandFor.
-   */
-  word?: true;
   /** The mark's outline in its own units: x, y, width, height. */
   box: [number, number, number, number];
   /**
@@ -116,7 +118,6 @@ const BRANDS = {
      their gradients, without the soft shadow under them. */
   python: {
     name: 'Python',
-    word: true,
     box: [5.59, 6.4, 111.16, 112.39],
     optical: 0.9,
     defs: '<linearGradient id="{id}-b" x1="26.648937" y1="20.603781" x2="135.66525" y2="114.39767" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.562541,0,0,0.567972,-9.399749,-5.305317)"><stop offset="0" stop-color="#5a9fd4"/><stop offset="1" stop-color="#306998"/></linearGradient><linearGradient id="{id}-y" x1="150.96111" y1="192.35176" x2="112.03144" y2="137.27299" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.562541,0,0,0.567972,-9.399749,-5.305317)"><stop offset="0" stop-color="#ffd43b"/><stop offset="1" stop-color="#ffe873"/></linearGradient>',
@@ -170,16 +171,16 @@ const BRANDS = {
     optical: 1.05,
     art: '<path fill="#E620E9" d="M137.542 90.563 73.808 2.241c-2.006-2.757-6.632-2.757-8.617 0L1.456 90.563a5.318 5.318 0 0 0-.998 3.101 5.331 5.331 0 0 0 3.642 5.05l63.735 20.851h.01a5.31 5.31 0 0 0 3.293 0h.01l63.735-20.85a5.265 5.265 0 0 0 3.393-3.406 5.244 5.244 0 0 0-.749-4.746h.015Zm-68.04-76.151 25.545 35.403-23.889-7.813c-.184-.06-.38-.05-.564-.094a3.488 3.488 0 0 0-.549-.09c-.184-.025-.359-.095-.543-.095-.185 0-.355.07-.54.095-.184.02-.368.05-.548.09-.19.035-.384.035-.554.094L44.115 49.77l-.15.05L69.513 14.41h-.01ZM33.408 64.438l27.811-9.104 2.969-.967v52.838L14.324 90.887l19.084-26.449Zm41.412 42.757V54.367l30.78 10.071 19.085 26.434-49.87 16.323h.005Z"/>',
   },
-  /* react.dev src/components/Logo.tsx, MIT by its own header (the repo is
-     CC BY 4.0; the credit meets both), in the colours react.dev draws it:
-     brand #087EA4 on light, brand-dark #58C4DC on dark (colors.js). A label
-     may write React.js. */
+  /* react.dev src/components/Logo.tsx, in the colours react.dev draws it:
+     brand #087EA4 on light, brand-dark #58C4DC on dark (colors.js). The file's
+     header says MIT, but the only licence in the repo is LICENSE-DOCS.md, CC BY
+     4.0 for react.dev's content, so the credit gives both notices. A label may
+     write React.js. */
   react: {
     name: 'React',
     aliases: ['React.js', 'ReactJS'],
-    word: true,
     credit:
-      'React logo from react.dev, Copyright (c) Meta Platforms, Inc. and affiliates - MIT License, https://github.com/reactjs/react.dev',
+      'React logo from react.dev, https://github.com/reactjs/react.dev/blob/main/src/components/Logo.tsx - Copyright (c) Meta Platforms, Inc. and affiliates - MIT License, https://opensource.org/license/mit; react.dev content licensed under CC BY 4.0, https://creativecommons.org/licenses/by/4.0/',
     box: [-10.5, -9.45, 21, 18.9],
     optical: 1.1,
     art: '<circle r="2" fill="#087EA4"/><g stroke="#087EA4" stroke-width="1" fill="none"><ellipse rx="10" ry="4.5"/><ellipse rx="10" ry="4.5" transform="rotate(60)"/><ellipse rx="10" ry="4.5" transform="rotate(120)"/></g>',
@@ -213,7 +214,6 @@ const BRANDS = {
   tailwindcss: {
     name: 'Tailwind CSS',
     aliases: ['Tailwind', 'TailwindCSS', 'tailwindcss'],
-    word: true,
     box: [0, 0, 54, 32.4],
     optical: 1.2,
     art: '<path fill="#38bdf8" fill-rule="evenodd" d="M27 0c-7.2 0-11.7 3.6-13.5 10.8 2.7-3.6 5.85-4.95 9.45-4.05 2.054.513 3.522 2.004 5.147 3.653C30.744 13.09 33.808 16.2 40.5 16.2c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C36.756 3.11 33.692 0 27 0zM13.5 16.2C6.3 16.2 1.8 19.8 0 27c2.7-3.6 5.85-4.95 9.45-4.05 2.054.514 3.522 2.004 5.147 3.653C17.244 29.29 20.308 32.4 27 32.4c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C23.256 19.31 20.192 16.2 13.5 16.2z"/>',
@@ -241,7 +241,7 @@ const BRANDS = {
      word. Its navy feather is 1.1:1 on the dark tag, and SQLite publishes no
      version for dark grounds (art/ holds only this one, drawn on white), so
      on dark this is a fallback of the site's, not SQLite's: the same shapes in
-     one colour, white, which keeps the gaps that part feather from page. */
+     white, so the feather's gaps still show. */
   sqlite: {
     name: 'SQLite',
     aliases: ['SQLite3'],
@@ -286,7 +286,6 @@ const BRANDS = {
      transform that only placed it in the docs' 60-unit box is left out. */
   railway: {
     name: 'Railway',
-    word: true,
     credit:
       'Railway logo, Copyright (c) 2021 Railway Corp. - MIT License, https://github.com/railwayapp/docs/blob/main/LICENSE',
     box: [729.3, 444.5, 100, 100.01],
@@ -306,7 +305,6 @@ const BRANDS = {
   /* Anthropic press kit: Anthropic symbol - Slate.svg, and - Ivory.svg on dark. */
   anthropic: {
     name: 'Anthropic',
-    word: true,
     box: [0.57, 0, 91.43, 64],
     optical: 1.05,
     art: '<path fill="#141413" d="M66.4915 0H52.5029L78.0115 64H92.0001L66.4915 0Z"/><path fill="#141413" d="M26.08 0L0.571472 64H14.8343L20.0512 50.56H46.7374L51.9543 64H66.2172L40.7086 0H26.08ZM24.6647 38.6743L33.3943 16.1829L42.1239 38.6743H24.6647Z"/>',
@@ -336,7 +334,6 @@ const BRANDS = {
      asks. Navy is the brand page's #150458. Written lower case, as pandas is. */
   pandas: {
     name: 'pandas',
-    word: true,
     credit:
       'pandas logo, Copyright (c) 2008-2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team; Copyright (c) 2011-2026, Open source contributors - BSD 3-Clause License, https://github.com/pandas-dev/pandas/blob/main/LICENSE',
     box: [35.81, 30, 138.58, 220.42],
@@ -394,7 +391,6 @@ const BRANDS = {
      word, in each one's green. */
   anaconda: {
     name: 'Anaconda',
-    word: true,
     box: [0, 0, 134.48, 134.99],
     optical: 0.95,
     art: '<path fill="#31a824" d="M24.834 103.599v-.396c0-4 .394-7.803.993-11.597v-.396l-.394-.198c-3.58-1.397-6.953-3.397-10.327-5.2l-.394-.198-.197.397c-2.184 4.397-3.974 9.2-5.566 14.002l-.197.396.394.199c4.966 1.396 9.933 2.397 15.097 2.802l.6.198zM35.162 34.996q0-.198 0 0c-2.98 0-5.764.198-8.744.396.394 3 .797 5.803 1.593 8.803 1.987-3.397 4.367-6.595 7.15-9.2M24.834 107.195v-.397h-.394c-4.17-.396-8.538-1.198-12.914-2.198l-1.19-.199.6 1c3.776 5.803 8.537 11.002 14.103 15.597l.797.802v-1.397c-.6-4.604-.994-9.199-.994-13.2zM45.686 3.604c-5.164 1.802-10.13 4.199-14.704 7.2a94 94 0 0 1 10.13 2.396c1.388-3.199 2.784-6.397 4.574-9.596M67.343 0c-2.587 0-5.164.198-7.545.397 3.58 2.396 6.954 5.199 10.13 8.199l2.587 2.397-2.586 2.604c-2.184 2-4.368 4.397-6.354 6.802v.198s-.394.397-.994 1.199c1.593-.198 3.177-.198 4.77-.198 25.228 0 45.686 20.597 45.686 45.997s-20.458 45.997-45.686 45.997c-8.743 0-16.887-2.397-23.84-6.803a90 90 0 0 1-10.328.604c-1.593 0-3.177 0-4.77-.198.197 5.199.6 10.596 1.388 16.2 10.73 7.398 23.635 11.596 37.542 11.596 37.148 0 67.137-30.202 67.137-67.595S104.482 0 67.343 0"/><path fill="#31a824" d="M58.402 16.002c1.388-1.604 2.783-3.199 4.17-4.604-3.176-2.604-6.55-5.199-9.933-7.397-2.184 3.603-3.973 7.397-5.566 11.2 2.98 1.198 5.96 2.396 8.94 3.801 1.19-1.603 2.184-2.802 2.38-3zM12.914 54.602l.197.396.394-.198c3.177-2.198 6.354-4.397 9.736-6.199l.394-.198v-.397c-.993-3.802-1.79-7.803-2.184-11.803v-.397h-.393c-4.967 1-9.934 2.199-14.498 4l-.394.2.197.396c1.387 4.802 3.776 9.596 6.55 14.2M12.117 61l-.394.396c-3.58 3-6.953 6.199-10.13 9.803l-.394.396.394.397c3.58 3 7.15 5.802 11.124 8.398l.394.198.197-.397c1.79-3.198 3.776-6.199 5.96-9.2l.197-.396-.197-.198c-2.38-2.802-4.77-5.604-6.954-8.803l-.197-.604zM38.535 103.798h1.19l-.993-.802c-3.58-3-6.756-6.397-9.137-10.398V92.4l-.796-.397v.604c-.394 3.397-.797 7-.797 10.596v.396h.394c1.593 0 3.177.199 4.77.199h5.37M36.352 29.004c.796-3.397 1.592-6.596 2.783-9.803-4.17-1.199-8.538-2.199-12.914-2.802-.394 4.604-.394 8.802-.197 13.2a88 88 0 0 1 10.328-.604zM42.706 28.797c2.98-1.802 6.157-3.397 9.334-4.604a55 55 0 0 0-7.15-3c-.797 2.396-1.593 5-2.184 7.595zM11.518 83.597h-.394c-3.374-2.199-6.757-4.604-9.934-7.2l-.993-.801.197 1.198a63.6 63.6 0 0 0 5.36 18.796l.395 1 .394-1c1.387-3.802 2.98-7.596 4.77-11.2l.196-.802zM20.064 19.597c-3.973 4-7.544 8.596-10.327 13.399 3.374-1 6.953-1.802 10.524-2.604-.197-3.604-.197-7.2-.197-10.803zM22.05 67v-1.198c.198-4.2.797-8.2 1.987-12.002l.394-1.198-.993.603c-2.586 1.604-5.164 3.199-7.75 5l-.394.199.6.397c1.79 2.396 3.58 5 5.566 7.199l.6 1zM22.642 74l-.197-1.198-.6 1c-1.79 2.604-3.58 5.398-5.163 8.2l-.197.397.393.198c2.784 1.603 5.764 3 8.744 4.397l.993.397-.394-1c-1.79-3.803-2.98-8.2-3.58-12.399zM9.531 57.8l.394-.198-.197-.396c-2.184-3.397-3.973-7.001-5.763-10.597l-.394-1-.394 1.199C1.19 53.007.197 59.206 0 65.81v1.199l.796-.802c2.587-3.199 5.567-6.001 8.744-8.398z"/>',
@@ -455,19 +451,16 @@ const UNMARKED = [
   'MySQL',
 ];
 
-/**
- * A name as a whole word, not 'CSS' in 'PostCSS' nor 'conda' in 'Anaconda'; in
- * any case unless it is also an everyday word.
- */
-function word(name: string, asWritten?: boolean): RegExp {
-  return new RegExp(`(?<!\\w)${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?!\\w)`, asWritten ? 'g' : 'gi');
+/** A name as a whole word, in any case: not 'CSS' in 'PostCSS' nor 'conda' in 'Anaconda'. */
+function word(name: string): RegExp {
+  return new RegExp(`(?<!\\w)${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?!\\w)`, 'gi');
 }
 
 /** Each brand's names, then the unmarked ones, which name no brand. */
 const NAMES: (readonly [BrandName | undefined, RegExp])[] = [
   ...(Object.keys(BRANDS) as BrandName[]).flatMap((key) => {
     const brand: Brand = BRANDS[key];
-    return [brand.name, ...(brand.aliases ?? [])].map((name) => [key, word(name, brand.word)] as const);
+    return [brand.name, ...(brand.aliases ?? [])].map((name) => [key, word(name)] as const);
   }),
   ...UNMARKED.map((name) => [undefined, word(name)] as const),
 ];
@@ -478,17 +471,18 @@ const NAMES: (readonly [BrandName | undefined, RegExp])[] = [
  * 'Anthropic SDK', 'MongoDB Atlas'. 'Graphs', 'RAG' and the UNMARKED names →
  * undefined.
  *
- * A name matches as a whole word, in any case ('Github', 'numpy'), and other
- * spellings are aliases ('NodeJS', 'sklearn'). A name that is also an everyday
- * word (React, Python, Railway, Anthropic, Anaconda, Tailwind, pandas) counts
- * only written as the brand writes it, since About captions come through here
- * too, and in one 'a python' or 'the railway' is not the tool.
+ * A name matches as a whole word, in any case ('Github', 'numpy', 'Pandas'),
+ * and other spellings are aliases ('NodeJS', 'sklearn'). A name inside a longer
+ * one counts as the longer: 'GitHub Actions' is GitHub Actions, not GitHub, and
+ * 'tailwind css' is Tailwind, not CSS. A label that still names more than one
+ * tool gets no mark, since one would claim the whole label for one of them:
+ * 'HTML/CSS/JavaScript', 'Anaconda / conda', 'JavaScript / TypeScript'.
  *
- * A name inside a longer one counts as the longer: 'GitHub Actions' is GitHub
- * Actions, not GitHub, and 'Tailwind CSS' is Tailwind, not CSS. A label that
- * still names more than one tool gets no mark, since one would claim the whole
- * label for one of them: 'HTML/CSS/JavaScript', 'Anaconda / conda',
- * 'JavaScript / TypeScript'.
+ * It reads a name, not a sentence. Some names are everyday words too (Python,
+ * pandas, Railway, React), and no rule of spelling tells 'Red pandas' from the
+ * library or 'Python enclosure' from the language, so only names come here:
+ * stacks, links, contact tiles, and of About's captions only an event's
+ * ('OpenAI hackathon'), never a place's.
  */
 export function brandFor(label: string): BrandName | undefined {
   const found = NAMES.flatMap(([key, pattern]) =>

@@ -52,8 +52,9 @@ export default function About() {
                   style={step(i)}
                 >
                   {c.photos.map((ph) => {
-                    /* an event named for a brand (OpenAI) carries its real mark instead of the flag */
-                    const brand = brandFor(ph.caption.text);
+                    /* an event named for a brand (OpenAI) carries its real mark instead of the flag; only
+                       an event's caption is a name, where a place's can be a word ('Railway station') */
+                    const brand = ph.caption.kind === 'event' ? brandFor(ph.caption.text) : undefined;
                     return (
                       <span className="story-ph" key={ph.src}>
                         <Image
