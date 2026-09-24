@@ -1427,15 +1427,18 @@ html:not(.js) .art-video video {
 /* ---------- Contact (components/sections/Contact.tsx, components/lucent/ContactTiles.tsx) ----------
    The kit's tiles, email first. The ink email tile is twice as wide as the
    others and carries the address itself in the card-title type, with Copy
-   where the other tiles have their arrow. Wide screens keep every tile on one
-   row; under 720px the email tile takes the row and the others pair up under
-   it (a last odd one takes its row too); under 360px each takes its own. */
+   where the other tiles have their arrow. Each layout keeps a link tile wide
+   enough (about 175px) for its value, "Code and experiments", on one line:
+   - over 800px, every tile on one row;
+   - 480–800px, the email tile takes the row and the others pair up under it
+     (a last odd one takes its row too);
+   - phones, under 480px, one to a row, the link tiles lying down. */
 .site-contact {
   grid-template-columns: 2fr;
   grid-auto-columns: 1fr;
   grid-auto-flow: column;
 }
-@media (max-width: 720px) {
+@media (max-width: 800px) {
   .site-contact {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-flow: row;
@@ -1445,9 +1448,24 @@ html:not(.js) .art-video video {
     grid-column: 1 / -1;
   }
 }
+/* A fourth tile (Resume, once it is live) needs 1024px for one row; until then
+   the email tile takes the row and the three others share the one under it. */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .site-contact:has(> :nth-child(4)) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-flow: row;
+  }
+  .site-contact:has(> :nth-child(4)) > .contact-email {
+    grid-column: 1 / -1;
+  }
+  .site-contact:has(> :nth-child(4)) > .lu-contact-tile:last-child {
+    grid-column: auto;
+  }
+}
 /* one to a row, the link tiles lie down: the mark beside the words, as tall as
-   they need rather than a square's worth of empty tile each */
-@media (max-width: 359px) {
+   they need rather than a square's worth of empty tile each. Every phone in
+   portrait gets this, so none of them cuts a value short. */
+@media (max-width: 479px) {
   .site-contact {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1469,6 +1487,11 @@ html:not(.js) .art-video video {
   .site-contact > a.lu-contact-tile .lu-contact-value {
     grid-row: 2;
   }
+}
+/* the kit cuts a value short with an ellipsis; here, if one ever runs out of
+   room (a larger text setting), it takes a second line instead */
+.site-contact .lu-contact-value {
+  white-space: normal;
 }
 
 /* The email tile holds two controls, so the tile itself answers nothing: no
@@ -1540,8 +1563,11 @@ html:not(.js) .art-video video {
 .contact-email :focus-visible {
   outline-color: var(--on-accent);
 }
-/* Copy needs scripts; without them the address link is the way in. */
-html:not(.js) .contact-copy {
+/* Copy works only through the kit's runtime, so it shows once Lucent.auto() has
+   wired it: the same pass that wires data-copy gives every .lu-btn the kit's
+   .lu-jelly press. With scripts blocked, or a bundle that never arrives, the
+   address link is the way in. */
+.contact-copy:not(.lu-jelly) {
   display: none;
 }
 /* reduced motion: every fade here, the kit's own tile and button ones too, in 150ms */
@@ -1571,7 +1597,8 @@ html:not(.js) .contact-copy {
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--space-2) var(--space-5);
+  /* wrapped (narrow phones), the lines sit far enough apart for the link's hit area */
+  gap: var(--space-4) var(--space-5);
   padding-top: var(--space-5);
   border-top: 1px solid var(--hairline);
 }
@@ -1579,6 +1606,7 @@ html:not(.js) .contact-copy {
   margin: 0;
 }
 .site-footer-top {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
@@ -1586,6 +1614,13 @@ html:not(.js) .contact-copy {
   color: var(--ink-secondary);
   text-decoration: none;
   transition: color var(--dur-jelly) var(--ease-settle);
+}
+/* small print, but a full 44px to tap: the hit area grows around the words
+   while they, and the focus ring, stay where they are */
+.site-footer-top::after {
+  content: '';
+  position: absolute;
+  inset: -13px calc(var(--space-2) * -1);
 }
 .site-footer-top:hover {
   color: var(--ink);

@@ -19,7 +19,9 @@ import LinkOut from './LinkOut';
  *   (right-click, a long press) offers to copy it. It works with scripts blocked.
  * - Copy, where the tile's arrow would be: Lucent.auto() copies the address and
  *   shows the "Email copied" toast, or, if the clipboard is refused, shows the
- *   address itself. It needs scripts, so it only appears when they run.
+ *   address itself. It needs the kit's runtime, so it only appears once
+ *   Lucent.auto() has wired it: not with scripts blocked, nor if the bundle
+ *   fails to load.
  *
  * The other tiles are LinkOuts: GitHub and LinkedIn open in a new tab and say so
  * to screen readers; the tile's own ↗ is the sighted cue, so LinkOut adds none.
@@ -72,6 +74,15 @@ export default function ContactTiles({
             </svg>
           )}
         </span>
+        <span className="lu-contact-label">{email.label}</span>
+        <a className="contact-address" href={`mailto:${email.address}`}>
+          {/* if it must wrap (large text), it wraps at the @, not mid-name */}
+          {user}
+          <wbr />@{domain}
+        </a>
+        {/* last in the source, drawn in the top corner (styles/site.css): a screen
+            reader hears "Email", the address, then Copy, and Tab reaches the
+            address, the way in that always works, before the extra */}
         <button
           type="button"
           className="lu-btn is-small contact-copy"
@@ -85,12 +96,6 @@ export default function ContactTiles({
           </svg>
           Copy
         </button>
-        <span className="lu-contact-label">{email.label}</span>
-        <a className="contact-address" href={`mailto:${email.address}`}>
-          {/* if it must wrap (large text), it wraps at the @, not mid-name */}
-          {user}
-          <wbr />@{domain}
-        </a>
       </div>
       {links.map((l) => (
         <LinkOut
