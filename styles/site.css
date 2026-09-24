@@ -1050,9 +1050,10 @@ html:not(.js) .art-video video {
   margin: 0;
   grid-row: auto;
 }
-/* A mark that is black or too dark for a dark ground carries its owner's
-   version for one (brand-dark), shown with the dark theme: picked with the
-   toggle, or followed from the system when the visitor hasn't picked. */
+/* A mark that is black or too dark for a dark ground carries a version for one
+   (brand-dark), its owner's wherever it publishes one, shown with the dark
+   theme: picked with the toggle, or followed from the system when the visitor
+   hasn't picked. */
 .brand-icon .brand-dark {
   display: none;
 }

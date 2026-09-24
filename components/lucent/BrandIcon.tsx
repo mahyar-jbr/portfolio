@@ -15,20 +15,28 @@ import { useId } from 'react';
  * kit, press kit, site or repository, noted by each one), shapes and colours
  * alike; GitHub Actions' comes from Devicon, which carries its owner's logo.
  * Only artboard clips, placing transforms, a drop shadow and the words beside a
- * mark are left out. Where a licence asks for credit, it is kept in a comment
- * inside the rendered SVG. Each mark stays its owner's trademark and only ever
- * stands for that brand.
+ * mark are left out. Where a licence asks for credit (CC BY), or for its
+ * copyright notice to go with every copy (MIT, BSD), that is kept in a comment
+ * inside the rendered SVG, with a link to the licence. Each mark stays its
+ * owner's trademark and only ever stands for that brand.
  *
- * A mark that is black, or too dark to hold on a dark ground, has a `dark`
- * version, the owner's own for dark grounds wherever it publishes one; the theme
- * swaps it in (styles/site.css "Brand icons").
+ * A mark that is black, or that sinks into the dark tag (CSS's purple is 1.6:1
+ * on it, Docker's blue 2.7:1), has a `dark` version: the owner's own for dark
+ * grounds wherever it publishes one. SQLite publishes none, so its is the mark
+ * in one colour, white. The theme swaps it in (styles/site.css "Brand icons").
  *
- * No mark means plain words, never a stand-in: NetworkX, XGBoost, UMAP, SSE,
- * TMLS, the employers and York have no vector mark to copy, and LiteLLM
- * publishes its train only as a picture. JavaScript has no owner's logo (the
- * yellow JS square is a community one). HL7 wants "FHIR®" and an endorsement
- * disclaimer beside its flame (hl7.org/fhir/license.html), and MySQL's dolphin
- * is reserved for Oracle's licensees (mysql.com/about/legal/logos.html).
+ * No mark means plain words, never a stand-in. These names are on the site
+ * without one (UNMARKED): JavaScript has no owner's logo (the yellow JS square
+ * is a community one), and server-sent events are a web standard. XGBoost's
+ * logo is a wordmark (xgboost.ai/images/logo), and TMLS's is its letters; UMAP
+ * publishes its logo only as a picture (lmcinnes/umap doc/logo.png). Microsoft
+ * allows no use of Azure's logo or icons without a licence (its Trademark and
+ * Brand Guidelines), and licenses its Azure icons only for architecture
+ * diagrams, training and documentation
+ * (learn.microsoft.com/azure/architecture/icons). HL7 wants "FHIR®" and an
+ * endorsement disclaimer beside its flame (hl7.org/fhir/license.html). MySQL's
+ * dolphin is only for Oracle's licensees, and the badges anyone may show must
+ * link to mysql.com (mysql.com/about/legal/logos.html).
  *
  * The table is about 75KB, so this stays a server component: nothing marked
  * 'use client' imports it, the table never reaches the client bundle, and a
@@ -40,6 +48,11 @@ interface Brand {
   name: string;
   /** Other ways a label writes it: 'CSS3' for CSS. */
   aliases?: string[];
+  /**
+   * The name is also an everyday word ('react', 'python', 'railway'), so it
+   * counts only written as the brand writes it. See brandFor.
+   */
+  word?: true;
   /** The mark's outline in its own units: x, y, width, height. */
   box: [number, number, number, number];
   /**
@@ -57,7 +70,7 @@ interface Brand {
   art: string;
   /** The owner's version for a dark ground, where the mark needs one. */
   dark?: string;
-  /** Attribution the mark's licence asks for, kept in the rendered SVG. */
+  /** The credit or copyright notice the mark's licence asks for, kept in the rendered SVG. */
   credit?: string;
 }
 
@@ -103,6 +116,7 @@ const BRANDS = {
      their gradients, without the soft shadow under them. */
   python: {
     name: 'Python',
+    word: true,
     box: [5.59, 6.4, 111.16, 112.39],
     optical: 0.9,
     defs: '<linearGradient id="{id}-b" x1="26.648937" y1="20.603781" x2="135.66525" y2="114.39767" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.562541,0,0,0.567972,-9.399749,-5.305317)"><stop offset="0" stop-color="#5a9fd4"/><stop offset="1" stop-color="#306998"/></linearGradient><linearGradient id="{id}-y" x1="150.96111" y1="192.35176" x2="112.03144" y2="137.27299" gradientUnits="userSpaceOnUse" gradientTransform="matrix(0.562541,0,0,0.567972,-9.399749,-5.305317)"><stop offset="0" stop-color="#ffd43b"/><stop offset="1" stop-color="#ffe873"/></linearGradient>',
@@ -126,20 +140,25 @@ const BRANDS = {
     optical: 0.95,
     art: '<path fill="#E34F26" d="M71,460 L30,0 481,0 440,460 255,512"/><path fill="#EF652A" d="M256,472 L405,431 440,37 256,37"/><path fill="#EBEBEB" d="M256,208 L181,208 176,150 256,150 256,94 255,94 114,94 115,109 129,265 256,265zM256,355 L255,355 192,338 188,293 158,293 132,293 139,382 255,414 256,414z"/><path fill="#FFF" d="M255,208 L255,265 325,265 318,338 255,355 255,414 371,382 372,372 385,223 387,208 371,208zM255,94 L255,129 255,150 255,150 392,150 392,150 392,150 393,138 396,109 397,94z"/>',
   },
-  /* The official CSS logo (CSS-Next/logo.css css.svg, CC0), in rebeccapurple.
-     CSS3 names it too: it replaced the CSS3 shield, which was never official. */
+  /* The official CSS logo (CSS-Next/logo.css, CC0): css.svg in rebeccapurple,
+     and on dark css.light.svg, white with black letters, the variant its README
+     keeps for dark backgrounds. CSS3 names it too: it replaced the CSS3 shield,
+     which was never official. */
   css: {
     name: 'CSS',
     aliases: ['CSS3'],
     box: [0, 0, 1000, 1000],
     optical: 0.85,
     art: '<path fill="#639" d="M0 0H840A160 160 0 0 1 1000 160V840A160 160 0 0 1 840 1000H160A160 160 0 0 1 0 840V0Z"/><path fill="#fff" d="m358.1,920c-64.23-.06-103.86-36.23-103.1-102.79,0,0,0-168.39,0-168.39,0-33.74,9.88-59.4,29.64-76.96,35.49-34.19,117.83-36.27,152.59.52,21.42,18.89,29.5,57.48,27.58,93.49h-73.72c.56-14.15-.19-35.58-8.51-43.65-10.81-14.63-39.36-12.91-46.91,2.32-4.64,8.26-6.96,20.49-6.96,36.67v146.18c0,30.65,10.65,46.15,31.96,46.49,9.96,0,17.53-3.62,22.68-10.85,7.19-8.58,8.31-27.58,7.73-41.32h73.72c5.04,70.07-36.32,119.16-106.71,118.29Zm234.04,0c-71.17.98-103.01-49.66-101.04-118.29h69.59c-1.93,29.92,8.35,57.17,32.99,55.27,10.99,0,18.73-3.44,23.2-10.33,8.5-12.59,10.09-48.95-2.06-63.02-8.49-13.55-39.03-25.51-55.16-33.57-23.03-11.02-39.61-24.1-49.75-39.26-22.87-33.64-20.75-107.48,11.34-137.4,31.18-36.92,112.61-38.62,143.82-.77,19.25,19.51,27.66,57.9,26.03,93.23h-67.02c.57-14.52-.8-37.95-6.44-46.49-3.95-7.23-11.43-10.85-22.42-10.85-19.59,0-29.38,11.71-29.38,35.12.21,24.86,9.9,35.06,32.48,45.45,29.24,11.36,66.42,30.76,79.9,54.24,40.2,71.54,12.62,180.82-86.09,176.65Zm224.76,0c-71.17.98-103.01-49.66-101.04-118.29h69.59c-1.93,29.92,8.35,57.17,32.99,55.27,10.99,0,18.73-3.44,23.2-10.33,8.5-12.59,10.09-48.95-2.06-63.02-8.49-13.55-39.03-25.51-55.16-33.57-23.03-11.02-39.61-24.1-49.75-39.26-22.87-33.64-20.75-107.48,11.34-137.4,31.18-36.92,112.61-38.62,143.82-.77,19.25,19.51,27.66,57.9,26.03,93.23h-67.02c.57-14.52-.8-37.95-6.44-46.49-3.95-7.23-11.43-10.85-22.42-10.85-19.59,0-29.38,11.71-29.38,35.12.21,24.86,9.9,35.06,32.48,45.45,29.24,11.36,66.42,30.76,79.9,54.24,40.2,71.54,12.62,180.82-86.09,176.65Z"/>',
+    dark: '<path fill="white" d="M0 0H840A160 160 0 0 1 1000 160V840A160 160 0 0 1 840 1000H160A160 160 0 0 1 0 840V0Z"/><path fill="black" d="m358.1,920c-64.23-.06-103.86-36.23-103.1-102.79,0,0,0-168.39,0-168.39,0-33.74,9.88-59.4,29.64-76.96,35.49-34.19,117.83-36.27,152.59.52,21.42,18.89,29.5,57.48,27.58,93.49h-73.72c.56-14.15-.19-35.58-8.51-43.65-10.81-14.63-39.36-12.91-46.91,2.32-4.64,8.26-6.96,20.49-6.96,36.67v146.18c0,30.65,10.65,46.15,31.96,46.49,9.96,0,17.53-3.62,22.68-10.85,7.19-8.58,8.31-27.58,7.73-41.32h73.72c5.04,70.07-36.32,119.16-106.71,118.29Zm234.04,0c-71.17.98-103.01-49.66-101.04-118.29h69.59c-1.93,29.92,8.35,57.17,32.99,55.27,10.99,0,18.73-3.44,23.2-10.33,8.5-12.59,10.09-48.95-2.06-63.02-8.49-13.55-39.03-25.51-55.16-33.57-23.03-11.02-39.61-24.1-49.75-39.26-22.87-33.64-20.75-107.48,11.34-137.4,31.18-36.92,112.61-38.62,143.82-.77,19.25,19.51,27.66,57.9,26.03,93.23h-67.02c.57-14.52-.8-37.95-6.44-46.49-3.95-7.23-11.43-10.85-22.42-10.85-19.59,0-29.38,11.71-29.38,35.12.21,24.86,9.9,35.06,32.48,45.45,29.24,11.36,66.42,30.76,79.9,54.24,40.2,71.54,12.62,180.82-86.09,176.65Zm224.76,0c-71.17.98-103.01-49.66-101.04-118.29h69.59c-1.93,29.92,8.35,57.17,32.99,55.27,10.99,0,18.73-3.44,23.2-10.33,8.5-12.59,10.09-48.95-2.06-63.02-8.49-13.55-39.03-25.51-55.16-33.57-23.03-11.02-39.61-24.1-49.75-39.26-22.87-33.64-20.75-107.48,11.34-137.4,31.18-36.92,112.61-38.62,143.82-.77,19.25,19.51,27.66,57.9,26.03,93.23h-67.02c.57-14.52-.8-37.95-6.44-46.49-3.95-7.23-11.43-10.85-22.42-10.85-19.59,0-29.38,11.71-29.38,35.12.21,24.86,9.9,35.06,32.48,45.45,29.24,11.36,66.42,30.76,79.9,54.24,40.2,71.54,12.62,180.82-86.09,176.65Z"/>',
   },
   /* Frameworks and data */
-  /* fastapi/fastapi docs (MIT): icon-white.svg, in the colours of
+  /* fastapi/fastapi docs (MIT, credited): icon-white.svg, in the colours of
      logo-teal-vector.svg, a teal disc with a white bolt. */
   fastapi: {
     name: 'FastAPI',
+    credit:
+      'FastAPI logo, Copyright (c) 2018 Sebastián Ramírez - MIT License, https://github.com/fastapi/fastapi/blob/master/LICENSE',
     box: [0.53, 0.53, 5.28, 5.26],
     optical: 0.9,
     art: '<path fill="#009688" d="M 3.175 0.53433431 A 2.6405416 2.6320024 0 0 0 0.53433431 3.166215 A 2.6405416 2.6320024 0 0 0 3.175 5.7986125 A 2.6405416 2.6320024 0 0 0 5.8156657 3.166215 A 2.6405416 2.6320024 0 0 0 3.175 0.53433431 z"/><path fill="#fff" d="M 2.9925822 1.7259928 L 4.6539795 1.7259928 L 2.9858643 2.8985311 L 4.1263631 2.8985311 L 1.6960205 4.6064372 L 2.2236369 3.4344157 L 2.4649658 2.8985311 L 2.9925822 1.7259928 z"/>',
@@ -151,10 +170,16 @@ const BRANDS = {
     optical: 1.05,
     art: '<path fill="#E620E9" d="M137.542 90.563 73.808 2.241c-2.006-2.757-6.632-2.757-8.617 0L1.456 90.563a5.318 5.318 0 0 0-.998 3.101 5.331 5.331 0 0 0 3.642 5.05l63.735 20.851h.01a5.31 5.31 0 0 0 3.293 0h.01l63.735-20.85a5.265 5.265 0 0 0 3.393-3.406 5.244 5.244 0 0 0-.749-4.746h.015Zm-68.04-76.151 25.545 35.403-23.889-7.813c-.184-.06-.38-.05-.564-.094a3.488 3.488 0 0 0-.549-.09c-.184-.025-.359-.095-.543-.095-.185 0-.355.07-.54.095-.184.02-.368.05-.548.09-.19.035-.384.035-.554.094L44.115 49.77l-.15.05L69.513 14.41h-.01ZM33.408 64.438l27.811-9.104 2.969-.967v52.838L14.324 90.887l19.084-26.449Zm41.412 42.757V54.367l30.78 10.071 19.085 26.434-49.87 16.323h.005Z"/>',
   },
-  /* react.dev src/components/Logo.tsx (MIT), in the colours react.dev
-     draws it: brand #087EA4 on light, brand-dark #58C4DC on dark (colors.js). */
+  /* react.dev src/components/Logo.tsx, MIT by its own header (the repo is
+     CC BY 4.0; the credit meets both), in the colours react.dev draws it:
+     brand #087EA4 on light, brand-dark #58C4DC on dark (colors.js). A label
+     may write React.js. */
   react: {
     name: 'React',
+    aliases: ['React.js', 'ReactJS'],
+    word: true,
+    credit:
+      'React logo from react.dev, Copyright (c) Meta Platforms, Inc. and affiliates - MIT License, https://github.com/reactjs/react.dev',
     box: [-10.5, -9.45, 21, 18.9],
     optical: 1.1,
     art: '<circle r="2" fill="#087EA4"/><g stroke="#087EA4" stroke-width="1" fill="none"><ellipse rx="10" ry="4.5"/><ellipse rx="10" ry="4.5" transform="rotate(60)"/><ellipse rx="10" ry="4.5" transform="rotate(120)"/></g>',
@@ -164,16 +189,20 @@ const BRANDS = {
      icon/light-background, and icon/dark-background with its white rim. */
   nextjs: {
     name: 'Next.js',
+    aliases: ['NextJS'],
     box: [0, 0, 180, 180],
     optical: 0.9,
     defs: '<mask id="{id}-m" maskUnits="userSpaceOnUse" x="0" y="0" width="180" height="180" style="mask-type:alpha"><circle cx="90" cy="90" r="90" fill="black"/></mask><linearGradient id="{id}-a" x1="109" y1="116.5" x2="144.5" y2="160.5" gradientUnits="userSpaceOnUse"><stop stop-color="white"/><stop offset="1" stop-color="white" stop-opacity="0"/></linearGradient><linearGradient id="{id}-b" x1="121" y1="54" x2="120.799" y2="106.875" gradientUnits="userSpaceOnUse"><stop stop-color="white"/><stop offset="1" stop-color="white" stop-opacity="0"/></linearGradient>',
     art: '<g mask="url(#{id}-m)"><circle cx="90" cy="90" r="90" fill="black"/><path d="M149.508 157.52L69.142 54H54V125.97H66.1136V69.3836L139.999 164.845C143.333 162.614 146.509 160.165 149.508 157.52Z" fill="url(#{id}-a)"/><rect x="115" y="54" width="12" height="72" fill="url(#{id}-b)"/></g>',
     dark: '<g mask="url(#{id}-m)"><circle cx="90" cy="90" r="87" fill="black" stroke="white" stroke-width="6"/><path d="M149.508 157.52L69.142 54H54V125.97H66.1136V69.3836L139.999 164.845C143.333 162.614 146.509 160.165 149.508 157.52Z" fill="url(#{id}-a)"/><rect x="115" y="54" width="12" height="72" fill="url(#{id}-b)"/></g>',
   },
-  /* vitejs/vite docs/public/logo-without-border.svg (MIT), the 2026 mark and
-     its glow, sRGB fills; Figma's no-op feFlood and feBlend are left out. */
+  /* vitejs/vite docs/public/logo-without-border.svg (MIT, credited), the 2026
+     mark and its glow, sRGB fills; Figma's no-op feFlood and feBlend are left
+     out. */
   vite: {
     name: 'Vite',
+    credit:
+      'Vite logo, Copyright (c) 2019-present, VoidZero Inc. and Vite contributors - MIT License, https://github.com/vitejs/vite/blob/main/LICENSE',
     box: [0.1, 0, 47.52, 45.37],
     optical: 0.95,
     defs: '<mask id="{id}-m" maskUnits="userSpaceOnUse" x="0" y="0" width="48" height="46" style="mask-type:alpha"><path d="M25.8416 44.9381C25.1781 45.7825 23.821 45.3129 23.821 44.2401V33.9368C23.821 32.6873 22.8085 31.6749 21.5591 31.6749H10.183C9.26313 31.6749 8.72674 30.6344 9.26313 29.8869L16.7424 19.4155C17.813 17.9184 16.7424 15.8374 14.9006 15.8374H1.1333C0.213475 15.8374 -0.322917 14.797 0.213471 14.0495L9.90938 0.473917C10.1226 0.176641 10.4652 0 10.8292 0H39.7231C40.6429 0 41.1793 1.04046 40.6429 1.78796L33.1636 12.2594C32.093 13.7565 33.1636 15.8374 35.0054 15.8374H46.3816C47.3251 15.8374 47.855 16.9253 47.2713 17.6685L25.8438 44.9402L25.8416 44.9381Z" fill="black"/></mask><filter id="{id}-f0" x="-19.7697" y="16.1493" width="60.0452" height="41.6535" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="7.65926"/></filter><filter id="{id}-f1" x="-54.613" y="-7.53303" width="90.3397" height="51.4368" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="7.65926"/></filter><filter id="{id}-f2" x="-49.6403" y="2.03032" width="79.3554" height="29.4" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f3" x="-45.0451" y="20.0292" width="79.579" height="29.4" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f4" x="-43.5129" y="21.1781" width="79.579" height="29.4" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f5" x="15.7557" y="-17.9006" width="74.7493" height="58.852" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="7.65926"/></filter><filter id="{id}-f6" x="23.5481" y="2.28368" width="61.3773" height="25.3622" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f7" x="23.5481" y="2.28368" width="61.3773" height="25.3622" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f8" x="-27.6359" y="-22.8531" width="56.0453" height="63.6493" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f9" x="20.1155" y="-38.4147" width="54.8139" height="64.646" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f10" x="24.6414" y="-11.3229" width="33.5414" height="35.3129" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f11" x="-29.2863" y="6.00905" width="54.8139" height="64.646" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f12" x="-29.2863" y="6.00905" width="54.8139" height="64.646" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f13" x="8.24395" y="-2.41615" width="54.8139" height="64.646" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter><filter id="{id}-f14" x="18.7132" y="10.5885" width="39.4091" height="43.6229" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="4.59556"/></filter>',
@@ -183,7 +212,8 @@ const BRANDS = {
      grounds, as Tailwind shows it. A label may shorten it to Tailwind. */
   tailwindcss: {
     name: 'Tailwind CSS',
-    aliases: ['Tailwind'],
+    aliases: ['Tailwind', 'TailwindCSS', 'tailwindcss'],
+    word: true,
     box: [0, 0, 54, 32.4],
     optical: 1.2,
     art: '<path fill="#38bdf8" fill-rule="evenodd" d="M27 0c-7.2 0-11.7 3.6-13.5 10.8 2.7-3.6 5.85-4.95 9.45-4.05 2.054.513 3.522 2.004 5.147 3.653C30.744 13.09 33.808 16.2 40.5 16.2c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C36.756 3.11 33.692 0 27 0zM13.5 16.2C6.3 16.2 1.8 19.8 0 27c2.7-3.6 5.85-4.95 9.45-4.05 2.054.514 3.522 2.004 5.147 3.653C17.244 29.29 20.308 32.4 27 32.4c7.2 0 11.7-3.6 13.5-10.8-2.7 3.6-5.85 4.95-9.45 4.05-2.054-.513-3.522-2.004-5.147-3.653C23.256 19.31 20.192 16.2 13.5 16.2z"/>',
@@ -191,6 +221,7 @@ const BRANDS = {
   /* nodejs.org/about/branding, the Node.js Hex Logo (static/logos/nodejsHex.svg). */
   nodejs: {
     name: 'Node.js',
+    aliases: ['NodeJS'],
     box: [0, 0.1, 43.4, 49.76],
     optical: 0.95,
     defs: '<clipPath id="{id}-c"><path d="M22.8725 0.4166C22.136 0 21.2616 0 20.5253 0.4166L1.1505 11.6694C0.4142 12.0862 0 12.8733 0 13.707V36.2584C0 37.0921 0.4602 37.8791 1.1505 38.296L20.5253 49.5487C21.2616 49.9653 22.136 49.9653 22.8725 49.5487L42.2471 38.296C42.9836 37.8791 43.3976 37.0921 43.3976 36.2584V13.707C43.3976 12.8733 42.9375 12.0862 42.2471 11.6694L22.8725 0.4166Z"/></clipPath><linearGradient id="{id}-main" x1="30.33" y1="8.56" x2="14.9" y2="44.7" gradientUnits="userSpaceOnUse"><stop stop-color="#3F8B3D"/><stop offset="0.64" stop-color="#3F873F"/><stop offset="0.93" stop-color="#3DA92E"/><stop offset="1" stop-color="#3DAE2B"/></linearGradient><linearGradient id="{id}-r1" x1="18.8" y1="26.8" x2="68" y2="0.4" gradientUnits="userSpaceOnUse"><stop offset="0.14" stop-color="#3F873F"/><stop offset="0.4" stop-color="#52A044"/><stop offset="0.71" stop-color="#64B749"/><stop offset="0.91" stop-color="#6ABF4B"/></linearGradient><linearGradient id="{id}-r2" x1="0.25" y1="24.5" x2="44" y2="24.5" gradientUnits="userSpaceOnUse"><stop offset="0.09" stop-color="#6ABF4B"/><stop offset="0.29" stop-color="#64B749"/><stop offset="0.6" stop-color="#52A044"/><stop offset="0.86" stop-color="#3F873F"/></linearGradient>',
@@ -200,16 +231,20 @@ const BRANDS = {
      light and Spring Green on dark, the brand's choice of best contrast. */
   mongodb: {
     name: 'MongoDB',
+    aliases: ['Mongo'],
     box: [442.23, 45, 51.54, 111.37],
     optical: 1.15,
     art: '<path fill="#00684A" d="M477.589 57.4126C472.956 51.867 468.966 46.2348 468.151 45.065C468.065 44.9783 467.937 44.9783 467.851 45.065C467.036 46.2348 463.046 51.867 458.413 57.4126C418.646 108.579 464.676 143.109 464.676 143.109L465.062 143.369C465.406 148.698 466.264 156.367 466.264 156.367H467.98H469.696C469.696 156.367 470.554 148.741 470.897 143.369L471.283 143.066C471.326 143.109 517.356 108.579 477.589 57.4126ZM467.98 142.373C467.98 142.373 465.92 140.596 465.363 139.687V139.6L467.851 83.8841C467.851 83.7108 468.108 83.7108 468.108 83.8841L470.596 139.6V139.687C470.039 140.596 467.98 142.373 467.98 142.373Z"/>',
     dark: '<path fill="#00ED64" d="M477.589 57.4126C472.956 51.867 468.966 46.2348 468.151 45.065C468.065 44.9783 467.937 44.9783 467.851 45.065C467.036 46.2348 463.046 51.867 458.413 57.4126C418.646 108.579 464.676 143.109 464.676 143.109L465.062 143.369C465.406 148.698 466.264 156.367 466.264 156.367H467.98H469.696C469.696 156.367 470.554 148.741 470.897 143.369L471.283 143.066C471.326 143.109 517.356 108.579 477.589 57.4126ZM467.98 142.373C467.98 142.373 465.92 140.596 465.363 139.687V139.6L467.851 83.8841C467.851 83.7108 468.108 83.7108 468.108 83.8841L470.596 139.6V139.687C470.039 140.596 467.98 142.373 467.98 142.373Z"/>',
   },
   /* sqlite/sqlite art/sqlite370.svg (public domain), the mark without the
-     word. The feather is navy, lost on a dark ground, and SQLite publishes no
-     dark version: on dark it is the mark in one colour, white. */
+     word. Its navy feather is 1.1:1 on the dark tag, and SQLite publishes no
+     version for dark grounds (art/ holds only this one, drawn on white), so
+     on dark this is a fallback of the site's, not SQLite's: the same shapes in
+     one colour, white, which keeps the gaps that part feather from page. */
   sqlite: {
     name: 'SQLite',
+    aliases: ['SQLite3'],
     box: [57.38, 62.05, 40.02, 44.76],
     optical: 0.9,
     defs: '<linearGradient id="{id}-g" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(-4.02e-5,-918.907,-918.907,4.02e-5,858.809,1614.34)"><stop offset="0" stop-color="#97d9f6"/><stop offset="0.66199914" stop-color="#0f80cc"/><stop offset="1" stop-color="#0f80cc"/></linearGradient>',
@@ -217,17 +252,22 @@ const BRANDS = {
     dark: '<path fill="#fff" d="m 79.198545,96.729705 c -0.02011,-0.25467 -0.0321,-0.420158 -0.0321,-0.420158 0,0 -0.77223,-5.206224 -1.691499,-6.759822 -0.145415,-0.246275 0.01584,-1.257759 0.421676,-2.755936 0.237243,0.410245 1.238779,2.165033 1.439862,2.73043 0.226484,0.639268 0.274109,0.822431 0.274109,0.822431 0,0 -0.549275,-2.826244 -1.450623,-4.47541 0.197556,-0.66675 0.433564,-1.403703 0.700617,-2.191456 0.341489,0.599017 1.158875,2.049286 1.338792,2.552348 0.03634,0.103364 0.06703,0.191205 0.09454,0.271639 0.0088,-0.04833 0.01764,-0.09666 0.02646,-0.144992 -0.206375,-0.875595 -0.611716,-2.399242 -1.166636,-3.524956 1.231195,-6.408209 5.430309,-14.973654 9.735256,-18.795296 H 60.806192 c -1.88214,0 -3.422086,1.540228 -3.422086,3.422298 v 30.970081 c 0,1.881964 1.539946,3.421944 3.422086,3.421944 h 18.49607 c -0.13335,-1.61438 -0.1778,-3.40046 -0.103717,-5.123145"/><path fill="#fff" transform="matrix(0.03527778,0,0,-0.03527778,42.828565,121.98722)" d="m 994.055,997.609 c 6.725,-11.629 35.115,-61.371 40.815,-77.398 6.42,-18.121 7.77,-23.313 7.77,-23.313 0,0 -15.57,80.114 -41.12,126.862 5.6,18.9 12.29,39.79 19.86,62.12 8.85,-15.53 28.96,-51.2 36.23,-68.1 0.27,3.19 0.54,6.38 0.82,9.54 -6.44,24.75 -16.22,57.15 -28.74,82.54 32.14,167.25 135.59,386.25 247.04,504.48 H 509.602 c -37.883,0 -68.711,-30.82 -68.711,-68.71 V 731.789 c 173.738,66.68 383.23,127.633 563.529,125.02 -6.693,25.812 -14.315,49.152 -22.318,62.679 -4.122,6.981 0.449,35.653 11.953,78.121"/><path fill="#fff" d="m 95.439377,63.024997 c -1.923345,-1.715206 -4.252031,-1.026231 -6.550379,1.01353 -0.341136,0.303037 -0.681566,0.639234 -1.020233,0.998362 -3.931709,4.170892 -7.581195,11.896725 -8.715023,17.796934 0.441678,0.895703 0.786695,2.038703 1.013884,2.911828 0.05821,0.224014 0.110772,0.43427 0.152752,0.613128 0.09984,0.423298 0.153459,0.697794 0.153459,0.697794 0,0 -0.03528,-0.133385 -0.179917,-0.552802 -0.02752,-0.08043 -0.05821,-0.168275 -0.09454,-0.271639 -0.01552,-0.04269 -0.03704,-0.09454 -0.06068,-0.149931 -0.25647,-0.596194 -0.965906,-1.854553 -1.278114,-2.402417 -0.267053,0.787753 -0.503061,1.524706 -0.700617,2.191456 0.901348,1.649166 1.450623,4.47541 1.450623,4.47541 0,0 -0.04762,-0.183163 -0.274109,-0.822431 -0.201083,-0.565397 -1.202619,-2.320185 -1.439862,-2.73043 -0.405836,1.498177 -0.567091,2.509661 -0.421676,2.755936 0.282328,0.477202 0.551216,1.300586 0.78733,2.211176 0.5334,2.051367 0.904169,4.548646 0.904169,4.548646 0,0 0.01199,0.165488 0.0321,0.420158 -0.07408,1.722685 -0.02963,3.508765 0.103717,5.123145 0.176741,2.13706 0.509411,3.97288 0.93345,4.9554 l 0.287866,-0.15695 c -0.622652,-1.93573 -0.875594,-4.47255 -0.764822,-7.39814 0.16757,-4.471846 1.196623,-9.86469 3.098095,-15.485534 3.212395,-8.485012 7.669389,-15.292918 11.748559,-18.544118 -3.717925,3.357739 -8.749948,14.22647 -10.256309,18.251312 -1.686631,4.50709 -2.881842,8.736578 -3.602214,12.788831 1.242836,-3.798959 5.261328,-5.431932 5.261328,-5.431932 0,0 1.97097,-2.430745 4.274256,-5.903454 -1.379714,0.314678 -3.645253,0.853369 -4.404078,1.172281 -1.119364,0.469547 -1.420989,0.629708 -1.420989,0.629708 0,0 3.62585,-2.208036 6.736645,-3.207809 4.278136,-6.738056 8.939042,-16.310328 4.245328,-20.497448"/>',
   },
   /* Build and deploy */
-  /* docker.com media resources, Docker-Logos-1.zip: docker-mark-ocean-blue.svg. */
+  /* docker.com media resources, Docker-Logos-1.zip: docker-mark-ocean-blue.svg,
+     and docker-mark-white.svg on dark, White being one of the four colours
+     Docker allows its logo. */
   docker: {
     name: 'Docker',
     box: [-0.03, 0, 339.53, 268.1],
     optical: 1.1,
     art: '<path fill="#2560FF" d="M334,110.1c-8.3-5.6-30.2-8-46.1-3.7-.9-15.8-9-29.2-24-40.8l-5.5-3.7-3.7,5.6c-7.2,11-10.3,25.7-9.2,39,.8,8.2,3.7,17.4,9.2,24.1-20.7,12-39.8,9.3-124.3,9.3H0c-.4,19.1,2.7,55.8,26,85.6,2.6,3.3,5.4,6.5,8.5,9.6,19,19,47.6,32.9,90.5,33,65.4,0,121.4-35.3,155.5-120.8,11.2.2,40.8,2,55.3-26,.4-.5,3.7-7.4,3.7-7.4l-5.5-3.7h0ZM85.2,92.7h-36.7v36.7h36.7v-36.7ZM132.6,92.7h-36.7v36.7h36.7v-36.7ZM179.9,92.7h-36.7v36.7h36.7v-36.7ZM227.3,92.7h-36.7v36.7h36.7v-36.7ZM37.8,92.7H1.1v36.7h36.7v-36.7ZM85.2,46.3h-36.7v36.7h36.7v-36.7ZM132.6,46.3h-36.7v36.7h36.7v-36.7ZM179.9,46.3h-36.7v36.7h36.7v-36.7ZM179.9,0h-36.7v36.7h36.7V0Z"/>',
+    dark: '<path fill="#fff" d="M334,110.1c-8.3-5.6-30.2-8-46.1-3.7-.9-15.8-9-29.2-24-40.8l-5.5-3.7-3.7,5.6c-7.2,11-10.3,25.7-9.2,39,.8,8.2,3.7,17.4,9.2,24.1-20.7,12-39.8,9.3-124.3,9.3H0c-.4,19.1,2.7,55.8,26,85.6,2.6,3.3,5.4,6.5,8.5,9.6,19,19,47.6,32.9,90.5,33,65.4,0,121.4-35.3,155.5-120.8,11.2.2,40.8,2,55.3-26,.4-.5,3.7-7.4,3.7-7.4l-5.5-3.7h0ZM85.2,92.7h-36.7v36.7h36.7v-36.7ZM132.6,92.7h-36.7v36.7h36.7v-36.7ZM179.9,92.7h-36.7v36.7h36.7v-36.7ZM227.3,92.7h-36.7v36.7h36.7v-36.7ZM37.8,92.7H1.1v36.7h36.7v-36.7ZM85.2,46.3h-36.7v36.7h36.7v-36.7ZM132.6,46.3h-36.7v36.7h36.7v-36.7ZM179.9,46.3h-36.7v36.7h36.7v-36.7ZM179.9,0h-36.7v36.7h36.7V0Z"/>',
   },
-  /* Devicon githubactions-original (MIT), which is the logo of GitHub's own
-     @actions organisation, in its two blues #2088FF and #79B8FF. */
+  /* Devicon githubactions-original (MIT, credited), which is the logo of
+     GitHub's own @actions organisation, in its two blues #2088FF and #79B8FF. */
   githubactions: {
     name: 'GitHub Actions',
+    credit:
+      'GitHub Actions logo from Devicon, Copyright (c) 2015 konpa - MIT License, https://github.com/devicons/devicon/blob/master/LICENSE',
     box: [0, 0, 128, 128],
     optical: 1.1,
     art: '<path fill="#2088ff" d="M26.666 0C11.97 0 0 11.97 0 26.666c0 12.87 9.181 23.651 21.334 26.13v37.87c0 11.77 9.68 21.334 21.332 21.334h.195c1.302 9.023 9.1 16 18.473 16C71.612 128 80 119.612 80 109.334s-8.388-18.668-18.666-18.668c-9.372 0-17.17 6.977-18.473 16h-.195c-8.737 0-16-7.152-16-16V63.779a18.514 18.514 0 0 0 13.24 5.555h2.955c1.303 9.023 9.1 16 18.473 16 9.372 0 17.169-6.977 18.47-16h11.057c1.303 9.023 9.1 16 18.473 16 10.278 0 18.666-8.39 18.666-18.668C128 56.388 119.612 48 109.334 48c-9.373 0-17.171 6.977-18.473 16H79.805c-1.301-9.023-9.098-16-18.471-16s-17.171 6.977-18.473 16h-2.955c-6.433 0-11.793-4.589-12.988-10.672 14.58-.136 26.416-12.05 26.416-26.662C53.334 11.97 41.362 0 26.666 0zm0 5.334A21.292 21.292 0 0 1 48 26.666 21.294 21.294 0 0 1 26.666 48 21.292 21.292 0 0 1 5.334 26.666 21.29 21.29 0 0 1 26.666 5.334zm-5.215 7.541C18.67 12.889 16 15.123 16 18.166v17.043c0 4.043 4.709 6.663 8.145 4.533l13.634-8.455c3.257-2.02 3.274-7.002.032-9.045l-13.635-8.59a5.024 5.024 0 0 0-2.725-.777zm-.117 5.291 13.635 8.588-13.635 8.455V18.166zm40 35.168a13.29 13.29 0 0 1 13.332 13.332A13.293 13.293 0 0 1 61.334 80 13.294 13.294 0 0 1 48 66.666a13.293 13.293 0 0 1 13.334-13.332zm48 0a13.29 13.29 0 0 1 13.332 13.332A13.293 13.293 0 0 1 109.334 80 13.294 13.294 0 0 1 96 66.666a13.293 13.293 0 0 1 13.334-13.332zm-42.568 6.951a2.667 2.667 0 0 0-1.887.78l-6.3 6.294-2.093-2.084a2.667 2.667 0 0 0-3.771.006 2.667 2.667 0 0 0 .008 3.772l3.974 3.96a2.667 2.667 0 0 0 3.766-.001l8.185-8.174a2.667 2.667 0 0 0 .002-3.772 2.667 2.667 0 0 0-1.884-.78zm48 0a2.667 2.667 0 0 0-1.887.78l-6.3 6.294-2.093-2.084a2.667 2.667 0 0 0-3.771.006 2.667 2.667 0 0 0 .008 3.772l3.974 3.96a2.667 2.667 0 0 0 3.766-.001l8.185-8.174a2.667 2.667 0 0 0 .002-3.772 2.667 2.667 0 0 0-1.884-.78zM61.334 96a13.293 13.293 0 0 1 13.332 13.334 13.29 13.29 0 0 1-13.332 13.332A13.293 13.293 0 0 1 48 109.334 13.294 13.294 0 0 1 61.334 96zM56 105.334c-2.193 0-4 1.807-4 4 0 2.195 1.808 4 4 4s4-1.805 4-4c0-2.193-1.807-4-4-4zm10.666 0c-2.193 0-4 1.807-4 4 0 2.195 1.808 4 4 4s4-1.805 4-4c0-2.193-1.807-4-4-4zM56 108c.75 0 1.334.585 1.334 1.334 0 .753-.583 1.332-1.334 1.332-.75 0-1.334-.58-1.334-1.332 0-.75.585-1.334 1.334-1.334zm10.666 0c.75 0 1.334.585 1.334 1.334 0 .753-.583 1.332-1.334 1.332-.75 0-1.332-.58-1.332-1.332 0-.75.583-1.334 1.332-1.334z"/><path fill="#79b8ff" d="M109.334 90.666c-9.383 0-17.188 6.993-18.477 16.031a2.667 2.667 0 0 0-.265-.011l-2.7.09a2.667 2.667 0 0 0-2.578 2.751 2.667 2.667 0 0 0 2.752 2.578l2.7-.087a2.667 2.667 0 0 0 .097-.006C92.17 121.029 99.965 128 109.334 128c10.278 0 18.666-8.388 18.666-18.666s-8.388-18.668-18.666-18.668zm0 5.334a13.293 13.293 0 0 1 13.332 13.334 13.29 13.29 0 0 1-13.332 13.332A13.293 13.293 0 0 1 96 109.334 13.294 13.294 0 0 1 109.334 96z"/>',
@@ -241,11 +281,14 @@ const BRANDS = {
     art: '<path fill="#000" d="M577.344 0L1154.69 1000H0L577.344 0Z"/>',
     dark: '<path fill="#fff" d="M577.344 0L1154.69 1000H0L577.344 0Z"/>',
   },
-  /* railwayapp/docs src/components/logo.tsx (MIT), one colour there: Simple
-     Icons' #0B0D0E for Railway on light, white on dark. The transform that
-     only placed it in the docs' 60-unit box is left out. */
+  /* railwayapp/docs src/components/logo.tsx (MIT, credited), one colour
+     there: Simple Icons' #0B0D0E for Railway on light, white on dark. The
+     transform that only placed it in the docs' 60-unit box is left out. */
   railway: {
     name: 'Railway',
+    word: true,
+    credit:
+      'Railway logo, Copyright (c) 2021 Railway Corp. - MIT License, https://github.com/railwayapp/docs/blob/main/LICENSE',
     box: [729.3, 444.5, 100, 100.01],
     optical: 0.9,
     art: '<path fill="#0B0D0E" d="M729.872 487.327a50.86 50.86 0 0 0-.464 5.033h75.879c-.265-.518-.621-.985-.98-1.442-12.972-16.769-19.95-15.315-29.932-15.741-3.328-.137-5.585-.192-18.832-.192-7.09 0-14.798.018-22.304.038.737-1.746 1.6-3.419 2.525-5.061-2.885 5.106-4.865 10.771-5.805 16.789l.891-4.397c.007-.031.018-.063.024-.094h38.883v5.067h-39.885zM805.885 497.432h-76.438c.08 1.352.206 2.686.388 4.002h70.571c3.146 0 4.907-1.786 5.479-4.002zM733.851 515.257a52.226 52.226 0 0 1-1.98-4.997c6.608 19.89 25.328 34.251 47.433 34.251 20.205 0 37.566-12.007 45.452-29.254h-90.905zM729.38 492.915c-.018.531-.08 1.055-.08 1.589 0 .538.063 1.059.08 1.59v-3.179zM824.77 515.229z"/><path fill="#0B0D0E" d="M779.303 444.505c-18.682 0-34.939 10.265-43.524 25.439 6.709-.014 19.775-.022 19.775-.022h.003v-.005c15.444 0 16.018.069 19.035.195l1.868.069c6.507.217 14.505.916 20.798 5.68 3.416 2.584 8.348 8.287 11.288 12.35 2.718 3.758 3.5 8.078 1.652 12.217-1.701 3.804-5.361 6.073-9.793 6.073H730.85l-.884-4.201c.426 2.707 1.037 5.344 1.879 7.886h94.914a49.863 49.863 0 0 0 2.546-15.682c.001-27.611-22.386-49.999-50.002-49.999z"/>',
@@ -263,6 +306,7 @@ const BRANDS = {
   /* Anthropic press kit: Anthropic symbol - Slate.svg, and - Ivory.svg on dark. */
   anthropic: {
     name: 'Anthropic',
+    word: true,
     box: [0.57, 0, 91.43, 64],
     optical: 1.05,
     art: '<path fill="#141413" d="M66.4915 0H52.5029L78.0115 64H92.0001L66.4915 0Z"/><path fill="#141413" d="M26.08 0L0.571472 64H14.8343L20.0512 50.56H46.7374L51.9543 64H66.2172L40.7086 0H26.08ZM24.6647 38.6743L33.3943 16.1829L42.1239 38.6743H24.6647Z"/>',
@@ -272,6 +316,7 @@ const BRANDS = {
      and in white on dark, as its white logo. */
   elevenlabs: {
     name: 'ElevenLabs',
+    aliases: ['Eleven Labs'],
     box: [348, 292, 180, 292],
     optical: 0.85,
     art: '<path fill="#000" d="M468 292H528V584H468V292Z"/><path fill="#000" d="M348 292H408V584H348V292Z"/>',
@@ -286,32 +331,55 @@ const BRANDS = {
     art: '<path fill="#F22F46" d="M15 32.8462C17.1242 32.8462 18.8461 31.1242 18.8461 29C18.8461 26.8758 17.1242 25.1539 15 25.1539C12.8758 25.1539 11.1538 26.8758 11.1538 29C11.1538 31.1242 12.8758 32.8462 15 32.8462ZM15 22.8462C17.1242 22.8462 18.8461 21.1242 18.8461 19C18.8461 16.8758 17.1242 15.1538 15 15.1538C12.8758 15.1538 11.1538 16.8758 11.1538 19C11.1538 21.1242 12.8758 22.8462 15 22.8462ZM25 32.8462C27.1242 32.8462 28.8462 31.1242 28.8462 29C28.8462 26.8758 27.1242 25.1539 25 25.1539C22.8758 25.1539 21.1538 26.8758 21.1538 29C21.1538 31.1242 22.8758 32.8462 25 32.8462ZM25 22.8462C27.1242 22.8462 28.8462 21.1242 28.8462 19C28.8462 16.8758 27.1242 15.1538 25 15.1538C22.8758 15.1538 21.1538 16.8758 21.1538 19C21.1538 21.1242 22.8758 22.8462 25 22.8462ZM20 4C30.8333 4 40 13.1667 40 24C40 34.8333 30.8333 44 20 44C9.16668 44 0 34.8333 0 24C0 13.1668 9.16673 4 20 4ZM20 9.38461C11.9512 9.38461 5.38462 15.7238 5.38462 23.7315C5.38462 31.7392 11.9512 38.6154 20 38.6154C28.0488 38.6154 34.6154 31.7392 34.6154 23.7315C34.6154 15.7238 28.0488 9.38461 20 9.38461Z"/>',
   },
   /* Data science */
-  /* pandas-dev/pandas web/pandas/static/img (BSD-3): pandas_mark.svg, and
-     pandas_mark_white.svg on dark, as pandas.pydata.org/about/citing.html asks.
-     Navy is the brand page's #150458. */
+  /* pandas-dev/pandas web/pandas/static/img (BSD-3, credited): pandas_mark.svg,
+     and pandas_mark_white.svg on dark, as pandas.pydata.org/about/citing.html
+     asks. Navy is the brand page's #150458. Written lower case, as pandas is. */
   pandas: {
     name: 'pandas',
+    word: true,
+    credit:
+      'pandas logo, Copyright (c) 2008-2011, AQR Capital Management, LLC, Lambda Foundry, Inc. and PyData Development Team; Copyright (c) 2011-2026, Open source contributors - BSD 3-Clause License, https://github.com/pandas-dev/pandas/blob/main/LICENSE',
     box: [35.81, 30, 138.58, 220.42],
     optical: 1.1,
     art: '<rect fill="#150458" x="74.51" y="43.03" width="24.09" height="50.02"/><rect fill="#150458" x="74.51" y="145.78" width="24.09" height="50.02"/><rect fill="#FFCA00" x="74.51" y="107.65" width="24.09" height="23.6"/><rect fill="#150458" x="35.81" y="84.15" width="24.09" height="166.27"/><rect fill="#150458" x="112.41" y="187.05" width="24.09" height="50.02"/><rect fill="#150458" x="112.41" y="84.21" width="24.09" height="50.02"/><rect fill="#E70488" x="112.41" y="148.84" width="24.09" height="23.6"/><rect fill="#150458" x="150.3" y="30" width="24.09" height="166.27"/>',
     dark: '<rect fill="#fff" x="74.51" y="43.03" width="24.09" height="50.02"/><rect fill="#fff" x="74.51" y="145.78" width="24.09" height="50.02"/><rect fill="#FFCA00" x="74.51" y="107.65" width="24.09" height="23.6"/><rect fill="#fff" x="35.81" y="84.15" width="24.09" height="166.27"/><rect fill="#fff" x="112.41" y="187.05" width="24.09" height="50.02"/><rect fill="#fff" x="112.41" y="84.21" width="24.09" height="50.02"/><rect fill="#E70488" x="112.41" y="148.84" width="24.09" height="23.6"/><rect fill="#fff" x="150.3" y="30" width="24.09" height="166.27"/>',
   },
-  /* numpy/numpy branding/logo/logomark/numpylogoicon.svg (BSD-3), in the two
-     blues its logo guidelines give for full colour, on either ground. */
+  /* numpy/numpy branding/logo/logomark/numpylogoicon.svg (BSD-3, credited),
+     in the two blues its logo guidelines give for full colour, on either
+     ground. */
   numpy: {
     name: 'NumPy',
+    credit:
+      'NumPy logo, Copyright (c) 2005-2025, NumPy Developers - BSD 3-Clause License, https://github.com/numpy/numpy/blob/main/LICENSE.txt',
     box: [56.37, 43.05, 387.26, 413.9],
     optical: 0.95,
     art: '<polygon fill="#4DABCF" points="220.93 127.14 151.77 92.23 75.87 130.11 146.9 165.78 220.93 127.14"/><polygon fill="#4DABCF" points="252.63 143.14 325.14 179.74 249.91 217.52 178.77 181.79 252.63 143.14"/><polygon fill="#4DABCF" points="349.47 92.76 423.96 130.11 357.34 163.57 284.68 126.92 349.47 92.76"/><polygon fill="#4DABCF" points="317.41 76.67 250.35 43.05 184.01 76.15 253.11 111 317.41 76.67"/><polygon fill="#4DABCF" points="264.98 365.44 264.98 456.95 346.22 416.41 346.13 324.86 264.98 365.44"/><polygon fill="#4DABCF" points="346.1 292.91 346.01 202.32 264.98 242.6 264.98 333.22 346.1 292.91"/><polygon fill="#4DABCF" points="443.63 275.93 443.63 367.8 374.34 402.38 374.29 310.93 443.63 275.93"/><polygon fill="#4DABCF" points="443.63 243.81 443.63 153.79 374.21 188.3 374.27 279.07 443.63 243.81"/><path fill="#4D77CF" d="M236.3,242.6l-54.72-27.51V334s-66.92-142.39-73.12-155.18c-.8-1.65-4.09-3.46-4.93-3.9-12-6.3-47.16-24.11-47.16-24.11V360.89l48.64,26V277.08s66.21,127.23,66.88,128.62,7.32,14.8,14.42,19.51c9.46,6.26,50,30.64,50,30.64Z"/>',
   },
-  /* scikit-learn/scikit-learn doc/logos (BSD-3): the two shapes of
+  /* scikit-learn/scikit-learn doc/logos (BSD-3, credited): the two shapes of
      scikit-learn-logo-without-subtitle.svg, without the words, as its favicon
-     (Logo 2 of doc/logos/README.md) draws it at small sizes. */
+     (Logo 2 of doc/logos/README.md) draws it at small sizes. A label may use
+     its import name, sklearn. */
   scikitlearn: {
     name: 'scikit-learn',
+    aliases: ['sklearn'],
+    credit:
+      'scikit-learn logo, Copyright (c) 2007-2026 The scikit-learn developers - BSD 3-Clause License, https://github.com/scikit-learn/scikit-learn/blob/main/COPYING',
     box: [2.74, 1.17, 1090.37, 673.01],
     optical: 1.24,
     art: '<path fill="#f89939" d="m959.940063 573.065979c152.410401-152.40155 177.740967-374.157013 56.573914-495.315063-121.148987-121.144471-342.895386-95.818482-495.296936 56.573974-152.40155 152.397125-108.314972 443.556091-56.564972 495.315003 41.818482 41.818542 342.895538 95.818542 495.287994-56.573914z"/><path fill="#3499cd" d="m334.575043 352.849548c-88.415985-88.416046-217.089035-103.135528-287.401535-32.827575-70.294476 70.299041-55.597481 198.98999 32.836487 287.392578 88.434036 88.442993 257.377548 62.860473 287.383529 32.827453 24.281983-24.241455 55.624481-198.967468-32.818481-287.392456z"/>',
+  },
+  /* networkx/branding logo/networkx_favicon.svg, the vector of the favicon
+     networkx.org shows (networkx/networkx doc/_static/favicon.ico, BSD-3,
+     credited). Only its placing translate is left out; the group's rotation is
+     the mark's own. Its blue #2c7fb8 holds on the dark tag (3.1:1), so it has
+     no dark version. */
+  networkx: {
+    name: 'NetworkX',
+    credit:
+      'NetworkX logo, Copyright (c) 2004-2026, NetworkX Developers - BSD 3-Clause License, https://github.com/networkx/networkx/blob/main/LICENSE.txt',
+    box: [55.25, 86.75, 4.41, 4.73],
+    optical: 1.1,
+    art: '<g transform="matrix(0.11016625,-0.04009723,0.04009723,0.11016625,14.230121,43.724306)"><circle fill="#2c7fb8" stroke="#2c7fb8" stroke-width="4.30204916" stroke-linecap="round" cx="216.73624" cy="486.75931" r="6.3591585"/><ellipse fill="#ff7f0e" cx="216.73624" cy="486.75931" rx="3.5793312" ry="3.704653"/><circle fill="#2c7fb8" stroke="#2c7fb8" stroke-width="3.24224949" stroke-linecap="round" cx="216.73624" cy="505.54962" r="4.7925949"/><ellipse fill="#ff7f0e" cx="216.73624" cy="505.54962" rx="2.781018" ry="2.6470892"/><circle fill="#2c7fb8" stroke="#2c7fb8" stroke-width="2.08430338" stroke-linecap="round" cx="199.92946" cy="486.75931" r="3.4325974"/><path fill="none" stroke="#2c7fb8" stroke-width="2.10266805" d="m 203.22818,486.75928 h 5.66939"/><path fill="none" stroke="#2c7fb8" stroke-width="2.93574619" d="m 216.73624,493.96328 v 7.10348"/><circle fill="#2c7fb8" stroke="#2c7fb8" stroke-width="1.62112474" stroke-linecap="round" cx="-33.313812" cy="532.49554" r="3.4325976" transform="matrix(-0.92498796,0.37999642,0.37999642,0.92498796,0,0)"/><path fill="none" stroke="#2c7fb8" stroke-width="2.10266805" d="m 229.61187,481.4452 -5.37574,2.30642"/><circle fill="#ff7f0e" cx="233.16127" cy="479.89282" r="1.6527693"/><circle fill="#ff7f0e" cx="199.92946" cy="486.75931" r="1.6527693"/></g>',
   },
   /* plotly.com/brand-guidelines, plotly_logo.svg (the mark): gradient dots,
      bars in Black 003, and white bars on dark (Plotly-Logo-White.svg). */
@@ -326,16 +394,20 @@ const BRANDS = {
      word, in each one's green. */
   anaconda: {
     name: 'Anaconda',
+    word: true,
     box: [0, 0, 134.48, 134.99],
     optical: 0.95,
     art: '<path fill="#31a824" d="M24.834 103.599v-.396c0-4 .394-7.803.993-11.597v-.396l-.394-.198c-3.58-1.397-6.953-3.397-10.327-5.2l-.394-.198-.197.397c-2.184 4.397-3.974 9.2-5.566 14.002l-.197.396.394.199c4.966 1.396 9.933 2.397 15.097 2.802l.6.198zM35.162 34.996q0-.198 0 0c-2.98 0-5.764.198-8.744.396.394 3 .797 5.803 1.593 8.803 1.987-3.397 4.367-6.595 7.15-9.2M24.834 107.195v-.397h-.394c-4.17-.396-8.538-1.198-12.914-2.198l-1.19-.199.6 1c3.776 5.803 8.537 11.002 14.103 15.597l.797.802v-1.397c-.6-4.604-.994-9.199-.994-13.2zM45.686 3.604c-5.164 1.802-10.13 4.199-14.704 7.2a94 94 0 0 1 10.13 2.396c1.388-3.199 2.784-6.397 4.574-9.596M67.343 0c-2.587 0-5.164.198-7.545.397 3.58 2.396 6.954 5.199 10.13 8.199l2.587 2.397-2.586 2.604c-2.184 2-4.368 4.397-6.354 6.802v.198s-.394.397-.994 1.199c1.593-.198 3.177-.198 4.77-.198 25.228 0 45.686 20.597 45.686 45.997s-20.458 45.997-45.686 45.997c-8.743 0-16.887-2.397-23.84-6.803a90 90 0 0 1-10.328.604c-1.593 0-3.177 0-4.77-.198.197 5.199.6 10.596 1.388 16.2 10.73 7.398 23.635 11.596 37.542 11.596 37.148 0 67.137-30.202 67.137-67.595S104.482 0 67.343 0"/><path fill="#31a824" d="M58.402 16.002c1.388-1.604 2.783-3.199 4.17-4.604-3.176-2.604-6.55-5.199-9.933-7.397-2.184 3.603-3.973 7.397-5.566 11.2 2.98 1.198 5.96 2.396 8.94 3.801 1.19-1.603 2.184-2.802 2.38-3zM12.914 54.602l.197.396.394-.198c3.177-2.198 6.354-4.397 9.736-6.199l.394-.198v-.397c-.993-3.802-1.79-7.803-2.184-11.803v-.397h-.393c-4.967 1-9.934 2.199-14.498 4l-.394.2.197.396c1.387 4.802 3.776 9.596 6.55 14.2M12.117 61l-.394.396c-3.58 3-6.953 6.199-10.13 9.803l-.394.396.394.397c3.58 3 7.15 5.802 11.124 8.398l.394.198.197-.397c1.79-3.198 3.776-6.199 5.96-9.2l.197-.396-.197-.198c-2.38-2.802-4.77-5.604-6.954-8.803l-.197-.604zM38.535 103.798h1.19l-.993-.802c-3.58-3-6.756-6.397-9.137-10.398V92.4l-.796-.397v.604c-.394 3.397-.797 7-.797 10.596v.396h.394c1.593 0 3.177.199 4.77.199h5.37M36.352 29.004c.796-3.397 1.592-6.596 2.783-9.803-4.17-1.199-8.538-2.199-12.914-2.802-.394 4.604-.394 8.802-.197 13.2a88 88 0 0 1 10.328-.604zM42.706 28.797c2.98-1.802 6.157-3.397 9.334-4.604a55 55 0 0 0-7.15-3c-.797 2.396-1.593 5-2.184 7.595zM11.518 83.597h-.394c-3.374-2.199-6.757-4.604-9.934-7.2l-.993-.801.197 1.198a63.6 63.6 0 0 0 5.36 18.796l.395 1 .394-1c1.387-3.802 2.98-7.596 4.77-11.2l.196-.802zM20.064 19.597c-3.973 4-7.544 8.596-10.327 13.399 3.374-1 6.953-1.802 10.524-2.604-.197-3.604-.197-7.2-.197-10.803zM22.05 67v-1.198c.198-4.2.797-8.2 1.987-12.002l.394-1.198-.993.603c-2.586 1.604-5.164 3.199-7.75 5l-.394.199.6.397c1.79 2.396 3.58 5 5.566 7.199l.6 1zM22.642 74l-.197-1.198-.6 1c-1.79 2.604-3.58 5.398-5.163 8.2l-.197.397.393.198c2.784 1.603 5.764 3 8.744 4.397l.993.397-.394-1c-1.79-3.803-2.98-8.2-3.58-12.399zM9.531 57.8l.394-.198-.197-.396c-2.184-3.397-3.973-7.001-5.763-10.597l-.394-1-.394 1.199C1.19 53.007.197 59.206 0 65.81v1.199l.796-.802c2.587-3.199 5.567-6.001 8.744-8.398z"/>',
     dark: '<path fill="#96F778" d="M24.834 103.599v-.396c0-4 .394-7.803.993-11.597v-.396l-.394-.198c-3.58-1.397-6.953-3.397-10.327-5.2l-.394-.198-.197.397c-2.184 4.397-3.974 9.2-5.566 14.002l-.197.396.394.199c4.966 1.396 9.933 2.397 15.097 2.802l.6.198zM35.162 34.996q0-.198 0 0c-2.98 0-5.764.198-8.744.396.394 3 .797 5.803 1.593 8.803 1.987-3.397 4.367-6.595 7.15-9.2M24.834 107.195v-.397h-.394c-4.17-.396-8.538-1.198-12.914-2.198l-1.19-.199.6 1c3.776 5.803 8.537 11.002 14.103 15.597l.797.802v-1.397c-.6-4.604-.994-9.199-.994-13.2zM45.686 3.604c-5.164 1.802-10.13 4.199-14.704 7.2a94 94 0 0 1 10.13 2.396c1.388-3.199 2.784-6.397 4.574-9.596M67.343 0c-2.587 0-5.164.198-7.545.397 3.58 2.396 6.954 5.199 10.13 8.199l2.587 2.397-2.586 2.604c-2.184 2-4.368 4.397-6.354 6.802v.198s-.394.397-.994 1.199c1.593-.198 3.177-.198 4.77-.198 25.228 0 45.686 20.597 45.686 45.997s-20.458 45.997-45.686 45.997c-8.743 0-16.887-2.397-23.84-6.803a90 90 0 0 1-10.328.604c-1.593 0-3.177 0-4.77-.198.197 5.199.6 10.596 1.388 16.2 10.73 7.398 23.635 11.596 37.542 11.596 37.148 0 67.137-30.202 67.137-67.595S104.482 0 67.343 0"/><path fill="#96F778" d="M58.402 16.002c1.388-1.604 2.783-3.199 4.17-4.604-3.176-2.604-6.55-5.199-9.933-7.397-2.184 3.603-3.973 7.397-5.566 11.2 2.98 1.198 5.96 2.396 8.94 3.801 1.19-1.603 2.184-2.802 2.38-3zM12.914 54.602l.197.396.394-.198c3.177-2.198 6.354-4.397 9.736-6.199l.394-.198v-.397c-.993-3.802-1.79-7.803-2.184-11.803v-.397h-.393c-4.967 1-9.934 2.199-14.498 4l-.394.2.197.396c1.387 4.802 3.776 9.596 6.55 14.2M12.117 61l-.394.396c-3.58 3-6.953 6.199-10.13 9.803l-.394.396.394.397c3.58 3 7.15 5.802 11.124 8.398l.394.198.197-.397c1.79-3.198 3.776-6.199 5.96-9.2l.197-.396-.197-.198c-2.38-2.802-4.77-5.604-6.954-8.803l-.197-.604zM38.535 103.798h1.19l-.993-.802c-3.58-3-6.756-6.397-9.137-10.398V92.4l-.796-.397v.604c-.394 3.397-.797 7-.797 10.596v.396h.394c1.593 0 3.177.199 4.77.199h5.37M36.352 29.004c.796-3.397 1.592-6.596 2.783-9.803-4.17-1.199-8.538-2.199-12.914-2.802-.394 4.604-.394 8.802-.197 13.2a88 88 0 0 1 10.328-.604zM42.706 28.797c2.98-1.802 6.157-3.397 9.334-4.604a55 55 0 0 0-7.15-3c-.797 2.396-1.593 5-2.184 7.595zM11.518 83.597h-.394c-3.374-2.199-6.757-4.604-9.934-7.2l-.993-.801.197 1.198a63.6 63.6 0 0 0 5.36 18.796l.395 1 .394-1c1.387-3.802 2.98-7.596 4.77-11.2l.196-.802zM20.064 19.597c-3.973 4-7.544 8.596-10.327 13.399 3.374-1 6.953-1.802 10.524-2.604-.197-3.604-.197-7.2-.197-10.803zM22.05 67v-1.198c.198-4.2.797-8.2 1.987-12.002l.394-1.198-.993.603c-2.586 1.604-5.164 3.199-7.75 5l-.394.199.6.397c1.79 2.396 3.58 5 5.566 7.199l.6 1zM22.642 74l-.197-1.198-.6 1c-1.79 2.604-3.58 5.398-5.163 8.2l-.197.397.393.198c2.784 1.603 5.764 3 8.744 4.397l.993.397-.394-1c-1.79-3.803-2.98-8.2-3.58-12.399zM9.531 57.8l.394-.198-.197-.396c-2.184-3.397-3.973-7.001-5.763-10.597l-.394-1-.394 1.199C1.19 53.007.197 59.206 0 65.81v1.199l.796-.802c2.587-3.199 5.567-6.001 8.744-8.398z"/>',
   },
-  /* conda/conda docs/source/_static/img/conda_logo.svg (BSD-3): the C, as
-     conda.org shows it on both grounds. Its one masked group has an empty mask
-     and draws nothing, so it is left out. Written lower case, as conda is. */
+  /* conda/conda docs/source/_static/img/conda_logo.svg (BSD-3, credited): the
+     C, as conda.org shows it on both grounds. Its one masked group has an empty
+     mask and draws nothing, so it is left out. Written lower case, as conda
+     is. */
   conda: {
     name: 'conda',
+    credit:
+      'conda logo, Copyright (c) 2012, Anaconda, Inc. - BSD 3-Clause License, https://github.com/conda/conda/blob/main/LICENSE',
     box: [0.03, 0.03, 23.5, 27.08],
     art: '<g transform="matrix(.26458 0 0 .26458 -.189 -.253)"><path fill="#fff" fill-rule="evenodd" stroke="#2db24a" stroke-width=".25" d="M25.16 55.61c-1.96-.47-5.91-1.69-10.17-4.38 4.63-2.64 8.73-3.09 10.23-3.2.24-1.74.65-3.35 1.11-4.97-1.49-1.17-4.37-3.5-7-6.99 4.27-.33 7.95.27 9.79.63.93-1.62 2-3.26 3.39-4.76-.8-1.39-2.19-4.05-3.09-7.88 3.45 1.52 5.87 3.21 7.13 4.25 1.74-1.27 3.65-2.19 5.5-3.11 0-1.62.07-4.45.78-7.92 2.41 2.56 3.89 4.9 4.46 6.18 2.31-.45 4.74-.57 7.28-.44.47-1.27 1.4-3.47 3.03-6.13a35.79 35.79 0 0 1 1.81 6.73c2.53.59 5.03 1.37 7.33 2.54 3.71-3.11 7.1-4.44 11.14-5.47.02-5.1-.88-10.26-3.51-15.26-2.65-1.29-5.28-2.06-8.16-2.77a34.668 34.668 0 0 0-7.52 5.41 35.434 35.434 0 0 0-5.85-6.98c-1.15 0-3.34-.13-7.61.54a36.58 36.58 0 0 0-4.77 7.98c-2.53-1.64-5.64-3.04-9.21-3.99-2.08.92-4.05 1.95-6.01 3.1-.71 3.36-.95 6.49-.85 9.39-3-.59-6.45-.84-10.15-.4-1.28 1.38-2.56 2.83-3.73 4.45.21 4.17 1.24 7.83 2.73 10.96-3.46.79-7.05 2.28-10.4 4.59-.47 1.5-.69 3.07-1.04 4.58 2.06 3.6 4.68 6.72 7.33 8.94-2.66 2.19-5.19 5.02-7.63 9.06.22 1.74.45 3.39.91 5.02h.06c2.8-5.78 6.06-9.6 9.3-12.13 6.55 4.55 13.21 5.86 14.14 5.98-.08-.31-.56-1.91-.66-3.3l-.07-.26ZM69.3 6.63c2.29 3.49 3.08 7.78 3.3 10.22-2.08.8-5.32 2.29-8.44 4.83-.45-2.2-1.24-5.45-2.95-9.17 2.09-2.08 4.75-4.15 8.1-5.87zM49.13 4.21c2.76 2.33 4.82 5.12 6.31 7.68-2.44 3.12-3.95 6.12-4.77 8.21-1.14-2.09-3.21-4.88-6.31-7.68 1.05-2.66 2.56-5.55 4.77-8.21zM29.38 9.8c4.03.83 7.14 2.35 9.78 4.22a36.844 36.844 0 0 0-1.43 9.96c-2.07-1.52-5.06-3.39-8.97-4.68-.33-2.78-.2-6.03.62-9.5zm-4.33 12.73c.79 4.52 2.33 7.96 3.47 10.17-2.65-.48-6.75-.8-11.25-.24-1.49-2.91-2.62-6.5-2.83-10.56 3.92-.44 7.5-.08 10.61.63zM4.78 40.98c3.36-2.42 7.05-3.68 10.4-4.36 2.4 3.84 5.39 6.63 7.46 8.38-2.65.45-6.58 1.48-10.74 4.12-2.53-1.98-5.05-4.66-7.11-8.15z"/><path fill="#43b02a" fill-rule="evenodd" stroke="#43b02a" stroke-width=".25" d="M47.3 23.46c-.69-1.27-2.08-3.82-4.51-6.25-.81 3.47-.81 6.48-.69 7.99-.12 0 2.2-1.16 5.2-1.74zM36.54 28.32c-1.27-1.04-3.7-2.89-7.28-4.4.92 3.82 2.43 6.6 3.24 7.99 0 .23 1.62-1.74 4.05-3.59zM50.67 20.08c.81-2.08 2.31-5.09 4.74-8.22-1.5-2.66-3.58-5.32-6.36-7.64-2.2 2.78-3.7 5.56-4.74 8.33 3.12 2.66 5.09 5.44 6.36 7.52zM29.15 36.66c-1.22-.22-2.56-.41-4-.52a40.19 40.19 0 0 0-5.77-.06c1.01 1.29 2.24 2.71 3.73 4.14A39.43 39.43 0 0 0 26.35 43c.35-1.03.77-2.12 1.28-3.28a43.76 43.76 0 0 1 1.51-3.06zM11.92 49.15c4.16-2.66 8.09-3.82 10.75-4.17-2.08-1.74-5.09-4.51-7.52-8.33-3.47.69-7.01 2.02-10.36 4.33 1.97 3.47 4.47 6.2 7.12 8.17zM25.21 48.11c-1.62.12-5.56.34-10.19 3.12 4.28 2.66 8.22 4.06 10.19 4.52-.35-2.55-.35-5.21 0-7.64zM39.21 14.02c-2.54-1.74-5.78-3.24-9.83-4.17-.81 3.47-.92 6.71-.69 9.49 3.93 1.27 6.94 3.12 9.02 4.63 0-2.31.35-5.9 1.5-9.95zM74.58 5.55s3.24 9.95 3.35 15.04c-3.93.93-7.4 2.31-11.21 5.56 2.08 1.04 3.93 2.31 5.67 3.82 1.85 1.62 3.58 2.31 6.01 1.16 1.39-.93 9.13-8.91 9.94-9.95 1.85-1.97 1.39-5.21-.58-6.71-4.86-4.51-13.18-8.91-13.18-8.91ZM2.82 37.77c3.47-2.31 6.94-3.82 10.41-4.63-1.5-3.12-2.54-6.71-2.77-10.88C7.11 27 4.45 32.33 2.83 37.77zM28.59 32.72c-1.16-2.2-2.66-5.79-3.47-10.18-3.12-.69-6.59-1.04-10.64-.46.23 4.05 1.39 7.52 2.89 10.53 4.62-.69 8.56-.35 11.22.12z"/><path fill="#43b02a" fill-rule="evenodd" stroke="#43b02a" stroke-width=".25" stroke-linecap="round" d="M14.22 17.73c1.52-.19 3.32-.3 5.35-.22 1.82.08 3.44.3 4.83.56.29-3.12.58-6.24.88-9.37a45.326 45.326 0 0 0-5.82 4.02 45.63 45.63 0 0 0-5.23 5z"/><path fill="#43b02a" stroke="#43b02a" stroke-width=".25" d="M31.2 5.66c2.19.64 4.61 1.55 7.12 2.84.75.38 1.46.78 2.13 1.17a33.466 33.466 0 0 1 4.63-8.01c-2.15.36-4.53.88-7.08 1.62-2.53.73-4.8 1.55-6.8 2.38Z"/><path fill="#43b02a" fill-rule="evenodd" stroke="#43b02a" stroke-width=".25" d="M9.14 51.23c-2.66-2.2-5.32-5.09-7.4-8.68C.58 48.45.58 54.7 1.51 60.49c2.2-4.05 4.86-6.94 7.63-9.26ZM86.84 81.09c-7.28-6.94-8.79-11.46-14.91-6.71C55.17 87.57 31 79.7 25.91 59.22c-.92-.12-7.4-1.39-13.99-5.9-3.24 2.55-6.59 6.48-9.37 12.15h-.12c10.52 39.81 61.74 49.07 85.44 24.19 3.93-4.17.35-7.06-1.04-8.56zM69.26 6.58c-3.35 1.62-6.01 3.7-8.09 5.9 1.73 3.7 2.54 7.06 3.01 9.14 3.24-2.55 6.47-4.05 8.44-4.86-.23-2.31-1.04-6.6-3.35-10.18zM57.59 16.75a26.405 26.405 0 0 0-3.02 6.27c.8.04 1.66.12 2.56.23.82.1 1.6.23 2.32.38-.13-.88-.3-1.84-.55-2.86-.38-1.52-.84-2.87-1.32-4.02zM58.67 8.08c1.04-.98 2.3-2.05 3.78-3.1 1.32-.94 2.58-1.7 3.74-2.31-1.92-.46-4.1-.88-6.51-1.17-2.52-.3-4.83-.4-6.88-.38 2.42 2.21 4.38 4.64 5.87 6.96z"/><path fill="#fff" fill-opacity="1" stroke="#2db24a" stroke-width=".25" d="M21.03 65.02c3.7 9.82 16.63 22.86 32.56 22.86 8.78 0 16.74-3.12 22.98-8.43.46-.23 4.73 4.62 6.47 6.47.35.46.35.58.35.58-21.02 18.36-56.7 15.71-73.56-16.05 1.39-4.62 3.35-7.39 3.35-7.39 4.5 1.85 7.85 1.96 7.85 1.96z"/></g>',
   },
@@ -365,23 +437,58 @@ function viewBox({ box: [x, y, w, h], optical = 1 }: Brand): string {
   return [x - pad, y + h / 2 - height / 2, w + pad * 2, height].map((n) => +n.toFixed(2)).join(' ');
 }
 
-/** Each brand's names as whole words: not 'CSS' in 'PostCSS', nor 'conda' in 'Anaconda'. */
-const NAMES = (Object.keys(BRANDS) as BrandName[]).flatMap((key) => {
-  const brand: Brand = BRANDS[key];
-  return [brand.name, ...(brand.aliases ?? [])].map((name) => {
-    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return [key, new RegExp(`(?<!\\w)${escaped}(?!\\w)`, 'g')] as const;
-  });
-});
+/**
+ * Tools the site names that have no mark, each for its reason in the header.
+ * None is drawn, but each still counts as a name, so a label that pairs one
+ * with a brand gets no mark: 'Azure OpenAI' is Microsoft's, not OpenAI's.
+ */
+const UNMARKED = [
+  'JavaScript',
+  'Server-sent events',
+  'SSE',
+  'XGBoost',
+  'UMAP',
+  'TMLS',
+  'Azure',
+  'HL7',
+  'FHIR',
+  'MySQL',
+];
+
+/**
+ * A name as a whole word, not 'CSS' in 'PostCSS' nor 'conda' in 'Anaconda'; in
+ * any case unless it is also an everyday word.
+ */
+function word(name: string, asWritten?: boolean): RegExp {
+  return new RegExp(`(?<!\\w)${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?!\\w)`, asWritten ? 'g' : 'gi');
+}
+
+/** Each brand's names, then the unmarked ones, which name no brand. */
+const NAMES: (readonly [BrandName | undefined, RegExp])[] = [
+  ...(Object.keys(BRANDS) as BrandName[]).flatMap((key) => {
+    const brand: Brand = BRANDS[key];
+    return [brand.name, ...(brand.aliases ?? [])].map((name) => [key, word(name, brand.word)] as const);
+  }),
+  ...UNMARKED.map((name) => [undefined, word(name)] as const),
+];
 
 /**
  * The brand a label names, if any: 'Python' → python, 'Claude Haiku 4.5' →
- * claude, 'OpenAI hackathon' → openai. 'Graphs' or 'RAG' → undefined.
+ * claude, 'OpenAI hackathon' → openai. A brand's own product is the brand:
+ * 'Anthropic SDK', 'MongoDB Atlas'. 'Graphs', 'RAG' and the UNMARKED names →
+ * undefined.
+ *
+ * A name matches as a whole word, in any case ('Github', 'numpy'), and other
+ * spellings are aliases ('NodeJS', 'sklearn'). A name that is also an everyday
+ * word (React, Python, Railway, Anthropic, Anaconda, Tailwind, pandas) counts
+ * only written as the brand writes it, since About captions come through here
+ * too, and in one 'a python' or 'the railway' is not the tool.
  *
  * A name inside a longer one counts as the longer: 'GitHub Actions' is GitHub
  * Actions, not GitHub, and 'Tailwind CSS' is Tailwind, not CSS. A label that
- * still names more than one brand gets no mark, since one would claim the whole
- * label for one of them: 'HTML/CSS/JavaScript', 'Anaconda / conda'.
+ * still names more than one tool gets no mark, since one would claim the whole
+ * label for one of them: 'HTML/CSS/JavaScript', 'Anaconda / conda',
+ * 'JavaScript / TypeScript'.
  */
 export function brandFor(label: string): BrandName | undefined {
   const found = NAMES.flatMap(([key, pattern]) =>
