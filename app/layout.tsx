@@ -5,6 +5,7 @@ import '@/styles/tokens.css';
 import '@/styles/site.css';
 import NavBar from '@/components/lucent/NavBar';
 import ThemeToggle from '@/components/lucent/ThemeToggle';
+import Footer from '@/components/lucent/Footer';
 import LucentRuntime from '@/components/lucent/Runtime';
 import { identity, meta, sections } from '@/content/site';
 
@@ -90,9 +91,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <NavBar brand={identity.fullName.split(' ')[0]} items={navItems} />
         <ThemeToggle />
         <main id="main">{children}</main>
-        <footer className="lu-footer">
-          © {new Date().getFullYear()} {identity.fullName}
-        </footer>
+        <Footer name={identity.fullName} year={new Date().getFullYear()} location={identity.location} />
         <LucentRuntime />
       </body>
     </html>

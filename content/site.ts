@@ -118,12 +118,19 @@ export const meta: SiteMeta = {
  */
 export const contact = {
   heading: 'Get in touch',
-  body: 'Always happy to talk about agent systems, football data, or anything someone is building. The inbox is open.',
+  // 2026-09-23: "anything someone is building" became "anything you're building":
+  // the same invitation, said to the person reading it.
+  body: 'Always happy to talk about agent systems, football data, or anything you’re building. The inbox is open.',
   // Deliberately absent: availability status, "hire me", "open to work",
   // response-time promises.
 
-  /** Contact tiles. One-word labels, values of three words at most (Lucent ContactTiles). */
-  email: { label: 'Email', value: 'Tap to copy', address: identity.email },
+  /**
+   * Contact tiles. One-word labels, values of three words at most (Lucent ContactTiles).
+   * The email tile shows the address itself rather than a value: it is the thing
+   * people came for, to read, type elsewhere or select (was "Tap to copy", which
+   * hid it and said "tap" to mice too).
+   */
+  email: { label: 'Email', address: identity.email },
   links: [
     { label: 'GitHub', value: 'Code and experiments', href: 'https://github.com/mahyar-jbr', status: 'live' },
     { label: 'LinkedIn', value: 'Work history', href: 'https://linkedin.com/in/mahyar-jaberi', status: 'live' },

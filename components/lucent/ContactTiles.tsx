@@ -8,13 +8,18 @@ import LinkOut from './LinkOut';
  * (BrandIcon), as the kit allows, never drawings of them; the page is line art
  * in currentColor.
  *
- * The email tile shows Gmail's mark because the address is a Gmail one (Mahyar,
- * 2026-09-23); it lifts a touch on hover (styles/site.css "Brand icons"). Any
- * other address gets the kit's envelope back, whose flap lifts on hover.
+ * Email leads: the one ink tile (is-primary), twice as wide as the others where
+ * there is room, so the address itself fits on it at a size you can read. It
+ * shows Gmail's mark because the address is a Gmail one (Mahyar, 2026-09-23),
+ * and any other address gets the kit's envelope back.
  *
- * The email tile is the one ink tile (is-primary): Lucent.auto() copies the
- * address and shows the "Email copied" toast, or shows the address itself if the
- * clipboard is refused.
+ * The tile is not one button, as the kit's is, because it holds two ways in:
+ * - the address, a mailto: link: it writes an email where a mail app is set up,
+ *   it is there to read or type on another device, and its own context menu
+ *   (right-click, a long press) offers to copy it. It works with scripts blocked.
+ * - Copy, where the tile's arrow would be: Lucent.auto() copies the address and
+ *   shows the "Email copied" toast, or, if the clipboard is refused, shows the
+ *   address itself. It needs scripts, so it only appears when they run.
  *
  * The other tiles are LinkOuts: GitHub and LinkedIn open in a new tab and say so
  * to screen readers; the tile's own ↗ is the sighted cue, so LinkOut adds none.
@@ -50,18 +55,13 @@ export default function ContactTiles({
   email,
   links,
 }: {
-  email: { label: string; value: string; address: string };
+  email: { label: string; address: string };
   links: ContactLink[];
 }) {
+  const [user, domain] = email.address.split('@');
   return (
-    <div className="lu-contact">
-      <button
-        type="button"
-        className="lu-contact-tile is-primary"
-        data-copy={email.address}
-        data-toast="Email copied"
-        aria-label={`Copy email address ${email.address}`}
-      >
+    <div className="lu-contact site-contact">
+      <div className="lu-contact-tile is-primary contact-email">
         <span className="lu-contact-glyph">
           {/@gmail\.com$/i.test(email.address) ? (
             <BrandIcon name="gmail" />
@@ -72,9 +72,26 @@ export default function ContactTiles({
             </svg>
           )}
         </span>
+        <button
+          type="button"
+          className="lu-btn is-small contact-copy"
+          data-copy={email.address}
+          data-toast="Email copied"
+          aria-label="Copy email address"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="8" y="8" width="13" height="13" rx="3" />
+            <path d="M16 8V6a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h2" />
+          </svg>
+          Copy
+        </button>
         <span className="lu-contact-label">{email.label}</span>
-        <span className="lu-contact-value">{email.value}</span>
-      </button>
+        <a className="contact-address" href={`mailto:${email.address}`}>
+          {/* if it must wrap (large text), it wraps at the @, not mid-name */}
+          {user}
+          <wbr />@{domain}
+        </a>
+      </div>
       {links.map((l) => (
         <LinkOut
           className="lu-contact-tile"
