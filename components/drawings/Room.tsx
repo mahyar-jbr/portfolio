@@ -130,6 +130,18 @@ function placeOnWall(from: Element, mat: HTMLElement, artOnly: boolean): string 
   return `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px) scale(${s.toFixed(4)})`;
 }
 
+/**
+ * A story panel hangs bare in the wall's strip, on the strip's own sheet; in the room it has a mat of its
+ * own. So on the flight between the two the mat's paper and shadow come up around it (`on`) or fade away,
+ * and it leaves the strip and lands back in it as the bare panel, not on a card over its neighbours.
+ */
+function paper(mat: HTMLElement, on: boolean, timing: KeyframeAnimationOptions) {
+  const cs = getComputedStyle(mat);
+  const matted = { backgroundColor: cs.backgroundColor, boxShadow: cs.boxShadow };
+  const bare = { backgroundColor: 'transparent', boxShadow: 'none' };
+  mat.animate(on ? [bare, matted] : [matted, bare], { ...timing, fill: on ? 'backwards' : 'forwards' });
+}
+
 export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; series: Series; wall: string }) {
   const [view, setView] = useState<{ set: SetName; index: number } | null>(null);
   /** each slide's art width as laid out, so its large image is fetched at that size */
@@ -164,6 +176,9 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
   /** the room is up, from showModal until it is tidied away */
   const live = useRef(false);
   const tlHandle = useRef<TimelapseHandle | null>(null);
+
+  /** focus was on something in the drawing just left, which has turned inert: it goes on to the next one */
+  const refocus = useRef(false);
 
   /** the drawing on show, for work that finishes after a render (the kit arriving late) */
   const showing = useRef(0);
@@ -218,6 +233,9 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
       const spring = pos.current;
       if (to !== view.index) {
         heading.current = to > view.index ? 1 : -1;
+        /* the drawing being left turns inert, and focus on its label's button or its time-lapse's
+           controls would fall out of the room onto the page; it follows the viewer instead (below) */
+        if (mats.current[view.index]?.closest('.room-slide')?.contains(document.activeElement)) refocus.current = true;
         tlHandle.current?.stop();
         setView({ set: view.set, index: to });
         setTl('idle');
@@ -330,10 +348,16 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
           lifted.current?.classList.remove('wall-lifted');
           lifted.current = null;
         });
+      /* clear of the strip before the paper comes up */
+      if (view.set === 'story')
+        paper(mat, true, { duration: 420, delay: 120, easing: cssValue('--ease-settle', 'ease-out') });
     } else fadeIn(mat, 0);
 
     const ro = new ResizeObserver(() => measure());
     if (stage.current) ro.observe(stage.current);
+    /* and each drawing, which also gives way to its label (a label set late in its web font, say); what
+       measure changes moves nothing, so this can't loop */
+    mats.current.forEach((m) => m && ro.observe(m));
     return () => ro.disconnect();
     /* keyed to the room coming up, not to each move inside it */
   }, [opened]);
@@ -345,6 +369,15 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     if (!view || !L) return;
     dialog.current?.querySelectorAll<HTMLElement>('.lu-btn').forEach((b) => L.jelly(b, { amount: 0.7 }));
   }, [view, tl, kit]);
+
+  /* focus that was in the drawing just left goes on to the same button on this one, or to the room itself
+     (which reads out the drawing's name) where this one has none */
+  useLayoutEffect(() => {
+    if (!view || !refocus.current) return;
+    refocus.current = false;
+    const slide = mats.current[view.index]?.closest('.room-slide');
+    (slide?.querySelector<HTMLElement>('.room-watch') ?? dialog.current)?.focus({ preventScroll: true });
+  }, [view]);
 
   /* the large image of the drawing on show; once it has arrived, the next one along too (only that
      one), so the next move finds it ready */
@@ -427,6 +460,8 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
         .animate([{ transform: 'none' }, { transform: to }], { duration: 380, easing: cssValue('--ease-settle', 'ease-out'), fill: 'forwards' })
         .finished.catch(() => {})
         .finally(finish);
+      /* gone before it reaches the strip */
+      if (view.set === 'story') paper(mat, false, { duration: 260, easing: cssValue('--ease-settle', 'ease-out') });
     } else {
       const f = fadeOut(mat, 150);
       if (f) f.finished.catch(() => {}).finally(finish);
@@ -566,7 +601,16 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
     }
   };
 
-  const onTlState = useCallback((s: TimelapseState) => setTl(s), []);
+  const onTlState = useCallback((s: TimelapseState) => {
+    /* the capsule is going (the recording ended, or was stopped) and turns inert: focus in it goes back to
+       the button that started it, not out of the room onto the page */
+    if (s === 'idle') {
+      const slide = mats.current[showing.current]?.closest('.room-slide');
+      if (slide?.querySelector('.room-player')?.contains(document.activeElement))
+        slide.querySelector<HTMLElement>('.room-watch')?.focus({ preventScroll: true });
+    }
+    setTl(s);
+  }, []);
   /* seen to the end, the button offers it again */
   const onTlEnd = useCallback(() => setWatched(true), []);
 
@@ -636,6 +680,9 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
       </div>
     </div>
   );
+
+  /** the story's widest panel as laid out, which its one label lines up with */
+  const widest = Math.max(0, ...widths);
 
   const announcement = !view
     ? ''
@@ -721,6 +768,8 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
                       aria-label={`${i + 1} of ${count}`}
                       aria-hidden={i !== index}
                       inert={i !== index}
+                      /* where its label lines up, when the label hangs below (site.css) */
+                      style={w ? ({ '--art-w': `${w}px` } as CSSProperties) : undefined}
                     >
                       <div className="room-frame">
                         <div
@@ -770,7 +819,15 @@ export default function Room({ pieces, series, wall }: { pieces: ArtPiece[]; ser
                 })}
               </div>
             </div>
-            {view.set === 'story' && <div className="room-label">{storyPlate}</div>}
+            {view.set === 'story' && (
+              <div
+                className="room-label"
+                /* hung below the story, the label lines up with its widest panel (site.css) */
+                style={widest ? ({ '--art-w': `${widest}px` } as CSSProperties) : undefined}
+              >
+                {storyPlate}
+              </div>
+            )}
           </div>
         </>
       )}

@@ -1881,6 +1881,8 @@ html:not(.js) .wall-open:hover .wall-mat {
 /* ---- the paper room ---- */
 .room {
   --plate: 300px;
+  /* the mat's paper around the drawing */
+  --pad: 12px;
   position: fixed;
   inset: 0;
   width: 100%;
@@ -1972,7 +1974,6 @@ html:not(.js) .wall-open:hover .wall-mat {
   container-type: size;
 }
 .room-mat {
-  --pad: 12px;
   position: relative;
   padding: var(--pad);
   background: var(--paper);
@@ -1980,10 +1981,11 @@ html:not(.js) .wall-open:hover .wall-mat {
   box-shadow: var(--shadow-lift);
 }
 /* the drawing at its own aspect ratio, as large as the frame allows, and never
-   more than twice its own pixels (Godfall's smallest panels) */
+   more than one and a half times its own pixels: Godfall's smallest panels are
+   scans under 500px wide, and at twice that their marker lines went soft */
 .room-art {
   position: relative;
-  width: min(100cqw - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ar), var(--nat) * 2);
+  width: min(100cqw - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ar), var(--nat) * 1.5);
   aspect-ratio: var(--ar);
   box-shadow: 0 0 0 1px var(--paper-edge);
 }
@@ -2068,6 +2070,13 @@ html:not(.js) .wall-open:hover .wall-mat {
   visibility: visible;
   transition: opacity var(--dur-jelly) var(--ease-settle);
 }
+/* playing, it steps aside after a moment (Timelapse), slowly, and lets a tap
+   through to the drawing, which brings it back */
+.room-player[data-shown][data-resting] {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-morph) var(--ease-settle);
+}
 .room-player .lu-btn svg {
   width: 20px;
   height: 20px;
@@ -2141,12 +2150,17 @@ html:not(.js) .wall-open:hover .wall-mat {
 .room[data-moving] .room-mat {
   z-index: 1;
 }
+/* Below the drawing, the label hangs from its left edge, as a gallery hangs
+   one: set at its own width, then moved over to where the mat begins (Room
+   measures the art, --art-w; the slide, or the story's label row, is the
+   container), and never past the right edge. Moving it changes no layout, so
+   the drawing's size can't answer back. */
 .room-plate {
   flex: none;
   box-sizing: border-box;
-  width: 100%;
-  max-width: 42rem;
-  margin-inline: auto;
+  width: fit-content;
+  max-width: min(100%, 42rem);
+  translate: clamp(0px, (100cqw - var(--art-w, 100cqw)) / 2 - var(--pad), 100cqw - 100%) 0;
 }
 .room-plate h2 {
   margin: 0;
@@ -2196,6 +2210,7 @@ html:not(.js) .wall-open:hover .wall-mat {
 }
 .room-label {
   padding: 0 var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+  container-type: inline-size;
 }
 /* the story's panels, in order under its label: where you are, and a way to
    jump. Each is the art itself, so it is never dimmed or tinted: the one on
@@ -2207,9 +2222,14 @@ html:not(.js) .wall-open:hover .wall-mat {
   margin-top: var(--space-4);
 }
 .room-panel {
+  --h: 40px;
   appearance: none;
-  height: 40px;
-  aspect-ratio: var(--ar);
+  /* sized outright rather than by aspect-ratio: Safari counts the thumbnail's
+     own pixels in the row's natural width, and the label (sized to its
+     content) came out as wide as it may go */
+  box-sizing: border-box;
+  width: calc(var(--h) * var(--ar));
+  height: var(--h);
   padding: 3px;
   border: 0;
   border-radius: 4px;
@@ -2246,8 +2266,15 @@ html:not(.js) .wall-open:hover .wall-mat {
 
 /* Wide screens: the label hangs beside the drawing at its foot, the way a
    gallery hangs one, the drawing and its label centred together. The story's
-   label hangs once, beside the whole story. */
+   label hangs once, beside the whole story, and the two hang as one group no
+   wider than 1400px (the kit's lightbox keeps its picture to 1100px), so on a
+   big screen the label stays by the panels instead of out at the edge. The
+   stage still runs to the left edge of the screen: a panel moving on slides
+   off it, not into a line in mid-air. */
 @media (min-width: 1000px) and (min-aspect-ratio: 5 / 4) {
+  .room[data-set='story'] {
+    --outside: max(0px, (100vw - 1400px) / 2);
+  }
   .room[data-set='pieces'] .room-slide {
     flex-direction: row;
     justify-content: center;
@@ -2261,19 +2288,24 @@ html:not(.js) .wall-open:hover .wall-mat {
     container-type: normal;
   }
   .room[data-set='pieces'] .room-art {
-    width: min(100cqw - var(--plate) - var(--space-7) - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ar), var(--nat) * 2);
+    width: min(100cqw - var(--plate) - var(--space-7) - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ar), var(--nat) * 1.5);
   }
   .room-slide > .room-plate {
     flex: 0 0 var(--plate);
     align-self: flex-end;
     margin: 0;
   }
+  .room-plate {
+    width: auto;
+    translate: none;
+  }
   .room[data-set='story'] .room-layout {
     grid-template-columns: minmax(0, 1fr) var(--plate);
     grid-template-rows: minmax(0, 1fr);
+    padding-right: var(--outside);
   }
   .room[data-set='story'] .room-slide {
-    padding: var(--space-2) var(--space-7) var(--space-7) var(--space-8);
+    padding: var(--space-2) var(--space-7) var(--space-7) calc(var(--space-8) + var(--outside));
   }
   .room[data-set='story'] .room-frame {
     place-items: center;
@@ -2329,12 +2361,16 @@ html:not(.js) .wall-open:hover .wall-mat {
     container-type: size;
   }
   .room[data-set='pieces'] .room-art {
-    width: min(100cqw - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ar), var(--nat) * 2);
+    width: min(100cqw - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ar), var(--nat) * 1.5);
   }
   .room-slide > .room-plate {
     flex: 0 0 var(--plate);
     align-self: flex-end;
     margin: 0;
+  }
+  .room-plate {
+    width: auto;
+    translate: none;
   }
   .room-label {
     align-self: end;
@@ -2363,7 +2399,7 @@ html:not(.js) .wall-open:hover .wall-mat {
     margin-top: var(--space-3);
   }
   .room-panel {
-    height: 32px;
+    --h: 32px;
   }
 }
 

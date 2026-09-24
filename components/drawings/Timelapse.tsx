@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type RefObject } from 'react';
+import { prefersReducedMotion } from '@/lib/lucent';
 import { clock } from './shared';
 
 /**
@@ -19,6 +20,13 @@ import { clock } from './shared';
  * again when it ends and gives way to the finished drawing. It pauses while
  * the tab is hidden and stops (and stops downloading) when the piece is left
  * or the room closes.
+ *
+ * While it plays, the capsule steps aside after a moment, so the drawing
+ * being made shows whole (on a phone the capsule covers a good part of it); a
+ * move of the pointer over the drawing or a tap on it brings the capsule back,
+ * and so does a pause. It stays while the pointer is on it or it holds
+ * keyboard focus, and always under reduced motion, where nothing goes on its
+ * own.
  */
 export type TimelapseState = 'idle' | 'loading' | 'playing' | 'paused';
 
@@ -28,6 +36,9 @@ export interface TimelapseHandle {
   /** Back to the drawing. */
   stop(): void;
 }
+
+/** How long the capsule stays over a playing recording that nobody is touching, in ms. */
+const REST_AFTER = 2500;
 
 const ICON_PLAY = (
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -74,6 +85,23 @@ export default function Timelapse({
   report.current = onState;
   const ended = useRef(onEnd);
   ended.current = onEnd;
+  const [resting, setResting] = useState(false);
+  const restTimer = useRef(0);
+  const playing = useRef(false);
+  /** what keeps the capsule up while it plays: the pointer on it, or keyboard focus in it */
+  const held = useRef({ pointer: false, keys: false });
+
+  /* the capsule back, and (playing, and nothing holding it) stepping aside again in a moment */
+  const wake = useCallback(() => {
+    clearTimeout(restTimer.current);
+    setResting(false);
+    if (playing.current && !held.current.pointer && !held.current.keys && !prefersReducedMotion())
+      restTimer.current = window.setTimeout(() => setResting(true), REST_AFTER);
+  }, []);
+  useEffect(() => {
+    playing.current = state === 'playing';
+    wake();
+  }, [state, wake]);
 
   const set = (s: TimelapseState) => {
     setState(s);
@@ -137,12 +165,29 @@ export default function Timelapse({
       },
     };
 
+    /* The pointer moving over the drawing (moving: a cursor resting on it sends none), or a tap or click on
+       it. A finger wakes it on the click, once the tap is over, so the tap that brings the capsule back
+       can't also land on a control in it. */
+    const mat = v.parentElement;
+    let at = '';
+    const onMove = (e: PointerEvent) => {
+      const here = `${e.clientX},${e.clientY}`;
+      if (e.pointerType === 'touch' || here === at) return;
+      at = here;
+      wake();
+    };
+    mat?.addEventListener('pointermove', onMove);
+    mat?.addEventListener('click', wake);
+
     v.addEventListener('playing', onPlaying);
     v.addEventListener('pause', onPause);
     v.addEventListener('ended', onEnded);
     document.addEventListener('visibilitychange', onVisibility);
     return () => {
       cancelAnimationFrame(raf);
+      clearTimeout(restTimer.current);
+      mat?.removeEventListener('pointermove', onMove);
+      mat?.removeEventListener('click', wake);
       v.removeEventListener('playing', onPlaying);
       v.removeEventListener('pause', onPause);
       v.removeEventListener('ended', onEnded);
@@ -190,7 +235,32 @@ export default function Timelapse({
         aria-hidden="true"
         tabIndex={-1}
       />
-      <div className="room-player" data-shown={shown || undefined} role="group" aria-label={`Time-lapse of ${title}`} inert={!shown}>
+      <div
+        className="room-player"
+        data-shown={shown || undefined}
+        data-resting={(shown && resting) || undefined}
+        role="group"
+        aria-label={`Time-lapse of ${title}`}
+        inert={!shown}
+        onPointerEnter={() => {
+          held.current.pointer = true;
+          wake();
+        }}
+        onPointerLeave={() => {
+          held.current.pointer = false;
+          wake();
+        }}
+        /* focus from the keyboard holds it up; a click (which focuses a button in some browsers) doesn't */
+        onFocus={(e) => {
+          held.current.keys = e.target.matches(':focus-visible');
+          wake();
+        }}
+        onBlur={(e) => {
+          if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+          held.current.keys = false;
+          wake();
+        }}
+      >
         <button
           type="button"
           className="lu-btn is-quiet is-icon is-small"
