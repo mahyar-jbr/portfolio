@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     formats: ['image/avif', 'image/webp'],
+    // Every quality an <Image> asks for: 75 is next/image's default (the rest of the
+    // site), 65 the Drawings wall's thumbnails, 85 a drawing opened in its room.
+    qualities: [65, 75, 85],
   },
   async redirects() {
     return [

@@ -20,8 +20,12 @@ npm run tokens     # rebuild styles/tokens.css from design-system/lucent/tokens.
 app/                 routes only: / and /work/[slug], plus icon, OG image, 404
 components/
   lucent/            one component per Lucent kit component, and the runtime that wires its motion
-  sections/          the home page: Hero · Work · Experience · Drawings · Contact
-  work/              the case study template and project card art
+  sections/          the home page: Hero · About · Work · Experience · Drawings · Contact
+  hero/              the name's hand-over to the nav brand
+  about/             the pinned photo story
+  work/              the case study template, project card art and the MoneyMind banner loop
+  experience/        the grouped role list, its company tiles and its motion
+  drawings/          the Drawings wall, its paper room and the time-lapse player
 content/             ALL copy and project data (see below)
   sources/           the verified per-project extracts the copy is written from
 design-system/

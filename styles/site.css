@@ -258,16 +258,11 @@ html:not(.js) .site-theme {
 }
 
 /* ---------- Scripts blocked (kit bar: "everything is visible at rest, only motion is lost") ----------
-   Two kit components lean on the runtime for layout, so they get a resting
-   form of their own until it arrives:
-   - the nav's current item is ink-on-lens; with no lens it wears the lens colour itself;
-   - the gallery packs 4px rows spanned by script; unpacked it flows as a plain grid. */
+   One kit component leans on the runtime for its look, so it gets a resting
+   form of its own until it arrives: the nav's current item is ink-on-lens; with
+   no lens it wears the lens colour itself. */
 .lu-nav:not(:has(.lu-lens)) .lu-nav-item[aria-current='page'] {
   background: var(--accent);
-}
-.lu-gallery:not(.is-wired) {
-  grid-auto-rows: auto;
-  align-items: start;
 }
 
 /* ---------- Entrance ----------

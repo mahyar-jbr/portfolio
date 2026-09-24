@@ -46,8 +46,6 @@ export default function LucentRuntime() {
         const navOpts = { selectFirst: pathname === '/' } as Parameters<typeof L.liquidNav>[1];
         const lens = nav ? L.liquidNav(nav, navOpts) : null;
 
-        /* The gallery rests as a plain grid; packing needs its 4px rows back first. */
-        document.querySelectorAll('.lu-gallery').forEach((g) => g.classList.add('is-wired'));
         L.auto(document);
         if (lens) {
           if (pathname === '/') {
