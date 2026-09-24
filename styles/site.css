@@ -43,11 +43,6 @@ img {
   outline-offset: 3px;
 }
 
-/* Section anchors land clear of the floating nav. */
-.lu-section[id] {
-  scroll-margin-top: var(--space-4);
-}
-
 .site-skip {
   position: absolute;
   left: var(--space-4);
@@ -1012,6 +1007,77 @@ html.hero-intro-again .site-hero {
 @media (prefers-reduced-motion: reduce) {
   .site-navigated .site-route:not(.is-first) {
     animation: site-fade 150ms ease backwards;
+  }
+}
+
+/* ---------- Navigation journey (lib/journey.ts) ----------
+   Where a section lands, and the cross-fade a far journey travels under. */
+
+/* A section lands clear of the floating nav, with its kicker where a case
+   study's first line sits (the case hero's top padding, below): 144px down on
+   a laptop, 112px on a phone, the same space under the capsule on every page.
+   It is that padding less the kit's section padding, clamp(72px, 10vw, 120px).
+   A plain #anchor with scripts blocked and a /#section link land there too. */
+.lu-section[id] {
+  scroll-margin-top: calc(clamp(56px, 8vw, 88px) + 56px - clamp(72px, 10vw, 120px));
+}
+
+/* The section takes focus where the page lands, for keyboards and screen
+   readers. It isn't a control, so no ring. */
+:is(.lu-section, .site-hero)[tabindex='-1']:focus {
+  outline: none;
+}
+
+/* The capsule and the theme button float over every page, so they stay out
+   of a far journey's cross-fade and of the kit's page swap: they stay where
+   they are, live (the lens moving to its item), rather than fading out and in
+   with the page — in the swap the two capsules showed at once, and both rose
+   8px with the new page. */
+:is(.site-journey, .lu-vt-page) .site-nav .lu-nav {
+  view-transition-name: site-nav;
+}
+:is(.site-journey, .lu-vt-page) .site-theme {
+  view-transition-name: site-theme;
+}
+:is(.site-journey, .lu-vt-page)::view-transition-group(site-nav),
+:is(.site-journey, .lu-vt-page)::view-transition-group(site-theme),
+:is(.site-journey, .lu-vt-page)::view-transition-new(site-nav),
+:is(.site-journey, .lu-vt-page)::view-transition-new(site-theme) {
+  animation: none;
+}
+:is(.site-journey, .lu-vt-page)::view-transition-old(site-nav),
+:is(.site-journey, .lu-vt-page)::view-transition-old(site-theme) {
+  display: none;
+}
+/* A far journey: the old view drifts off the way the page is moving
+   (--journey-drift) and fades as the new one comes up, both over the same
+   curve so together they never dim or brighten the page; the new view is live
+   and glides the last stretch itself. 320ms, the kit's theme cross-fade. */
+.site-journey::view-transition-old(root) {
+  animation: site-journey-out 320ms var(--ease-settle) both;
+}
+.site-journey::view-transition-new(root) {
+  animation: site-fade 320ms var(--ease-settle) both;
+}
+@keyframes site-journey-out {
+  to {
+    opacity: 0;
+    transform: translateY(var(--journey-drift, 0px));
+  }
+}
+/* The About story is set to where the page lands, not cross-faded through
+   the steps it skipped. */
+.site-journey .story-fig,
+.site-journey .story-text {
+  transition: none;
+}
+/* Reduced motion: no drift, a 150ms fade. */
+@media (prefers-reduced-motion: reduce) {
+  .site-journey::view-transition-old(root) {
+    animation: site-journey-out 150ms ease both;
+  }
+  .site-journey::view-transition-new(root) {
+    animation: site-fade 150ms ease both;
   }
 }
 

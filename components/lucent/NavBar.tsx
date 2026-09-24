@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import NavHover from './NavHover';
 import TransitionLink from './TransitionLink';
 
@@ -23,6 +23,12 @@ export default function NavBar({
   items: { id: string; label: string }[];
 }) {
   const home = usePathname() === '/';
+  /* The first item is marked current only in the page as it first arrives
+     (with scripts blocked, it wears the lens colour itself). From then on the
+     kit's lens owns aria-current: marked again on a later route change, a case
+     study's link to /#contact left "Work" current beside Contact, its label in
+     the lens's white with no lens under it. */
+  const [arrivedHome] = useState(home);
   const nav = useRef<HTMLElement>(null);
   return (
     <div className="site-nav">
@@ -36,7 +42,7 @@ export default function NavBar({
             key={item.id}
             className="lu-nav-item"
             href={home ? `#${item.id}` : `/#${item.id}`}
-            aria-current={home && i === 0 ? 'page' : undefined}
+            aria-current={arrivedHome && i === 0 ? 'page' : undefined}
             data-jelly="0.5"
           >
             {item.label}

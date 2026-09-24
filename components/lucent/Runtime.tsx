@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
+import { arrive } from '@/lib/journey';
 import { loadLucent, routeSettled } from '@/lib/lucent';
 
 /**
@@ -62,7 +63,11 @@ export default function LucentRuntime() {
         console.error(err);
       })
       .finally(() => {
-        if (!cancelled) routeSettled();
+        if (cancelled) return;
+        /* a link to this page's #section from another page lands on it now,
+           with the page wired, before the page swap shows the new view */
+        arrive();
+        routeSettled();
       });
     return () => {
       cancelled = true;

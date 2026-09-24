@@ -61,9 +61,3 @@ export function navigate(push: (href: string) => void, href: string): void {
       }),
   );
 }
-
-/** Scrolls to an in-page target the way the kit does: smooth, or instant under reduced motion. */
-export function scrollToTarget(el: Element): void {
-  if (window.Lucent) window.Lucent.scrollTo(el);
-  else el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
-}
