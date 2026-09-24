@@ -6,7 +6,7 @@ import type { Role, Education, Credential } from './types';
  * 2026-09-23: synced with Mahyar's LinkedIn (content/sources/LinkedIn_EXPERIENCE.md),
  * which now wins on titles, dates, locations and duties. BowlWise's row is gone at
  * his request: it is a project, and lives in Work. The York lab row isn't on
- * LinkedIn and stays as he described it.
+ * LinkedIn; its text comes from his graph research's brief.
  *
  * Earlier: Nova Ventures and Sepantech copy was reviewed and approved on
  * 2026-08-08; the Lucent kit's placeholder bullets for FGF were never used.
@@ -30,21 +30,28 @@ export const roles: Role[] = [
     ],
     stack: ['Python', 'FastAPI', 'Azure', 'Docker'],
   },
+  // Source: the redacted research brief, content/sources/GraphRetrieval_PORTFOLIO_BRIEF.md (§1, §4, §6, §7).
   {
     company: 'York Data Mining Lab',
     title: 'Directed Studies, EECS 4070',
+    // As he described it in the Lucent kit. The research repo names only Fall 2026, which
+    // is the project page's timeline.
     period: 'Fall 2026 – Winter 2027',
     location: 'Toronto, ON',
     subline: 'York Data Mining Lab · Prof. Manos Papagelis',
     monogram: 'YU',
-    context: 'Graph-native retrieval for clinical LLM agents.',
-    // From the Lucent kit — Mahyar's own description of the project. Plans, not
-    // results: rewrite as outcomes once there are some.
+    logo: { src: '/experience/york.png', width: 104, height: 104 },
+    context: 'Research on retrieval for LLM agents that answer clinical questions over FHIR health records.',
+    // Setup, not results: the tool isn't built and nothing has run yet, so rewrite these
+    // once there are numbers. The paper's score is a reference point, not the comparison:
+    // its model, o4-mini, retires on Oct 23, 2026. U+2011, a non-breaking hyphen, keeps
+    // the benchmark's and the dataset's names whole.
     bullets: [
-      'Graph-native retrieval for clinical LLM agents, evaluated on FHIR-AgentBench.',
-      'A graph traversal tool over FHIR references, measured against published baselines.',
+      'Building a graph traversal tool that lets clinical LLM agents follow the references between a patient’s FHIR resources, instead of fetching each linked resource themselves.',
+      'Setting up FHIR‑AgentBench on the MIMIC‑IV FHIR demo: 928,935 resources of 13 types, checksum-verified, holding all 42,702 ground-truth IDs behind its 2,931 questions.',
+      'Comparing the same agent with and without the tool; for reference, the benchmark paper’s best agent reaches 50% answer correctness (Lee et al., ML4H 2025).',
     ],
-    stack: ['Graphs', 'RAG', 'FHIR'],
+    stack: ['Python', 'FHIR', 'LiteLLM', 'pandas'],
   },
   {
     company: 'Pet Valu',

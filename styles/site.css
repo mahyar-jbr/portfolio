@@ -1153,7 +1153,8 @@ html:not(.js) .art-video video {
   object-fit: contain;
   background: #fff;
 }
-.xp-tile[data-logo='fgf'] {
+.xp-tile[data-logo='fgf'],
+.xp-tile[data-logo='york'] {
   --mark: 0.66;
 }
 .xp-tile[data-logo='sepantech'] {
