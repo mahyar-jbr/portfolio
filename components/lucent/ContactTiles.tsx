@@ -17,6 +17,7 @@ import LinkOut from './LinkOut';
  * - the address, a mailto: link: it writes an email where a mail app is set up,
  *   it is there to read or type on another device, and its own context menu
  *   (right-click, a long press) offers to copy it. It works with scripts blocked.
+ *   On a touch screen it reaches over the rest of the tile (styles/site.css).
  * - Copy, where the tile's arrow would be: Lucent.auto() copies the address and
  *   shows the "Email copied" toast, or, if the clipboard is refused, shows the
  *   address itself. It needs the kit's runtime, so it only appears once

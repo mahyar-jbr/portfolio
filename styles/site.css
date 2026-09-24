@@ -1495,7 +1495,8 @@ html:not(.js) .art-video video {
 }
 
 /* The email tile holds two controls, so the tile itself answers nothing: no
-   pointer, no lift, and its mark stays put. */
+   pointer, no lift, and its mark stays put (on a touch screen the address takes
+   the rest of the tile, below). */
 .lu-contact-tile.contact-email {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
@@ -1559,6 +1560,28 @@ html:not(.js) .art-video video {
   width: 16px;
   height: 16px;
 }
+/* the capsule stays the kit's 36px, but it takes a tap across a full 44px */
+.lu-btn.contact-copy::after {
+  content: '';
+  position: absolute;
+  inset: -4px 0;
+}
+/* A touch screen has no hover to show which parts of a tile answer, and the
+   link tiles beside this one answer a tap anywhere. So there the address's link
+   reaches over the whole tile (Copy stays on top): a tap anywhere else writes
+   an email. With a mouse the tile stays inert, as above, so dragging across it
+   still selects the address and a stray click opens no mail app. */
+@media (hover: none), (pointer: coarse) {
+  .contact-address::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-md);
+  }
+  .lu-btn.contact-copy {
+    z-index: 1;
+  }
+}
 /* on the ink tile an ink ring would vanish: its controls ring in paper */
 .contact-email :focus-visible {
   outline-color: var(--on-accent);
@@ -1587,6 +1610,18 @@ html:not(.js) .art-video video {
    stands a section's rhythm below the last content. On phones it ends clear of
    the theme toggle, which floats in the bottom-right corner there (and only
    appears when scripts run). */
+/* On a page shorter than the screen (the 404) the small print keeps to the foot
+   of the screen, not halfway up it: the page is at least a screen tall and
+   <main> takes up the slack. Nothing else in <body> is in the flow (the nav,
+   the theme toggle and the skip link are fixed or absolute). */
+.lu-root:has(> .site-footer) {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+.lu-root:has(> .site-footer) > main {
+  flex-grow: 1;
+}
 .lu-footer.site-footer {
   margin-top: clamp(72px, 10vw, 120px);
   padding-block: 0 calc(env(safe-area-inset-bottom, 0px) + var(--space-7));
