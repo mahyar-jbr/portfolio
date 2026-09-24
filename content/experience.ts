@@ -6,7 +6,9 @@ import type { Role, Education, Credential } from './types';
  * 2026-09-23: synced with Mahyar's LinkedIn (content/sources/LinkedIn_EXPERIENCE.md),
  * which now wins on titles, dates, locations and duties. BowlWise's row is gone at
  * his request: it is a project, and lives in Work. The York lab row isn't on
- * LinkedIn; its text comes from his graph research's brief.
+ * LinkedIn: its period, context, bullets and stack come from his graph research
+ * (sourced on the row); its title and subline, from the Lucent kit, match that
+ * research's README.
  *
  * Earlier: Nova Ventures and Sepantech copy was reviewed and approved on
  * 2026-08-08; the Lucent kit's placeholder bullets for FGF were never used.
@@ -30,27 +32,35 @@ export const roles: Role[] = [
     ],
     stack: ['Python', 'FastAPI', 'Azure', 'Docker'],
   },
-  // Source: the redacted research brief, content/sources/GraphRetrieval_PORTFOLIO_BRIEF.md (§1, §4, §6, §7).
+  // Sources: content/sources/GraphRetrieval_PORTFOLIO_BRIEF.md, plus (per field) its private repo and the paper.
   {
     company: 'York Data Mining Lab',
     title: 'Directed Studies, EECS 4070',
-    // As he described it in the Lucent kit. The research repo names only Fall 2026, which
-    // is the project page's timeline.
-    period: 'Fall 2026 – Winter 2027',
+    // source: README.md:3, CLAUDE.md:3 ("3 credits", "Fall 2026"), as on the project page. Was "Fall 2026 –
+    // Winter 2027", from the Lucent kit; no source names a Winter term.
+    period: 'Fall 2026',
     location: 'Toronto, ON',
     subline: 'York Data Mining Lab · Prof. Manos Papagelis',
     monogram: 'YU',
     logo: { src: '/experience/york.png', width: 104, height: 104 },
+    // source: brief §1 (README.md:1-8)
     context: 'Research on retrieval for LLM agents that answer clinical questions over FHIR health records.',
     // Setup, not results: the tool isn't built and nothing has run yet, so rewrite these
-    // once there are numbers. The paper's score is a reference point, not the comparison:
-    // its model, o4-mini, retires on Oct 23, 2026. U+2011, a non-breaking hyphen, keeps
-    // the benchmark's and the dataset's names whole.
+    // once there are numbers. "Records" and "links", not FHIR's "resources" and
+    // "references", so the row speaks as the project page does. U+2011, a non-breaking
+    // hyphen, keeps the benchmark's and the dataset's names whole; U+00A0 keeps "2,931
+    // questions" together, so "questions." never sits alone on the last line.
     bullets: [
-      'Building a graph traversal tool that lets clinical LLM agents follow the references between a patient’s FHIR resources, instead of fetching each linked resource themselves.',
-      'Setting up FHIR‑AgentBench on the MIMIC‑IV FHIR demo: 928,935 resources of 13 types, checksum-verified, holding all 42,702 ground-truth IDs behind its 2,931 questions.',
+      // source: CLAUDE.md:14-15; brief §4 (the benchmark's tools fetch a whole type, or one ID, per call)
+      'Building a graph traversal tool that lets clinical LLM agents follow the links between a patient’s FHIR records, instead of fetching each linked record themselves.',
+      // source: brief §7 (notes/log/2026-09-23.md:12-13). "Every ground-truth record", not the log's "all
+      // 42,702 IDs": that count repeats an ID once for each question that uses it.
+      'Setting up FHIR‑AgentBench on the MIMIC‑IV FHIR demo: 928,935 records of 13 types, checksum-verified, including every ground-truth record behind the benchmark’s 2,931 questions.',
+      // source: CLAUDE.md:14-15, :40; Lee et al., PMLR 297 (ML4H 2025), §5.1 and Table 3 (0.50, o4-mini). A
+      // reference point, not the comparison: that model retires on Oct 23, 2026 (CLAUDE.md:35-36).
       'Comparing the same agent with and without the tool; for reference, the benchmark paper’s best agent reaches 50% answer correctness (Lee et al., ML4H 2025).',
     ],
+    // source: brief §6
     stack: ['Python', 'FHIR', 'LiteLLM', 'pandas'],
   },
   {
