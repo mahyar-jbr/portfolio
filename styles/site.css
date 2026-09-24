@@ -1675,3 +1675,586 @@ html:not(.js) .art-video video {
     padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-5) * 2 + 44px);
   }
 }
+
+/* ---------- Drawings (components/sections/Drawings.tsx, components/drawings/*) ----------
+   The wall and the paper room. Artwork is content: each drawing hangs on a
+   paper mat at its own aspect ratio, never cropped, tinted or put under glass;
+   glass is only for the controls floating over it. */
+.wall,
+.room {
+  /* The paper is the drawings' own white in both themes: a mat is an object in
+     the room, not part of the interface, the way the kit's lightbox keeps its
+     paper #fff. Anything drawn on it takes the light theme's values. */
+  --paper: #fff;
+  --paper-edge: rgba(55, 53, 47, 0.1);
+  --paper-ink: #6b6a66;
+}
+
+/* ---- the wall ---- */
+.wall {
+  display: grid;
+  row-gap: var(--space-7);
+}
+:where(.wall) figure {
+  margin: 0;
+}
+.wall-open {
+  appearance: none;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: zoom-in;
+  -webkit-tap-highlight-color: transparent;
+}
+.wall-open:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+/* the kit's mat (.lu-art-open): paper, 10px of it, the card shadow, and the
+   hover lift; a hairline where the drawing meets the mat, like the bevel of a
+   mat's window, so a white drawing still has an edge */
+.wall-mat {
+  display: block;
+  padding: 10px;
+  background: var(--paper);
+  border-radius: 6px;
+  box-shadow: var(--shadow-glass);
+  transition:
+    box-shadow var(--dur-jelly) var(--ease-settle),
+    transform var(--dur-jelly) var(--ease-settle);
+}
+.wall-open:hover .wall-mat {
+  box-shadow: var(--shadow-lift);
+  transform: translateY(-2px);
+}
+.wall-mat img {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-shadow: 0 0 0 1px var(--paper-edge);
+}
+/* without scripts nothing opens, so a drawing doesn't offer to */
+html:not(.js) .wall-open {
+  cursor: default;
+}
+html:not(.js) .wall-open:hover .wall-mat {
+  box-shadow: var(--shadow-glass);
+  transform: none;
+}
+/* while a drawing is in the room, its place on the wall is empty */
+.is-lifted {
+  visibility: hidden;
+}
+.wall figcaption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  padding: 0 2px;
+}
+.wall figcaption b {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.wall figcaption > span {
+  flex: none;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--ink-secondary);
+  white-space: nowrap;
+}
+/* A caption stays one line: where a piece hangs narrow (phones), the medium
+   gives way and the title and year stay; the room's label has it all. */
+@container (max-width: 260px) {
+  .wall-medium {
+    display: none;
+  }
+}
+/* and on the narrowest (320px phones), the title alone */
+@container (max-width: 124px) {
+  .wall-piece figcaption > span {
+    display: none;
+  }
+}
+
+/* Hung on the line. Each piece takes a share of its row in proportion to its
+   aspect ratio, on top of its mat (flex-basis 2 x 10px), so every drawing in
+   a row comes out the same height. Rows break where Wall says; a break is a
+   flex line of its own, so rows are spaced by the pieces' margins, not a gap. */
+.wall-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  column-gap: var(--space-5);
+  margin-bottom: calc(-1 * var(--space-6));
+}
+.wall-piece {
+  flex: var(--ar) 1 20px;
+  min-width: 0;
+  margin-bottom: var(--space-6);
+  /* its caption answers to its own width (above) */
+  container-type: inline-size;
+}
+.wall-break {
+  flex-basis: 100%;
+  height: 0;
+}
+.wall-break.is-phone,
+.strip-break {
+  display: none;
+}
+
+/* Godfall: one sheet, the five panels in reading order at one height (the
+   same share-of-the-row rule), each numbered underneath */
+.wall-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 12px 12px 6px;
+}
+.strip-panel {
+  flex: var(--ar) 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.strip-panel img {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-shadow: 0 0 0 1px var(--paper-edge);
+}
+.strip-no {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 16px;
+  letter-spacing: 0.06em;
+  text-align: center;
+  color: var(--paper-ink);
+}
+
+@media (max-width: 600px) {
+  .wall-line {
+    column-gap: var(--space-3);
+  }
+  .wall-break.is-wide {
+    display: none;
+  }
+  .wall-break.is-phone,
+  .strip-break {
+    display: block;
+    flex-basis: 100%;
+    height: 0;
+  }
+  .wall-strip {
+    row-gap: var(--space-3);
+  }
+}
+
+/* ---- the paper room ---- */
+.room {
+  --plate: 300px;
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow: hidden;
+  /* a vertical swipe in the room never scrolls the page behind it */
+  overscroll-behavior: contain;
+}
+.room::backdrop {
+  background: transparent;
+}
+/* focused itself when it opens (Room): the ring belongs to the controls */
+.room:focus {
+  outline: none;
+}
+/* the kit's paper room, but solid: the wall behind showing through at 3% put
+   ghosts of the other drawings beside this one */
+.room-bg {
+  opacity: 1;
+}
+.room-layout {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  /* clear of the glass bar: its top (space-4), its 46px, and a little air */
+  padding-top: calc(env(safe-area-inset-top, 0px) + 72px);
+}
+.room[data-set='story'] .room-layout {
+  grid-template-rows: minmax(0, 1fr) auto;
+}
+/* clipped side to side only (the next drawing waits beyond the edge), so the
+   mat's shadow can fall below the stage onto the label's ground */
+.room-stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  overflow: clip visible;
+  /* horizontal moves are the pager's; pinch-zoom stays the browser's */
+  touch-action: pan-y pinch-zoom;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.room-track {
+  display: flex;
+  height: 100%;
+  column-gap: var(--space-8);
+  will-change: transform;
+}
+/* one drawing per slide: its mat in a frame that takes the room left over,
+   and (for a piece) its label below */
+.room-slide {
+  flex: 0 0 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: var(--space-2) var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  container-type: size;
+}
+.room[data-set='story'] .room-slide {
+  padding-bottom: var(--space-3);
+}
+/* the drawing sits on its label: whatever height is spare goes above it */
+.room-frame {
+  flex: 1 1 0;
+  min-height: 0;
+  display: grid;
+  place-items: end center;
+  container-type: size;
+}
+.room-mat {
+  --pad: 12px;
+  position: relative;
+  padding: var(--pad);
+  background: var(--paper);
+  border-radius: 4px;
+  box-shadow: var(--shadow-lift);
+}
+/* the drawing at its own aspect ratio, as large as the frame allows, and never
+   more than twice its own pixels (Godfall's smallest panels) */
+.room-art {
+  position: relative;
+  width: min(100cqw - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ar), var(--nat) * 2);
+  aspect-ratio: var(--ar);
+  box-shadow: 0 0 0 1px var(--paper-edge);
+}
+.room-art img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+/* the wall's thumbnail holds the place; the large image fades in over it */
+.room-full {
+  opacity: 0;
+  transition: opacity 240ms var(--ease-settle);
+}
+.room-full[data-loaded] {
+  opacity: 1;
+}
+.room[data-set='story'] .room-mat {
+  cursor: pointer;
+}
+
+/* the time-lapse, on the drawing itself */
+.room-video {
+  position: absolute;
+  inset: var(--pad);
+  width: calc(100% - 2 * var(--pad));
+  height: calc(100% - 2 * var(--pad));
+  object-fit: contain;
+  background: var(--paper);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 320ms var(--ease-settle),
+    visibility 0s linear 320ms;
+}
+.room-mat[data-video='on'] .room-video {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 320ms var(--ease-settle);
+}
+/* its controls: a glass capsule floating on the drawing. It sits on paper,
+   which is white in both themes, so it takes the light theme's glass and ink
+   (styles/tokens.css) in both. */
+.room-player {
+  --glass-fill-strong: rgba(255, 255, 255, 0.76);
+  --glass-stroke: rgba(255, 255, 255, 0.85);
+  --shadow-rim: inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 rgba(55, 53, 47, 0.06);
+  --shadow-glass: 0 0 0 1px rgba(15, 15, 15, 0.04), 0 3px 6px rgba(15, 15, 15, 0.05), 0 12px 32px rgba(15, 15, 15, 0.08);
+  --ink: #191918;
+  --accent: #191918;
+  --accent-tint: rgba(55, 53, 47, 0.08);
+  --control-off: rgba(55, 53, 47, 0.2);
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--pad) + var(--space-3));
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+  width: min(100% - 2 * var(--pad) - var(--space-5), 360px);
+  padding: 4px var(--space-4) 4px 4px;
+  border-radius: var(--radius-pill);
+  background: var(--glass-fill-strong);
+  -webkit-backdrop-filter: var(--glass-filter);
+  backdrop-filter: var(--glass-filter);
+  box-shadow:
+    inset 0 0 0 1px var(--glass-stroke),
+    var(--shadow-rim),
+    var(--shadow-glass);
+  color: var(--ink);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-jelly) var(--ease-settle),
+    visibility 0s linear var(--dur-jelly);
+}
+.room-player[data-shown] {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--dur-jelly) var(--ease-settle);
+}
+.room-player .lu-btn svg {
+  width: 20px;
+  height: 20px;
+}
+.room-scrub {
+  --p: 0%;
+  flex: 1;
+  min-width: 0;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.room-scrub::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background:
+    linear-gradient(var(--ink), var(--ink)) 0 0 / var(--p) 100% no-repeat,
+    var(--control-off);
+}
+.room-scrub::-moz-range-track {
+  height: 4px;
+  border-radius: var(--radius-pill);
+  background:
+    linear-gradient(var(--ink), var(--ink)) 0 0 / var(--p) 100% no-repeat,
+    var(--control-off);
+}
+.room-scrub::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+  -webkit-appearance: none;
+  appearance: none;
+}
+.room-scrub::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.room-scrub:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-pill);
+}
+.room-time {
+  min-width: 4ch;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* ---- the wall label: title, then medium and year, where it hung, and his line ---- */
+.room-plate {
+  flex: none;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 42rem;
+  margin-inline: auto;
+}
+.room-plate h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+.room-meta,
+.room-credit {
+  margin: 2px 0 0;
+  font: var(--text-callout);
+  color: var(--ink-secondary);
+}
+.room-note {
+  max-width: 40ch;
+  margin: var(--space-3) 0 0;
+  font-size: 17px;
+  line-height: 24px;
+  letter-spacing: -0.01em;
+  text-wrap: pretty;
+}
+/* the one action in the room, so the kit's primary: ink */
+.room-watch {
+  margin-top: var(--space-4);
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-rim), var(--shadow-glass);
+}
+.room-watch:hover {
+  background: color-mix(in srgb, var(--accent) 88%, var(--bg));
+}
+.room-watch[data-on] {
+  background: var(--accent-tint);
+  color: var(--ink);
+  box-shadow: none;
+}
+.room-watch .lu-dots i {
+  background: var(--on-accent);
+}
+.room-watch-time {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0.7;
+}
+.room-label {
+  padding: 0 var(--space-5) calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+}
+/* the story's panels, in order under its label: where you are, and a way to jump */
+.room-panels {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.room-panel {
+  appearance: none;
+  height: 40px;
+  aspect-ratio: var(--ar);
+  padding: 3px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--paper);
+  box-shadow: var(--shadow-glass);
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity var(--dur-jelly) var(--ease-settle);
+}
+.room-panel img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.room-panel span {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--paper-ink);
+}
+.room-panel:hover,
+.room-panel[aria-current] {
+  opacity: 1;
+}
+.room-panel[aria-current] {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+/* Wide screens: the label hangs beside the drawing at its foot, the way a
+   gallery hangs one, the drawing and its label centred together. The story's
+   label hangs once, beside the whole story. */
+@media (min-width: 1000px) and (min-aspect-ratio: 5 / 4) {
+  .room[data-set='pieces'] .room-slide {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-7);
+    padding: var(--space-2) var(--space-8) var(--space-7);
+  }
+  .room[data-set='pieces'] .room-frame {
+    flex: none;
+    display: block;
+    container-type: normal;
+  }
+  .room[data-set='pieces'] .room-art {
+    width: min(100cqw - var(--plate) - var(--space-7) - 2 * var(--pad), (100cqh - 2 * var(--pad)) * var(--ar), var(--nat) * 2);
+  }
+  .room-slide > .room-plate {
+    flex: 0 0 var(--plate);
+    align-self: flex-end;
+    margin: 0;
+  }
+  .room[data-set='story'] .room-layout {
+    grid-template-columns: minmax(0, 1fr) var(--plate);
+    grid-template-rows: minmax(0, 1fr);
+  }
+  .room[data-set='story'] .room-slide {
+    padding: var(--space-2) var(--space-7) var(--space-7) var(--space-8);
+  }
+  .room[data-set='story'] .room-frame {
+    place-items: center;
+  }
+  .room-label {
+    align-self: end;
+    padding: 0 var(--space-8) var(--space-8) 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room-video,
+  .room-mat[data-video='on'] .room-video,
+  .room-player,
+  .room-player[data-shown],
+  .room-full,
+  .room-panel {
+    transition-duration: 150ms;
+  }
+  .wall-mat,
+  .room .lu-btn {
+    transition-duration: 150ms;
+  }
+  .wall-open:hover .wall-mat {
+    transform: none;
+  }
+}

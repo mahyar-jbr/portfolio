@@ -13,6 +13,23 @@
  * five-panel series rather than five separate entries.
  */
 
+/**
+ * A recording of the piece being drawn. `src` is the web copy in
+ * public/artwork/web/, re-encoded (2026-09-24, AVFoundation) from Mahyar's
+ * original export beside the drawing (art-N-timelaps.mp4), which the page
+ * never loads: H.264 High at constant quality 0.6 (0.58 for The Pilgrim), at
+ * the original's own size, no sound, fast start, a keyframe every 2s, under
+ * 3 MB each. Coronation's two lone blank frames near the end, an export
+ * glitch, hold the frame before instead. `width`, `height` and `duration`
+ * (seconds) are the web copy's own.
+ */
+export interface Timelapse {
+  src: string;
+  width: number;
+  height: number;
+  duration: number;
+}
+
 export interface ArtPiece {
   title: string;
   medium: string;
@@ -21,7 +38,7 @@ export interface ArtPiece {
   /** Intrinsic pixel size, so the gallery reserves the right space before load. */
   width: number;
   height: number;
-  timelapse?: string;
+  timelapse?: Timelapse;
   exhibition?: string;
   note?: string;
 }
@@ -47,7 +64,7 @@ export const pieces: ArtPiece[] = [
     image: '/artwork/art-2.png',
     width: 2480,
     height: 3508,
-    timelapse: '/artwork/art-2-timelaps.mp4',
+    timelapse: { src: '/artwork/web/art-2-timelapse.mp4', width: 680, height: 960, duration: 29.83 },
     note: 'Power doesn’t corrupt. It empties.',
   },
   {
@@ -57,7 +74,7 @@ export const pieces: ArtPiece[] = [
     image: '/artwork/art-3.jpg',
     width: 1577,
     height: 1955,
-    timelapse: '/artwork/art-3-timelaps.mp4',
+    timelapse: { src: '/artwork/web/art-3-timelapse.mp4', width: 612, height: 780, duration: 29.93 },
     note: 'They forged him a crown. He forged himself into a weapon.',
   },
   {
@@ -67,7 +84,7 @@ export const pieces: ArtPiece[] = [
     image: '/artwork/art-4.jpg',
     width: 2388,
     height: 1668,
-    timelapse: '/artwork/art-4-timelaps.mp4',
+    timelapse: { src: '/artwork/web/art-4-timelapse.mp4', width: 1552, height: 1084, duration: 29.6 },
     note: 'Some paths only open when you stop looking back.',
   },
   {
@@ -77,7 +94,7 @@ export const pieces: ArtPiece[] = [
     image: '/artwork/art-10.png',
     width: 1478,
     height: 1150,
-    timelapse: '/artwork/art-10-timelaps.mp4',
+    timelapse: { src: '/artwork/web/art-10-timelapse.mp4', width: 1392, height: 1082, duration: 30.73 },
     note: 'Half of him wanted to be saved. The other half already won.',
   },
 ];
