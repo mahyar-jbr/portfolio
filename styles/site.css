@@ -1125,24 +1125,14 @@ html:not(.js) .art-video video {
   gap: var(--space-4);
   margin-top: var(--space-4);
 }
-.case-title img,
-.case-monogram {
+/* the product's own mark, when it has one; without one the name stands alone */
+.case-title img {
   width: 52px;
   height: 52px;
   border-radius: 14px;
   background: #fff;
   box-shadow: var(--shadow-glass);
   flex: none;
-}
-.case-monogram {
-  display: grid;
-  place-items: center;
-  background: var(--surface);
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
 }
 .case-hero h1 {
   margin: 0;
@@ -1162,6 +1152,43 @@ html:not(.js) .art-video video {
   flex-wrap: wrap;
   gap: 6px;
   margin-top: 6px;
+}
+/* Demo day's clip (components/work/DemoClip.tsx), framed like the shots around
+   it. Its still, the frame it rests on, lies over the video until it plays,
+   then dissolves (Timelapse's 320ms) into the first frame. It comes back at
+   once, never fading in: on a replay it covers the jump to the first frame,
+   so the restart dissolves too. The button is the kit's small glass icon
+   button, in the corner. */
+.case-clip-frame {
+  position: relative;
+  background: var(--fill-muted);
+}
+.case-clip-frame :is(video, .case-clip-still) {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.case-clip:is([data-state='playing'], [data-state='paused'], [data-state='ended']) .case-clip-still {
+  opacity: 0;
+  transition: opacity 320ms var(--ease-settle);
+}
+.case-clip-button {
+  position: absolute;
+  right: var(--space-3);
+  bottom: var(--space-3);
+}
+/* Without scripts, just the still: a browser may hand the video its own
+   controls there (Chrome does), and the button would do nothing. */
+html:not(.js) .case-clip :is(video, .case-clip-button) {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .case-clip:is([data-state='playing'], [data-state='paused'], [data-state='ended']) .case-clip-still {
+    transition-duration: 150ms;
+  }
 }
 .case-next .lu-card {
   aspect-ratio: 16 / 6;

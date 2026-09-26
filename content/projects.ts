@@ -19,6 +19,9 @@ import type { BriefProject, CaseStudyProject, Project, SoonProject } from './typ
  * never further. On BowlWise that costs nothing — the verified numbers came back
  * larger than the ones the June draft was guessing at. A team project says only
  * what Mahyar built himself, and names no teammate.
+ *
+ * No page tells a war story any more ("remove what broke", Mahyar, 2026-09-25).
+ * BowlWise's and MoneyMind's stay, verified, in their extracts in content/sources/.
  */
 
 const bowlwise: CaseStudyProject = {
@@ -184,11 +187,6 @@ const bowlwise: CaseStudyProject = {
     teamSize: 1,
     owned: 'Backend, frontend, scoring engine, catalog, CI, deployment, and the privacy and terms pages',
   },
-
-  warStory: {
-    title: 'The migration that ran a week early',
-    body: 'A data migration renamed every product’s format from "dry" to "kibble" in Atlas. The matching backend code hadn’t shipped yet — production was still querying for "dry". The filter matched nothing, so every recommendation request returned an empty catalog, for every user, silently. Nothing errored; the app just stopped recommending anything. I rolled the rename back on Atlas to restore service, then shipped the code with both strings permanently accepted as defence-in-depth, and added the same tolerance to the scoring path and the regression harness. The rule I wrote down afterward: destructive migrations run in the same hour as the code that expects them, never before.',
-  },
 };
 
 // HELD BACK (2026-09-22). MoneyMind is becoming a co-founded product. Since
@@ -293,11 +291,6 @@ export const heldBack: CaseStudyProject = {
     teamSize: 3,
     owned: 'The agent layer end to end — tools, LangGraph wiring, MCP integration, prompt — plus the container deploy and the streaming path across all three services',
   },
-
-  warStory: {
-    title: 'We audited ourselves and found the demo was lying',
-    body: 'Five days before submission we ran a production-readiness audit on our own build. The first line of it reads: the intervention card is 100% mock theater — the headline feature is fake in the UI. Accept, Decline and Modify all rendered perfectly and persisted nothing; the handler was a literal no-op. It would have demoed beautifully and been false. We wired it to the real backend and cut a set of dashboard KPIs that were similarly decorative. Finding it ourselves, with the clock running, was worth more than shipping it unnoticed.',
-  },
 };
 
 /**
@@ -386,18 +379,10 @@ const maridian: CaseStudyProject = {
   badges: ['TMLS Agentic Hackathon 2026', 'Team of 5', 'Built in 5 days'],
 
   // source: api/agents/runtime.py:27; api/requirements.txt:1, 4; api/runtime.txt:1 (python-3.11.9);
-  // api/db/schema.sql; api/routers/production.py:425 (SSE); front/*.html (plain HTML, CSS and JS);
-  // api/Procfile:1 (Railway). Not Next.js: web/ only redirects to the static pitch page.
-  stack: [
-    'Claude Haiku 4.5',
-    'Anthropic SDK',
-    'Python',
-    'FastAPI',
-    'SQLite',
-    'Server-sent events',
-    'JavaScript',
-    'Railway',
-  ],
+  // api/db/schema.sql; front/*.html (plain HTML, CSS and JS); api/Procfile:1 (Railway). Not Next.js:
+  // web/ only redirects to the static pitch page. Not "Server-sent events" either (Mahyar, 2026-09-25):
+  // it is how the steps stream, not a tool, and the third step already says so.
+  stack: ['Claude Haiku 4.5', 'Anthropic SDK', 'Python', 'FastAPI', 'SQLite', 'JavaScript', 'Railway'],
 
   links: [
     // Public, 200 signed out (checked 2026-09-23). The repo's old name, TMLS_hacketon-, redirects here.
@@ -451,6 +436,39 @@ const maridian: CaseStudyProject = {
     // front/line-detail.html). "Redesigned", not "built": a teammate made the first version.
     owned:
       'I set up the monorepo, the Vercel and Railway deploys, and the API contract, where a customer email draft can never be marked ready to send. I also redesigned the operator portal shown here; teammates built the agents, tools and database.',
+  },
+
+  // Mahyar's clip and photos from demo day, May 29 (CONTRIBUTORS.md:21; the files were shot 13:26 to 14:08
+  // that day): 401492.MOV, IMG_2710.JPG and IMG_2711.JPG, cut for the web on 2026-09-25. The clip is 720p
+  // H.264 with no audio track, the photos 1600x1200 sRGB, and none of them carries its metadata (the
+  // originals have GPS). The table sign's QR code is blurred in every frame: it opens the dead demo
+  // (fgf-sentinel-web.vercel.app/maridian/login.html), which this page doesn't link. The team photo is
+  // cropped above a teammate's name tag, and no caption or alt names anyone but Mahyar.
+  demoDay: {
+    clip: {
+      src: '/work/maridian/demo-table.mp4',
+      still: '/work/maridian/demo-table.jpg',
+      width: 1280,
+      height: 720,
+      alt: 'A handheld shot past people standing at the team’s table, coming to rest on its sign: “TMLS · Team #16 · Maridian · Scan to view project”, the QR code blurred, in front of two open laptops.',
+      caption: 'Our table: team 16.',
+    },
+    photos: [
+      {
+        src: '/work/maridian/demo-talk.jpg',
+        width: 1600,
+        height: 1200,
+        alt: 'Mahyar, in a black T-shirt and a “MAHYAR 16” name tag, talking with a visitor in a crowded room.',
+        caption: 'Talking with a visitor.',
+      },
+      {
+        src: '/work/maridian/demo-team.jpg',
+        width: 1600,
+        height: 1200,
+        alt: 'Mahyar, seen from behind, talking with two teammates.',
+        caption: 'With two of my teammates.',
+      },
+    ],
   },
 };
 
@@ -799,6 +817,10 @@ const graphRag: BriefProject = {
     // Lucent kit; the repo names only the Fall 2026 term.
     { label: 'Timeline', value: 'Fall 2026' },
   ],
+  // source: brief §6 (code/requirements-lock.txt:1; code/FHIR-AgentBench/requirements.txt:3, 5), the same four
+  // as the York row in content/experience.ts. Not conda or the generated roadmap page: tooling around the
+  // research, not what it is built with.
+  stack: ['Python', 'FHIR', 'LiteLLM', 'pandas'],
   building: [
     // source: CLAUDE.md:14-15 (the research question); code/FHIR-AgentBench/tools/resource_tools.py:12-47
     // (the benchmark's tools fetch every record of a type, or one record by ID)

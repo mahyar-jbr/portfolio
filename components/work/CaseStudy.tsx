@@ -7,18 +7,21 @@ import LinkOut from '@/components/lucent/LinkOut';
 import ProjectCard from '@/components/lucent/ProjectCard';
 import { ToolTag } from '@/components/lucent/Tag';
 import CardArt, { cardArtClass } from '@/components/work/CardArt';
+import DemoClip from '@/components/work/DemoClip';
 import { pagedProjects } from '@/content/projects';
-import type { BriefProject, CaseStudyProject, ExternalLink, ProjectStatus, Shot } from '@/content/types';
+import type { BriefProject, CaseStudyProject, ExternalLink, Photo, ProjectStatus, Shot } from '@/content/types';
 
 /**
  * CaseStudy — the read layer behind a project card, built from the kit's layout
  * primitives. A summary block a skimmer reads in ten seconds (back link, the
- * product's mark, name, one sentence, a meta row), then the story in sections
- * whose labels stick to the left while you read, then the next project.
+ * product's mark when it has one, name, one sentence, a meta row), then the
+ * story in sections whose labels stick to the left while you read, then the
+ * next project.
  *
  * Beats, in the kit's order: Problem, (My role), How it works, The product,
- * Decisions, Where it is now — never more than six, never the solution before
- * the problem.
+ * Decisions, (Demo day), Where it is now — never more than six, never the
+ * solution before the problem. Demo day, a hackathon build's photos and clip,
+ * comes last before Where it is now: it is the last thing that happened.
  */
 
 const STATUS_GLYPH: Record<ProjectStatus['kind'], GlyphName> = {
@@ -97,14 +100,10 @@ function CaseHero({
           <Glyph name="arrow-left" />
           All work
         </Button>
+        {/* Only a product's own mark, supplied with it. Without one the name
+            stands alone: no letter tile or made-up icon in its place. */}
         <div className="case-title">
-          {mark ? (
-            <Image src={mark} alt="" width={52} height={52} priority />
-          ) : (
-            <span className="case-monogram" aria-hidden="true">
-              {name.slice(0, 1)}
-            </span>
-          )}
+          {mark && <Image src={mark} alt="" width={52} height={52} priority />}
           <h1>{name}</h1>
         </div>
         <p className="lu-lede">{lede}</p>
@@ -133,28 +132,53 @@ function CaseHero({
   );
 }
 
-function Shots({ shots }: { shots: Shot[] }) {
-  const [lead, ...rest] = shots;
-  const pairs: Shot[][] = [];
-  for (let i = 0; i < rest.length; i += 2) pairs.push(rest.slice(i, i + 2));
-  const figure = (s: Shot, sizes: string) => (
+const WIDE = '(max-width: 760px) 100vw, 880px';
+const HALF = '(max-width: 760px) 100vw, 440px';
+
+function figure(s: Shot | Photo, sizes: string) {
+  return (
     <figure className="lu-shot" key={s.src}>
       <Image src={s.src} alt={s.alt} width={s.width} height={s.height} sizes={sizes} loading="lazy" />
       <figcaption>{s.caption}</figcaption>
     </figure>
   );
+}
+
+/** Figures two to a row, so a pair sits level; an odd one out takes the row. */
+function rows(figures: (Shot | Photo)[]) {
+  const pairs: (Shot | Photo)[][] = [];
+  for (let i = 0; i < figures.length; i += 2) pairs.push(figures.slice(i, i + 2));
+  return pairs.map((pair) =>
+    pair.length === 2 ? (
+      <div className="lu-shots is-two" key={pair[0].src}>
+        {pair.map((s) => figure(s, HALF))}
+      </div>
+    ) : (
+      figure(pair[0], WIDE)
+    ),
+  );
+}
+
+function Shots({ shots }: { shots: Shot[] }) {
+  const [lead, ...rest] = shots;
   return (
     <div className="lu-shots">
-      {figure(lead, '(max-width: 760px) 100vw, 880px')}
-      {pairs.map((pair) =>
-        pair.length === 2 ? (
-          <div className="lu-shots is-two" key={pair[0].src}>
-            {pair.map((s) => figure(s, '(max-width: 760px) 100vw, 440px'))}
-          </div>
-        ) : (
-          figure(pair[0], '(max-width: 760px) 100vw, 880px')
-        ),
-      )}
+      {figure(lead, WIDE)}
+      {rows(rest)}
+    </div>
+  );
+}
+
+/**
+ * The day it was shown, in the same frames as the product: the clip leads, the
+ * photos pair under it. Photos are content, so they sit on the paper of the
+ * figure, never under glass; only the clip's button is glass.
+ */
+function DemoDay({ clip, photos }: NonNullable<CaseStudyProject['demoDay']>) {
+  return (
+    <div className="lu-shots">
+      {clip && <DemoClip clip={clip} />}
+      {rows(photos)}
     </div>
   );
 }
@@ -245,6 +269,7 @@ export function CaseStudy({ project: p }: { project: CaseStudyProject }) {
       body: <Points glyph="split" items={decisions.map((d) => ({ title: d.decision, body: d.why }))} />,
     });
   }
+  if (p.demoDay) beats.push({ title: 'Demo day', body: <DemoDay {...p.demoDay} /> });
   beats.push({
     title: 'Where it is now',
     body: (
@@ -254,19 +279,6 @@ export function CaseStudy({ project: p }: { project: CaseStudyProject }) {
       </>
     ),
   });
-  if (p.warStory) {
-    beats.push({
-      title: 'What broke',
-      body: (
-        <>
-          <p>
-            <b>{p.warStory.title}</b>
-          </p>
-          <p>{p.warStory.body}</p>
-        </>
-      ),
-    });
-  }
 
   return (
     <>
@@ -293,7 +305,7 @@ export function BriefCase({ project: p }: { project: BriefProject }) {
   ];
   return (
     <>
-      <CaseHero name={p.name} lede={p.lede} meta={meta} />
+      <CaseHero name={p.name} lede={p.lede} meta={meta} stack={p.stack} />
       <div className="lu-page lu-case">
         <section>
           <h2 className="lu-title-sm">What I’m building</h2>

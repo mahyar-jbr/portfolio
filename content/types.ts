@@ -146,6 +146,35 @@ export interface Shot {
   caption: string;
 }
 
+/**
+ * A photo from the room on the day a project was shown: people, not the
+ * product (that is a Shot). Shipped resized, in sRGB, with no EXIF or GPS. Its
+ * alt and caption name Mahyar and no one else: not a teammate, not a visitor.
+ */
+export interface Photo {
+  src: string;
+  width: number;
+  height: number;
+  alt: string;
+  /** One line on the moment. */
+  caption: string;
+}
+
+/**
+ * A short clip from the same day, silent: the file has no audio track.
+ * `still` is its last frame, the one it comes to rest on, so the still can
+ * stand in for it before it plays, under reduced motion and without scripts.
+ */
+export interface Clip {
+  src: string;
+  still: string;
+  width: number;
+  height: number;
+  /** What the clip shows, for a reader who can't see it. */
+  alt: string;
+  caption: string;
+}
+
 /** One beat of "how it works". Three of them, in order. */
 export interface Step {
   title: string;
@@ -224,6 +253,8 @@ export interface BriefProject extends ProjectCard {
   lede: string;
   role: string;
   facts: MetaFact[];
+  /** The tools it is built with, as a case study's are. */
+  stack?: string[];
   /** What is being built, one line each. */
   building: string[];
 }
@@ -262,10 +293,10 @@ export interface CaseStudyProject extends ProjectCard {
     owned: string;
   };
 
-  /** An incident worth telling. Optional and rare by design. */
-  warStory?: {
-    title: string;
-    body: string;
+  /** The day it was shown, from the room: Mahyar's own photos and clip of it. */
+  demoDay?: {
+    clip?: Clip;
+    photos: Photo[];
   };
 }
 
