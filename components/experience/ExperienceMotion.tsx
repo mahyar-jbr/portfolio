@@ -7,8 +7,9 @@ import { prefersReducedMotion } from '@/lib/lucent';
  * The roll's one bespoke motion, and its one repair. Everything else is the
  * server's finished page:
  * - a promotion ladder that starts below the fold waits undrawn (.is-pending)
- *   and draws once, as a climb, when it is fully in view: the rail rises from
- *   the first title, then the latest node fills (styles/site.css). A ladder
+ *   and draws once (.is-climbing), as a climb, when it is fully in view: the
+ *   rail rises from the first title, then the latest node fills
+ *   (styles/site.css). A ladder
  *   already on screen never un-draws, and with reduced motion it never waits;
  * - a logo that can't load gives way to the company's letters under it.
  */
@@ -29,7 +30,7 @@ export default function ExperienceMotion({ root }: { root: string }) {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
           io.unobserve(e.target);
-          e.target.classList.remove('is-pending');
+          e.target.classList.replace('is-pending', 'is-climbing');
         }
       },
       /* the whole ladder, clear of the bottom edge, so the climb is seen */
@@ -41,7 +42,7 @@ export default function ExperienceMotion({ root }: { root: string }) {
     }
     return () => {
       io.disconnect();
-      for (const l of ladders) l.classList.remove('is-pending');
+      for (const l of ladders) l.classList.remove('is-pending', 'is-climbing');
       unwire.forEach((off) => off());
     };
   }, [root]);

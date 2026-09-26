@@ -1561,37 +1561,50 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
 }
 
 /* The climb, once, as the ladder comes into view (ExperienceMotion holds it
-   at .is-pending until then, never under reduced motion): the rail rises from
-   the first title, then the top node and its title take their ink. The
-   transitions sit on the resting state, so only the draw animates; going
-   pending is instant. */
-.xp-ladder::before {
-  transition: transform var(--dur-morph) var(--ease-settle) 160ms;
-}
-.is-latest > .xp-node,
-.is-latest > .xp-step {
-  transition-property: background-color, border-color, color;
-  transition-duration: 180ms;
-  transition-timing-function: var(--ease-settle);
-  transition-delay: 640ms;
-}
+   at .is-pending until then, never under reduced motion, then swaps in
+   .is-climbing): the rail rises from the first title, then the top node and
+   its title take their ink. One-shot keyframes, not transitions, so a theme
+   switch later recolours the ladder with the rest of the page instead of
+   640ms behind it. */
 .xp-ladder.is-pending::before {
   transform: scaleY(0);
-  transition: none;
 }
 .xp-ladder.is-pending .is-latest > .xp-node {
   border-color: var(--ink-secondary);
   background: var(--surface);
-  transition: none;
 }
 .xp-ladder.is-pending .is-latest > .xp-step {
   color: var(--ink-secondary);
-  transition: none;
+}
+.xp-ladder.is-climbing::before {
+  animation: xp-rise var(--dur-morph) var(--ease-settle) 160ms backwards;
+}
+.xp-ladder.is-climbing .is-latest > .xp-node {
+  animation: xp-fill 180ms var(--ease-settle) 640ms backwards;
+}
+.xp-ladder.is-climbing .is-latest > .xp-step {
+  animation: xp-ink 180ms var(--ease-settle) 640ms backwards;
+}
+@keyframes xp-rise {
+  from {
+    transform: scaleY(0);
+  }
+}
+@keyframes xp-fill {
+  from {
+    border-color: var(--ink-secondary);
+    background: var(--surface);
+  }
+}
+@keyframes xp-ink {
+  from {
+    color: var(--ink-secondary);
+  }
 }
 
 /* Forced colours drop backgrounds: the rail, the filled node, the bullets and
    the separators keep theirs in system colours, the Now capsule keeps an edge,
-   and nothing transitions. */
+   and nothing animates. */
 @media (forced-colors: active) {
   .xp-ladder::before,
   .is-latest > .xp-node {
@@ -1612,7 +1625,7 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   .xp-ladder::before,
   .xp-ladder .xp-node,
   .xp-ladder .xp-step {
-    transition: none;
+    animation: none;
   }
 }
 
