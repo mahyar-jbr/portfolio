@@ -7,9 +7,9 @@ import { contact, sections } from '@/content/site';
 const { experience } = sections;
 
 /**
- * Experience — where he has worked, as an iOS inset grouped list led by each
- * company's own logo. The list is the skim, each open row the read; the rows
- * rise in one after another as the section arrives.
+ * Experience — where he has worked, as one open roll led by each company's own
+ * logo. The icons and titles down the left edge are the skim, and the read sits
+ * right beside them; the entries rise in one after another as they arrive.
  */
 export default function Experience() {
   const resume = contact.links.find((l) => l.label === 'Resume' && l.status === 'live');
