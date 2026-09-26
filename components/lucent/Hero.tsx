@@ -6,8 +6,8 @@ import Glyph, { type GlyphName } from './Glyph';
  * cover and page icon, the name, a short list of properties with glyphs, then two
  * actions. It answers who, what, where in one glance, in key/value form.
  *
- * The home page lays out its own opening (components/sections/Hero.tsx) and
- * takes Properties and enterStyle from here, not this component.
+ * The home page lays out its own opening and its own entrance
+ * (components/sections/Hero.tsx) and takes only Properties from here.
  *
  * Entrance: the parts fade and rise 12px, 70ms apart (data-enter). It is done in
  * CSS rather than Lucent.enter() so it starts with the first paint of the

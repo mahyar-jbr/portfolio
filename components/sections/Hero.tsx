@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 import NavHandoff from '@/components/hero/NavHandoff';
 import Button from '@/components/lucent/Button';
 import type { GlyphName } from '@/components/lucent/Glyph';
-import { enterStyle, Properties, type HeroProperty } from '@/components/lucent/Hero';
+import { Properties, type HeroProperty } from '@/components/lucent/Hero';
 import LiveClock from '@/components/lucent/LiveClock';
 import { hero } from '@/content/site';
 
@@ -20,9 +20,13 @@ const GLYPH: Record<(typeof hero.properties)[number]['id'], GlyphName> = {
  * and up, below the actions on narrower screens (styles/site.css). The markup
  * follows that reading order: name, actions, card.
  *
- * The name comes in like a keynote title: each line rises from behind a clean
- * edge at its foot, then the buttons and the card follow. The page reads the
- * same without scripts.
+ * The name comes into focus: each line starts soft and faint, a descender's
+ * depth high, and sharpens as it drops into place; the glass button
+ * materializes, pill before label, and the card stands up on the name's
+ * baseline. It plays in full once per tab session and briefly on a reload,
+ * never on a return within the site (app/layout.tsx decides, before first
+ * paint; styles/site.css, "Hero", plays it). Without scripts the page is
+ * simply at rest.
  */
 export default function Hero() {
   const properties: HeroProperty[] = hero.properties.map((p) => {
@@ -52,7 +56,7 @@ export default function Hero() {
             <span>{last.join(' ')}</span>
           </span>
         </h1>
-        <div className="lu-hero-actions hero-actions" data-enter="" style={enterStyle(6)}>
+        <div className="lu-hero-actions hero-actions">
           <Button variant="filled" href={primary.href}>
             {primary.label}
           </Button>
@@ -60,7 +64,7 @@ export default function Hero() {
             {secondary.label}
           </Button>
         </div>
-        <div className="hero-card" data-enter="" style={enterStyle(7)}>
+        <div className="hero-card">
           <Properties items={properties} className="hero-props" tiles />
         </div>
       </div>

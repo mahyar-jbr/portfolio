@@ -268,7 +268,10 @@ html:not(.js) .site-theme {
 /* ---------- Entrance ----------
    The CSS form of Lucent.enter(): fade and rise 12px, 70ms apart, on
    ease-settle over dur-enter. Starts with the first paint of the
-   server-rendered page, and the resting state is fully visible. */
+   server-rendered page, and the resting state is fully visible. It plays
+   only while app/layout.tsx says an entrance is due (hero-intro, once per tab
+   session), so a part that remounts inside the site arrives at rest. The home
+   hero choreographs its own (below, "Hero"); site-fade is also the page swap's. */
 @keyframes site-enter {
   from {
     opacity: 0;
@@ -281,14 +284,14 @@ html:not(.js) .site-theme {
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  [data-enter] {
+  html:is(.hero-intro, .hero-intro-again) [data-enter] {
     animation: site-enter var(--dur-enter) var(--ease-settle) backwards;
     animation-delay: calc(var(--enter-i, 0) * 70ms);
   }
 }
 /* Reduced motion: springs jump to rest, everything else is a fade of ≤150ms. */
 @media (prefers-reduced-motion: reduce) {
-  [data-enter] {
+  html:is(.hero-intro, .hero-intro-again) [data-enter] {
     animation: site-fade 150ms ease backwards;
   }
 }
@@ -336,8 +339,26 @@ a:hover > svg.site-out {
    His name set huge in ink on two lines with its two actions right under
    it, and the iOS details card beside the name, or under the actions where
    the screen is narrow. Plain ground: no lens and no dot canvas (Mahyar,
-   2026-09-23). Everything rises in once with the kit's entrance; nothing is
-   pinned, and the page scrolls on into About. */
+   2026-09-23). Nothing is pinned, and the page scrolls on into About. The
+   entrance is at the end of this block. */
+
+/* The entrance's spring: critically damped (no bounce: type never overshoots,
+   so the kit's springs stay on controls), a perceptual 0.6s — stiffness 109.7,
+   damping 20.9, mass 1. It is 95% there at 453ms and at rest at 880ms. Where
+   linear() isn't supported, the kit's settle curve. */
+:root {
+  --ease-hero: var(--ease-settle);
+}
+@supports (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-hero: linear(
+      0, 0.023 2.5%, 0.079 5%, 0.153 7.5%, 0.236 10%, 0.321 12.5%, 0.403 15%, 0.48 17.5%, 0.551 20%, 0.615 22.5%,
+      0.671 25%, 0.721 27.5%, 0.764 30%, 0.801 32.5%, 0.833 35%, 0.86 37.5%, 0.883 40%, 0.919 45%, 0.944 50%,
+      0.962 55%, 0.974 60%, 0.988 70%, 0.995 80%, 0.998 90%, 1
+    );
+  }
+}
+
 .lu-hero.site-hero {
   display: flex;
   align-items: center;
@@ -387,31 +408,6 @@ a:hover > svg.site-out {
 .site-hero .hero-line > span {
   display: block;
 }
-/* The keynote title: each line rises from behind a clean edge at its foot
-   (just under the descenders), the second 120ms after the first, half again
-   as long as the kit's entrance so the name settles rather than pops; the
-   buttons, then the card, follow as it lands (--enter-i 6 and 7). It plays
-   once per load, and reduced motion gets a 150ms fade instead. */
-@media (prefers-reduced-motion: no-preference) {
-  .site-hero .hero-line {
-    clip-path: inset(-0.4em -0.4em -0.22em -0.4em);
-  }
-  .site-hero .hero-line > span {
-    animation: hero-rise calc(var(--dur-enter) * 1.5) var(--ease-settle) backwards;
-    animation-delay: calc(60ms + var(--line, 0) * 120ms);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .site-hero .hero-name {
-    animation: site-fade 150ms ease backwards;
-  }
-}
-@keyframes hero-rise {
-  from {
-    transform: translateY(1.2em);
-  }
-}
-
 .hero-actions {
   margin-top: 0;
 }
@@ -598,6 +594,181 @@ a:hover > svg.site-out {
 @media (prefers-reduced-motion: reduce) {
   .clock-strip {
     transition: none;
+  }
+}
+/* The time is filled in once scripts run; it fades in then rather than
+   popping into the row. */
+@keyframes hero-clock-in {
+  from {
+    opacity: 0;
+  }
+}
+.hero-clock:not(:empty) {
+  animation: hero-clock-in 240ms var(--ease-settle) backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-clock:not(:empty) {
+    animation-duration: 150ms;
+  }
+}
+
+/* ---- The entrance: the name comes into focus ----
+   One idea, carried by the name. Each line starts soft and faint, a
+   descender's depth high, and sharpens as it drops into place: the blur
+   clears (0.05em of the name, 8px at most), the ink condenses (opacity on an
+   ease-in, so it never reads as a smear) and the line settles on the hero
+   spring. It comes from above because it later leaves upward, into the nav
+   capsule. Whole lines, never letters, so the kerning and the h1's name stay
+   whole; never fully transparent (12%) and never clipped, so the name is
+   legible, and counted as the page's largest paint, from the first frame.
+   The rest overlaps the name rather than queuing after it, each in its own
+   material and without blur: the buttons lift 10px, the glass one
+   materializing pill, rim and shadow first and its label 80ms later; the
+   solid card stands up on the baseline of "Jaberi" (2.5% of scale from its
+   foot, no travel, so on laptops its foot never leaves the line), its shadow
+   coming in just behind it.
+   From first paint: "Mahyar" at 40ms and "Jaberi" at 130ms, legible by
+   ~430ms; the buttons at 300 and 380ms; the card at 440ms; all at rest by
+   1.24s. Only opacity, filter, translate and scale move (and the one label
+   colour), so nothing lays out again, a press still combines with the kit's
+   soft press (transform), and the nav's watch on the h1 never sees it move.
+   app/layout.tsx picks the class before first paint: hero-intro the first
+   time in a tab session, hero-intro-again for a reload (a quick refocus), and
+   neither on a return inside the site. hero-end is the sentinel it waits on
+   to take the class away. Each keyframe gives only its starting frame, so at
+   rest is the page's own style. */
+@keyframes hero-end {
+  from,
+  to {
+    visibility: visible;
+  }
+}
+@keyframes hero-drop {
+  from {
+    translate: 0 -0.16em;
+  }
+}
+@keyframes hero-focus {
+  from {
+    filter: blur(min(0.05em, 8px));
+  }
+}
+@keyframes hero-condense {
+  from {
+    opacity: 0.12;
+  }
+}
+@keyframes hero-appear {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes hero-lift {
+  from {
+    translate: 0 10px;
+  }
+}
+@keyframes hero-label {
+  from {
+    color: transparent;
+  }
+}
+@keyframes hero-stand {
+  from {
+    scale: 0.975;
+  }
+}
+@keyframes hero-refocus {
+  from {
+    filter: blur(min(0.025em, 4px));
+  }
+}
+@keyframes hero-reappear {
+  from {
+    opacity: 0.4;
+  }
+}
+@keyframes hero-rm {
+  from {
+    opacity: 0.1;
+  }
+}
+
+/* Where the full entrance doesn't play (reduced motion; forced colours, more
+   contrast and print, which get no blur; a browser that can't tell), the
+   first visit is one fade of the name, buttons and card together in 150ms,
+   from 10% so the name still counts from the first frame, and a reload is
+   simply at rest. :where() lets the entrance below win wherever it plays. */
+html.hero-intro .site-hero {
+  animation: hero-end 150ms linear;
+}
+html.hero-intro-again .site-hero {
+  animation: hero-end 1ms linear;
+}
+:where(html.hero-intro .site-hero) :where(.hero-name, .hero-actions, .hero-card) {
+  animation: hero-rm 150ms ease backwards;
+}
+
+@media screen and (prefers-reduced-motion: no-preference) and (forced-colors: none) and (not (prefers-contrast: more)) {
+  /* the first time */
+  html.hero-intro .site-hero {
+    animation-duration: 1260ms;
+  }
+  html.hero-intro .site-hero :is(.hero-name, .hero-actions) {
+    animation: none;
+  }
+  html.hero-intro .site-hero .hero-line > span {
+    animation:
+      hero-drop 880ms var(--ease-hero) backwards,
+      hero-focus 560ms cubic-bezier(0, 0, 0.58, 1) backwards,
+      hero-condense 400ms cubic-bezier(0.42, 0, 1, 1) backwards;
+    animation-delay: calc(40ms + var(--line, 0) * 90ms);
+  }
+  html.hero-intro .hero-actions > .lu-btn.is-filled {
+    animation:
+      hero-appear 600ms var(--ease-settle) 300ms backwards,
+      hero-lift 700ms var(--ease-hero) 300ms backwards;
+  }
+  html.hero-intro .hero-actions > .lu-btn.is-glass {
+    animation:
+      hero-appear 600ms var(--ease-settle) 380ms backwards,
+      hero-lift 700ms var(--ease-hero) 380ms backwards,
+      hero-label 360ms var(--ease-settle) 460ms backwards;
+  }
+  html.hero-intro .site-hero .hero-card {
+    position: relative;
+    transform-origin: 50% 100%;
+    animation:
+      hero-appear 700ms var(--ease-settle) 440ms backwards,
+      hero-stand 800ms var(--ease-hero) 440ms backwards;
+  }
+  /* the card's shadow, lent to a layer of its own for the entrance so it can
+     arrive 100ms behind the card; the same shadow returns to the card after,
+     pixel for pixel */
+  html.hero-intro .site-hero .hero-card > .hero-props {
+    box-shadow: none;
+  }
+  html.hero-intro .site-hero .hero-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-glass);
+    pointer-events: none;
+    animation: hero-appear 600ms var(--ease-settle) 540ms backwards;
+  }
+
+  /* a reload: both lines refocus at once, the rest fades up, no travel */
+  html.hero-intro-again .site-hero {
+    animation-duration: 400ms;
+  }
+  html.hero-intro-again .site-hero .hero-line > span {
+    animation:
+      hero-refocus 360ms var(--ease-settle) backwards,
+      hero-reappear 240ms var(--ease-settle) backwards;
+  }
+  html.hero-intro-again .site-hero :is(.hero-actions, .hero-card) {
+    animation: hero-appear 240ms var(--ease-settle) 60ms backwards;
   }
 }
 

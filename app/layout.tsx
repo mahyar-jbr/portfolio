@@ -58,13 +58,22 @@ export const viewport: Viewport = {
      falls back to its plain sequence — nothing can stay hidden.
    - a refresh of the home page starts at the opening, not wherever the browser
      would restore to, and drops a leftover #section from in-site navigation.
-     A first visit to a /#section link still goes straight to it. */
+     A first visit to a /#section link still goes straight to it.
+   - `hero-intro` / `hero-intro-again` (home only): the hero's entrance
+     (styles/site.css, "Hero"), in full the first time in a tab session and
+     briefly after that (a reload, a later visit in the same tab). Never on a
+     /#section link or Back/Forward, and never when the hero remounts inside
+     the site: the class goes once its sentinel animation (hero-end) ends, or
+     2.5s after it starts if it never finishes. A tab opened in the background
+     waits until it is first shown. No storage, no entrance. */
 const BOOT = `(function(){var d=document.documentElement;d.classList.add('js');
 try{var t=localStorage.getItem('lucent:theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t);}catch(e){}
 try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&location.pathname==='/'){history.scrollRestoration='manual';if(location.hash)history.replaceState(history.state,'',location.pathname+location.search);addEventListener('load',function(){scrollTo(0,0);setTimeout(function(){history.scrollRestoration='auto';},0);});}}catch(e){}
 if(location.pathname==='/')d.classList.add('name-in-view');
 if(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference) and (min-height: 600px)').matches)d.classList.add('pin');
-setTimeout(function(){if(!d.classList.contains('hero-wired'))d.classList.remove('name-in-view');var s=document.querySelector('[data-story]');if(s&&!s.classList.contains('is-live'))d.classList.remove('pin');},4000);})();`;
+setTimeout(function(){if(!d.classList.contains('hero-wired'))d.classList.remove('name-in-view');var s=document.querySelector('[data-story]');if(s&&!s.classList.contains('is-live'))d.classList.remove('pin');},4000);
+try{if(location.pathname==='/'&&!location.hash){var nv=performance.getEntriesByType('navigation')[0];if(!nv||nv.type!=='back_forward'){var K='lucent:intro',seen=sessionStorage.getItem(K);sessionStorage.setItem(K,'1');var c=seen?'hero-intro-again':'hero-intro',tm,done=function(){clearTimeout(tm);d.classList.remove('hero-intro','hero-intro-again');},go=function(){d.classList.add(c);addEventListener('animationend',function f(e){if(e.animationName==='hero-end'){removeEventListener('animationend',f);done();}});addEventListener('animationstart',function g(e){if(e.animationName==='hero-end'){removeEventListener('animationstart',g);tm=setTimeout(done,2500);}});};if(document.visibilityState==='hidden'){document.addEventListener('visibilitychange',function v(){if(document.visibilityState==='visible'){document.removeEventListener('visibilitychange',v);go();}});}else go();}}}catch(e){}
+})();`;
 
 /* Inter stands in for Apple's system faces on every other device (styles/site.css,
    "Type on non-Apple devices"). Its opsz axis carries the Display cut. It is
