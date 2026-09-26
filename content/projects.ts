@@ -336,7 +336,8 @@ const maridian: CaseStudyProject = {
       // source: api/routers/production.py:425 (text/event-stream), :463-469 (accepted or overridden);
       // api/contracts.py:93 `ready_to_send: Literal[False]`; front/line-detail.html:1979 (Send to customer disabled).
       // "Each agent's steps", not "live reasoning": orchestrator.py:84-118 drains each agent, then yields its events.
-      body: 'Each agent’s steps stream to the screen over SSE; the operator accepts or overrides, and customer emails stay drafts.',
+      // Plain "stream", no "SSE": the acronym went with the "Server-sent events" tag (Mahyar, 2026-09-25).
+      body: 'Each agent’s steps stream to the screen; the operator accepts or overrides, and customer emails stay drafts.',
     },
   ],
 
@@ -440,10 +441,11 @@ const maridian: CaseStudyProject = {
 
   // Mahyar's clip and photos from demo day, May 29 (CONTRIBUTORS.md:21; the files were shot 13:26 to 14:08
   // that day): 401492.MOV, IMG_2710.JPG and IMG_2711.JPG, cut for the web on 2026-09-25. The clip is 720p
-  // H.264 with no audio track, the photos 1600x1200 sRGB, and none of them carries its metadata (the
-  // originals have GPS). The table sign's QR code is blurred in every frame: it opens the dead demo
-  // (fgf-sentinel-web.vercel.app/maridian/login.html), which this page doesn't link. The team photo is
-  // cropped above a teammate's name tag, and no caption or alt names anyone but Mahyar.
+  // H.264 with no audio track. The photos are the full frames, uncropped (Mahyar: "its my photo"), at
+  // 1400x1050 sRGB: the widest they show is 684 CSS px (one column, at the 760px break), 1368 px at 2x.
+  // None of them carries its metadata (the originals have GPS). The table sign's QR code is blurred in every
+  // frame: it opens the dead demo (fgf-sentinel-web.vercel.app/maridian/login.html), which this page doesn't
+  // link. No captions (his call); no alt names anyone but Mahyar.
   demoDay: {
     clip: {
       src: '/work/maridian/demo-table.mp4',
@@ -451,22 +453,19 @@ const maridian: CaseStudyProject = {
       width: 1280,
       height: 720,
       alt: 'A handheld shot past people standing at the team’s table, coming to rest on its sign: “TMLS · Team #16 · Maridian · Scan to view project”, the QR code blurred, in front of two open laptops.',
-      caption: 'Our table: team 16.',
     },
     photos: [
       {
         src: '/work/maridian/demo-talk.jpg',
-        width: 1600,
-        height: 1200,
+        width: 1400,
+        height: 1050,
         alt: 'Mahyar, in a black T-shirt and a “MAHYAR 16” name tag, talking with a visitor in a crowded room.',
-        caption: 'Talking with a visitor.',
       },
       {
         src: '/work/maridian/demo-team.jpg',
-        width: 1600,
-        height: 1200,
-        alt: 'Mahyar, seen from behind, talking with two teammates.',
-        caption: 'With two of my teammates.',
+        width: 1400,
+        height: 1050,
+        alt: 'Mahyar, seen from behind, talking with two teammates at their laptops.',
       },
     ],
   },

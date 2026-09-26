@@ -149,21 +149,21 @@ export interface Shot {
 /**
  * A photo from the room on the day a project was shown: people, not the
  * product (that is a Shot). Shipped resized, in sRGB, with no EXIF or GPS. Its
- * alt and caption name Mahyar and no one else: not a teammate, not a visitor.
+ * alt names Mahyar and no one else: not a teammate, not a visitor. No caption:
+ * the section's title says what they are (Mahyar, 2026-09-25).
  */
 export interface Photo {
   src: string;
   width: number;
   height: number;
   alt: string;
-  /** One line on the moment. */
-  caption: string;
 }
 
 /**
  * A short clip from the same day, silent: the file has no audio track.
  * `still` is its last frame, the one it comes to rest on, so the still can
  * stand in for it before it plays, under reduced motion and without scripts.
+ * Like the photos, it has no caption.
  */
 export interface Clip {
   src: string;
@@ -172,7 +172,6 @@ export interface Clip {
   height: number;
   /** What the clip shows, for a reader who can't see it. */
   alt: string;
-  caption: string;
 }
 
 /** One beat of "how it works". Three of them, in order. */

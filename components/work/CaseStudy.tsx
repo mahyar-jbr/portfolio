@@ -135,11 +135,12 @@ function CaseHero({
 const WIDE = '(max-width: 760px) 100vw, 880px';
 const HALF = '(max-width: 760px) 100vw, 440px';
 
+/** A shot has its caption; a demo-day photo has none. */
 function figure(s: Shot | Photo, sizes: string) {
   return (
     <figure className="lu-shot" key={s.src}>
       <Image src={s.src} alt={s.alt} width={s.width} height={s.height} sizes={sizes} loading="lazy" />
-      <figcaption>{s.caption}</figcaption>
+      {'caption' in s && <figcaption>{s.caption}</figcaption>}
     </figure>
   );
 }
@@ -172,7 +173,8 @@ function Shots({ shots }: { shots: Shot[] }) {
 /**
  * The day it was shown, in the same frames as the product: the clip leads, the
  * photos pair under it. Photos are content, so they sit on the paper of the
- * figure, never under glass; only the clip's button is glass.
+ * figure, never under glass; only the clip's button is glass. No captions
+ * (Mahyar, 2026-09-25): the title says what they are, the alt text the rest.
  */
 function DemoDay({ clip, photos }: NonNullable<CaseStudyProject['demoDay']>) {
   return (

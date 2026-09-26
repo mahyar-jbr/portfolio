@@ -192,7 +192,6 @@ export default function DemoClip({ clip }: { clip: Clip }) {
           {busy ? ICON_PAUSE : state === 'ended' ? ICON_REPLAY : ICON_PLAY}
         </button>
       </div>
-      <figcaption>{clip.caption}</figcaption>
     </figure>
   );
 }
