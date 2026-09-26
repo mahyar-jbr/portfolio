@@ -13,7 +13,6 @@ made for this portfolio in Claude Design:
 | `lucent/bundle.css` | Every component class and layout primitive (`lu-*`) |
 | `lucent/bundle.js` · `index.d.ts` | `window.Lucent`: the motion engine and component behaviour, and its types |
 | `lucent/assets/brand/` | The mark, lockup, app icon and upright sigma |
-| `archive/pre-lucent/` | The design docs of the pre-Lucent v2 build. History only; none of it applies now |
 
 ## The files in `lucent/` are the kit, verbatim
 

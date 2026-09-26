@@ -30,7 +30,6 @@ content/             ALL copy and project data (see below)
   sources/           the verified per-project extracts the copy is written from
 design-system/
   lucent/            the Lucent kit, verbatim: brand book, guidelines, tokens, CSS, runtime, brand assets
-  archive/           design docs from before Lucent (history only)
 lib/lucent.ts        loads the kit's runtime; page swap and smooth-scroll helpers
 styles/              tokens.css (generated) and site.css (the only hand-written CSS)
 scripts/             build-tokens.mjs
