@@ -23,7 +23,9 @@
  *
  * Either way the lens goes straight to the section's item. Once the page has
  * landed, the section takes focus (keyboards and screen readers continue from
- * it) and the address names it, until the reader leaves for another page. A
+ * it). The address is left without a #section, as the kit's data-scroll-to
+ * leaves it: Back and Forward then return the reader to where they were, where
+ * a #section sent Chrome (through Next) back to the section instead. A
  * wheel, a touch or a scrolling key hands the page straight back, except the
  * momentum of a flick made just before the click, which the journey rides out;
  * a click on another link sets a new course from wherever the page is.
@@ -430,19 +432,13 @@ function handBack(): void {
 
 /* ---------- Landing ---------- */
 
-/* The address names the section, without a new history entry: a copied link
-   opens it, and Back still leaves the page. The hero (#top) is the page itself. */
-function address(el: HTMLElement): void {
-  const hash = el.id === 'top' ? '' : `#${el.id}`;
-  if (window.location.hash === hash) return;
-  window.history.replaceState(null, '', hash || window.location.pathname + window.location.search);
-}
-
 /**
- * The page is being left for another: the address gives up its #section, so
- * Back returns to the exact place the reader left. Coming back to /#work,
- * Chrome goes to Work instead, however far the reader had scrolled on from
- * it (938px above the card they had opened, on a laptop).
+ * The address gives up its #section (a /#work link from a case study, or a
+ * deep link), so Back and Forward return to the exact place the reader left:
+ * coming back to /#work, Chrome goes to Work instead, however far the reader
+ * had scrolled on from it (938px above the card they had opened, on a
+ * laptop). No new history entry. The state is left for Next to fill in
+ * (a replaceState without its own state tells Next's router the new address).
  */
 export function unaddress(): void {
   const { pathname, search, hash } = window.location;
@@ -464,12 +460,11 @@ function stay(el: HTMLElement): void {
   stayRaf = requestAnimationFrame(step);
 }
 
-/** The page is on the section: the lens and the address say so, and the section takes focus. */
+/** The page is on the section: the lens says so, and the section takes focus. */
 function land(el: HTMLElement): void {
   const lens = releaseLens();
   /* #top has no item: the lens shows what scrolling there would */
   if (lens && !lens.items.some((it) => it.getAttribute('href') === `#${el.id}`)) spy(lens);
-  address(el);
   focusOn(el);
   if (coasting(performance.now())) stay(el);
   else idle();
@@ -729,6 +724,7 @@ export function arrive(): void {
   coast = momentum(begun);
   scrollToY(destination(el));
   focusOn(el);
+  unaddress();
   /* a flick made on the page before, still coming in */
   if (coasting(begun)) stay(el);
 }
