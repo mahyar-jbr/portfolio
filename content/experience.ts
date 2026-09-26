@@ -30,7 +30,8 @@ export const roles: Role[] = [
       'Adding live web search to AI chat agents: the backend services, the frontend integration, source citations, and the testing and validation tooling.',
       'Working in Python, Azure services and Docker with containerized deployments, and writing the technical docs and architecture guides for onboarding.',
     ],
-    stack: ['Python', 'FastAPI', 'Azure', 'Docker'],
+    // React added by Mahyar (2026-09-25): he builds the chat agents' frontend too.
+    stack: ['Python', 'FastAPI', 'React', 'Azure', 'Docker'],
   },
   // Sources: content/sources/GraphRetrieval_PORTFOLIO_BRIEF.md, plus (per field) its private repo and the paper.
   {

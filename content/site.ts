@@ -27,7 +27,7 @@ export const identity: Identity = {
 
   socials: [
     { label: 'GitHub', href: 'https://github.com/mahyar-jbr', status: 'live' },
-    { label: 'LinkedIn', href: 'https://linkedin.com/in/mahyar-jaberi', status: 'live' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/mahyar-jaberi/', status: 'live' },
     { label: 'Email', href: 'mailto:jaberi.mahyar@gmail.com', status: 'live' },
   ],
 };
@@ -133,7 +133,7 @@ export const contact = {
   email: { label: 'Email', address: identity.email },
   links: [
     { label: 'GitHub', value: 'Code and experiments', href: 'https://github.com/mahyar-jbr', status: 'live' },
-    { label: 'LinkedIn', value: 'Work history', href: 'https://linkedin.com/in/mahyar-jaberi', status: 'live' },
+    { label: 'LinkedIn', value: 'Work history', href: 'https://www.linkedin.com/in/mahyar-jaberi/', status: 'live' },
     // Pending until public/resume.pdf is replaced: the current file is the June
     // version and predates FGF. Flip to 'live' and the tile appears.
     { label: 'Resume', value: 'Download PDF', href: '/resume.pdf', status: 'pending' },
