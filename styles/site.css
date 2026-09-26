@@ -166,6 +166,11 @@ html:not(.js) .site-theme {
 .site-nav .lu-lens {
   pointer-events: none;
 }
+/* The kit's jelly press answers a tap: no browser tap highlight over it, which
+   tinted the lens teal under the item's white label as it arrived. */
+.site-nav :is(.lu-nav-item, .lu-nav-brand) {
+  -webkit-tap-highlight-color: transparent;
+}
 /* When the kit's compact state hides the name, it also leaves the tab order, so
    focus never lands on something invisible. Visibility flips with the fade. */
 .site-nav .lu-nav-brand {
@@ -1049,12 +1054,20 @@ html.hero-intro-again .site-hero {
 :is(.site-journey, .lu-vt-page)::view-transition-old(site-theme) {
   display: none;
 }
-/* A far journey: the old view drifts off the way the page is moving
-   (--journey-drift) and fades as the new one comes up, both over the same
-   curve so together they never dim or brighten the page; the new view is live
-   and glides the last stretch itself. 320ms, the kit's theme cross-fade. */
+/* A far journey: the old view drifts off the way the page is moving, as far
+   as the new one glides (0.3 of a screen, LAND in lib/journey.ts), and fades
+   as the new one comes up, both over the same curve so together they never
+   dim or brighten the page; the new view is live and glides the last stretch
+   itself. 320ms, the kit's theme cross-fade. The way is an attribute: as a
+   custom property on <html> it restyled the whole page as it came and went. */
 .site-journey::view-transition-old(root) {
   animation: site-journey-out 320ms var(--ease-settle) both;
+}
+.site-journey[data-journey='down']::view-transition-old(root) {
+  animation-name: site-journey-rise;
+}
+.site-journey[data-journey='up']::view-transition-old(root) {
+  animation-name: site-journey-sink;
 }
 .site-journey::view-transition-new(root) {
   animation: site-fade 320ms var(--ease-settle) both;
@@ -1062,7 +1075,20 @@ html.hero-intro-again .site-hero {
 @keyframes site-journey-out {
   to {
     opacity: 0;
-    transform: translateY(var(--journey-drift, 0px));
+  }
+}
+/* svh, the height the journey measures (the page's, not the tallest a phone's
+   bars can leave) */
+@keyframes site-journey-rise {
+  to {
+    opacity: 0;
+    transform: translateY(-30svh);
+  }
+}
+@keyframes site-journey-sink {
+  to {
+    opacity: 0;
+    transform: translateY(30svh);
   }
 }
 /* The About story is set to where the page lands, not cross-faded through
@@ -1073,13 +1099,18 @@ html.hero-intro-again .site-hero {
 .site-journey .story-text.is-coda {
   transition: none;
 }
-/* Reduced motion: no drift, a 150ms fade. */
+/* Reduced motion: no drift, a 150ms fade, and the transition over with it:
+   the browser's own group animation (250ms) held it, the clicks it takes and
+   the move of focus 100ms longer. */
 @media (prefers-reduced-motion: reduce) {
   .site-journey::view-transition-old(root) {
     animation: site-journey-out 150ms ease both;
   }
   .site-journey::view-transition-new(root) {
     animation: site-fade 150ms ease both;
+  }
+  .site-journey::view-transition-group(root) {
+    animation: none;
   }
 }
 

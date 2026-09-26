@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { AnchorHTMLAttributes, MouseEvent } from 'react';
-import { expectArrival, journeyTo, warm } from '@/lib/journey';
+import { expectArrival, journeyTo, unaddress, warm } from '@/lib/journey';
 import { navigate } from '@/lib/lucent';
 import LinkOut, { isOffsite } from './LinkOut';
 
@@ -17,7 +17,8 @@ type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & { href: str
  *   no history entry; once the page lands, the address names the section.
  * - Route changes play the Lucent page swap (Lucent.transition): old view out in
  *   dur-exit, new view up 8px in dur-enter. One to a section of another page
- *   (/#work from a case study) arrives on the section inside the swap.
+ *   (/#work from a case study) arrives on the section inside the swap. The page
+ *   left behind drops its #section first, so Back returns to the exact place.
  *
  * Pointing at an in-page anchor (or focusing it) starts loading the images the
  * page will land among.
@@ -62,6 +63,7 @@ export default function TransitionLink({ href, onClick, onPointerEnter, onFocus,
 
     e.preventDefault();
     if (url.hash) expectArrival(url.pathname, url.hash);
+    unaddress();
     navigate((to) => router.push(to), href);
   }
 

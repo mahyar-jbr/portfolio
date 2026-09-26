@@ -23,16 +23,16 @@
  *
  * Either way the lens goes straight to the section's item. Once the page has
  * landed, the section takes focus (keyboards and screen readers continue from
- * it) and the address names it. A wheel, a touch or a scrolling key hands the
- * page straight back, except the momentum of a flick made just before the
- * click, which the journey rides out; a click on another link sets a new course
- * from wherever the page is.
+ * it) and the address names it, until the reader leaves for another page. A
+ * wheel, a touch or a scrolling key hands the page straight back, except the
+ * momentum of a flick made just before the click, which the journey rides out;
+ * a click on another link sets a new course from wherever the page is.
  */
 import { prefersReducedMotion } from './lucent';
 
 /** Closer than this many screens, the page glides the whole way. */
 const NEAR = 1.5;
-/** A far journey glides this much of a screen at its end. */
+/** A far journey glides this much of a screen at its end (and the old view drifts as far: 30svh, styles/site.css). */
 const LAND = 0.3;
 /**
  * The glide is a spring, critically damped so the page never swings past its
@@ -53,6 +53,16 @@ const LIMIT = 2500;
  * setting down a cross-fade, which holds them back (see fileWheel).
  */
 const GAP = 200;
+/**
+ * Momentum slows, steadily, where a hand turning a wheel or moving on a
+ * trackpad keeps its pace or picks it up. A gesture counts as momentum while
+ * each event moves the page less than SLOWING times the furthest one of 30
+ * to 150ms before, or it has slowed to a crawl (under CRAWL px/ms, a few px a
+ * frame: a flick's tail, whose events come in at the same 1 or 2px). See
+ * slows().
+ */
+const SLOWING = 0.97;
+const CRAWL = 0.25;
 
 type Nav = HTMLElement & { __luLens?: Lucent.LensApi };
 
@@ -111,9 +121,10 @@ function scrollToY(y: number): void {
  * clicks the nav hasn't taken the page back. So every wheel event is filed
  * into gestures: one goes on while its events keep coming (within GAP of each
  * other), the same way, and no faster. A pause, a turn or a push starts a new
- * one. A journey begun while a gesture was coming in rides out its momentum:
- * it swallows the events it can, and holds its course over the ones it can't.
- * The next gesture hands the page back. */
+ * one. A journey begun while a gesture was slowing (see SLOWING) rides out
+ * its momentum: it swallows the events it can, and holds its course over the
+ * ones it can't. Anything else hands the page back: the next gesture, or this
+ * one keeping its pace (a wheel still turning after the click). */
 
 interface Gesture {
   sign: number;
@@ -123,10 +134,42 @@ interface Gesture {
   /** its speed and the one before (px/ms) */
   speed: number;
   was: number;
+  /** its events of the last 150ms or so: when each was sent, how far it moved the page (px), and its speed (px/ms) */
+  trail: { at: number; d: number; v: number }[];
+  /** whether it was slowing as momentum does, as of its last event */
+  slowing: boolean;
 }
 let gesture: Gesture | null = null;
 /** the gesture a journey began in */
 let coast: Gesture | null = null;
+
+/**
+ * Whether `g` slows as momentum does, as of its last event. By how far each
+ * event moves the page, as the events come evenly: a page busy for a moment
+ * gets those sent meanwhile merged into one, which moves it further in a
+ * longer time, so that one is weighed by its speed instead. (Speed alone
+ * mistook a wheel's even notches, a little unevenly spaced, for slowing.)
+ * Against the furthest of 30 to 150ms before (or, the events being sparse,
+ * the last before that), as a flick's events move the page by whole px:
+ * several in a row can move it the same, still slowing.
+ */
+function slows(g: Gesture): boolean {
+  const last = g.trail[g.trail.length - 1];
+  if (last.v < CRAWL) return true;
+  let d = -1;
+  let v = 0;
+  for (let i = g.trail.length - 2; i >= 0; i--) {
+    const ref = g.trail[i];
+    const age = last.at - ref.at;
+    if (age < 30) continue;
+    if (age > 150 && d >= 0) break;
+    d = Math.max(d, ref.d);
+    v = Math.max(v, ref.v || 0);
+    if (age > 150) break;
+  }
+  if (d < 0) return false;
+  return last.d < d * SLOWING || (last.d > d && last.v < v * SLOWING);
+}
 
 function fileWheel(e: WheelEvent) {
   const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? viewport() : 1);
@@ -145,8 +188,13 @@ function fileWheel(e: WheelEvent) {
     g.speed = speed;
     g.at = e.timeStamp;
     g.seen = now;
+    g.trail.push({ at: e.timeStamp, d: Math.abs(dy), v: speed });
+    while (g.trail.length > 2 && e.timeStamp - g.trail[1].at > 150) g.trail.shift();
+    g.slowing = slows(g);
   } else {
-    gesture = { sign: Math.sign(dy), at: e.timeStamp, seen: now, speed, was: speed };
+    /* the first event's speed is a guess, with nothing to measure it from */
+    const trail = [{ at: e.timeStamp, d: Math.abs(dy), v: NaN }];
+    gesture = { sign: Math.sign(dy), at: e.timeStamp, seen: now, speed, was: speed, trail, slowing: false };
   }
 }
 
@@ -155,9 +203,15 @@ function live(now: number): Gesture | null {
   return gesture && now - gesture.seen < GAP ? gesture : null;
 }
 
-/** Whether the gesture the journey began in is still coming in. */
+/** The momentum of a flick still coming in at `now`, if any. */
+function momentum(now: number): Gesture | null {
+  const g = live(now);
+  return g?.slowing ? g : null;
+}
+
+/** Whether the momentum the journey began in is still coming in. */
 function coasting(now: number): boolean {
-  return !!coast && coast === live(now);
+  return !!coast && coast === momentum(now);
 }
 
 /* ---------- Focus ----------
@@ -289,7 +343,7 @@ function controlAt(x: number, y: number): HTMLElement | null {
    journey began in, or began another */
 function onWheel(e: WheelEvent) {
   if (!e.deltaY) return;
-  if (coast && coast === gesture) {
+  if (coast && coast === gesture && coast.slowing) {
     if (e.cancelable) e.preventDefault();
     return;
   }
@@ -380,6 +434,17 @@ function address(el: HTMLElement): void {
   const hash = el.id === 'top' ? '' : `#${el.id}`;
   if (window.location.hash === hash) return;
   window.history.replaceState(null, '', hash || window.location.pathname + window.location.search);
+}
+
+/**
+ * The page is being left for another: the address gives up its #section, so
+ * Back returns to the exact place the reader left. Coming back to /#work,
+ * Chrome goes to Work instead, however far the reader had scrolled on from
+ * it (938px above the card they had opened, on a laptop).
+ */
+export function unaddress(): void {
+  const { pathname, search, hash } = window.location;
+  if (hash) window.history.replaceState(null, '', pathname + search);
 }
 
 /* The page stays on the section while the momentum of the flick it began in
@@ -502,7 +567,7 @@ function fade(update: () => void): ViewTransition {
     if (fold === vt) fold = null;
     if (!fold) {
       html.classList.remove('site-journey');
-      html.style.removeProperty('--journey-drift');
+      delete html.dataset.journey;
     }
     idle();
   });
@@ -520,7 +585,8 @@ function travel(el: HTMLElement, to: number) {
   const id = course;
   const { dir, stretch } = shortOf(to);
   const start = to - dir * stretch;
-  root().style.setProperty('--journey-drift', `${-dir * stretch}px`);
+  /* the way the old view drifts off (styles/site.css) */
+  root().dataset.journey = dir > 0 ? 'down' : 'up';
   const vt = fade(() => {
     /* a journey begun since (a second click within a frame) has the page */
     if (course !== id) return;
@@ -581,7 +647,7 @@ function jump(el: HTMLElement, to: number) {
   const id = course;
   holdLens(el);
   if (canFade()) {
-    root().style.removeProperty('--journey-drift');
+    delete root().dataset.journey;
     fade(() => {
       if (course === id) scrollToY(to);
     }).finished.finally(() => {
@@ -598,7 +664,7 @@ export function journeyTo(el: HTMLElement): void {
   warm(el);
   const to = destination(el);
   begun = performance.now();
-  coast = live(begun);
+  coast = momentum(begun);
   if (prefersReducedMotion()) {
     jump(el, to);
     return;
@@ -652,7 +718,7 @@ export function arrive(): void {
   if (!el) return;
   stop();
   begun = performance.now();
-  coast = live(begun);
+  coast = momentum(begun);
   scrollToY(destination(el));
   focusOn(el);
   /* a flick made on the page before, still coming in */
