@@ -14,11 +14,15 @@ import { useId } from 'react';
  * these are not drawings: each mark is copied from its owner's own files (brand
  * kit, press kit, site or repository, noted by each one), shapes and colours
  * alike; GitHub Actions' comes from Devicon, which carries its owner's logo.
+ * JavaScript has no owner who publishes a logo, so it has the one its community
+ * took, the yellow JS square, from that logo's own repository. Mahyar,
+ * 2026-09-25: "add icon for js (its the only one that doesnt have icon)".
  * Only artboard clips, placing transforms, a drop shadow and the words beside a
  * mark are left out. Where a licence asks for credit (CC BY), or for its
  * copyright notice to go with every copy (MIT, BSD), that is kept in a comment
- * inside the rendered SVG, with a link to the licence. Each mark stays its
- * owner's trademark and only ever stands for that brand.
+ * inside the rendered SVG, with a link to the licence; where it limits the use
+ * (Microsoft's, for Azure's icon), the mark's entry says how this use keeps to
+ * it. Each mark stays its owner's trademark and only ever stands for that brand.
  *
  * A mark that is black, or that sinks into the dark tag (CSS's purple is 1.6:1
  * on it, Docker's blue 2.7:1), has a `dark` version: the owner's own for dark
@@ -33,19 +37,15 @@ import { useId } from 'react';
  * one is aria-hidden beside its name in text.
  *
  * No mark means plain words, never a stand-in. These names are on the site
- * without one (UNMARKED): JavaScript has no owner's logo (the yellow JS square
- * is a community one), and server-sent events are a web standard. XGBoost's
- * logo is a wordmark (xgboost.ai/images/logo), and TMLS's is its letters; UMAP
- * publishes its logo only as a picture (lmcinnes/umap doc/logo.png). Microsoft
- * allows no use of Azure's logo or icons without a licence (its Trademark and
- * Brand Guidelines), and licenses its Azure icons only for architecture
- * diagrams, training and documentation
- * (learn.microsoft.com/azure/architecture/icons). HL7 wants "FHIR®" and an
- * endorsement disclaimer beside its flame (hl7.org/fhir/license.html). MySQL's
- * dolphin is only for Oracle's licensees, and the badges anyone may show must
- * link to mysql.com (mysql.com/about/legal/logos.html).
+ * without one (UNMARKED): server-sent events are a web standard. XGBoost's logo
+ * is a wordmark (xgboost.ai/images/logo), and TMLS's is its letters; UMAP
+ * publishes its logo only as a picture (lmcinnes/umap doc/logo.png). HL7 wants
+ * "FHIR®" and an endorsement disclaimer beside its flame
+ * (hl7.org/fhir/license.html). MySQL's dolphin is only for Oracle's licensees,
+ * and the badges anyone may show must link to mysql.com
+ * (mysql.com/about/legal/logos.html).
  *
- * The table is about 85KB, so this stays a server component: nothing marked
+ * The table is about 89KB, so this stays a server component: nothing marked
  * 'use client' imports it, the table never reaches the client bundle, and a
  * page carries only the marks it shows.
  */
@@ -130,6 +130,17 @@ const BRANDS = {
     box: [0, 0, 128, 128],
     optical: 0.85,
     art: '<rect fill="#3178c6" width="128" height="128" rx="6"/><path fill="#fff" fill-rule="evenodd" d="m74.2622 99.468v14.026c2.2724 1.168 4.9598 2.045 8.0625 2.629 3.1027.585 6.3728.877 9.8105.877 3.3503 0 6.533-.321 9.5478-.964 3.016-.643 5.659-1.702 7.932-3.178 2.272-1.476 4.071-3.404 5.397-5.786 1.325-2.381 1.988-5.325 1.988-8.8313 0-2.5421-.379-4.7701-1.136-6.6841-.758-1.9139-1.85-3.6159-3.278-5.1062-1.427-1.4902-3.139-2.827-5.134-4.0104-1.996-1.1834-4.246-2.3011-6.752-3.353-1.8352-.7597-3.4812-1.4975-4.9378-2.2134-1.4567-.7159-2.6948-1.4464-3.7144-2.1915-1.0197-.7452-1.8063-1.5341-2.3598-2.3669-.5535-.8327-.8303-1.7751-.8303-2.827 0-.9643.2476-1.8336.7429-2.6079s1.1945-1.4391 2.0976-1.9943c.9031-.5551 2.0101-.9861 3.3211-1.2929 1.311-.3069 2.7676-.4603 4.3699-.4603 1.1658 0 2.3958.0877 3.6928.263 1.296.1753 2.6.4456 3.911.8109 1.311.3652 2.585.8254 3.824 1.3806 1.238.5552 2.381 1.198 3.43 1.9285v-13.1051c-2.127-.8182-4.45-1.4245-6.97-1.819s-5.411-.5917-8.6744-.5917c-3.3211 0-6.4674.3579-9.439 1.0738-2.9715.7159-5.5862 1.8336-7.844 3.353-2.2578 1.5195-4.0422 3.4553-5.3531 5.8075-1.311 2.3522-1.9665 5.1646-1.9665 8.4373 0 4.1785 1.2017 7.7433 3.6052 10.6945 2.4035 2.9513 6.0523 5.4496 10.9466 7.495 1.9228.7889 3.7145 1.5633 5.375 2.323 1.6606.7597 3.0954 1.5486 4.3044 2.3668s2.1628 1.7094 2.8618 2.6736c.7.9643 1.049 2.06 1.049 3.2873 0 .9062-.218 1.7462-.655 2.5202s-1.1 1.446-1.9885 2.016c-.8886.57-1.9956 1.016-3.3212 1.337-1.3255.321-2.8768.482-4.6539.482-3.0299 0-6.0305-.533-9.0021-1.6-2.9715-1.066-5.7245-2.666-8.2591-4.799zm-23.5596-34.9136h18.2974v-11.5544h-51v11.5544h18.2079v51.4456h14.4947z"/>',
+  },
+  /* The JS logo its community took for the language, JSConf EU's gift of 2011
+     (voodootikigod/logo.js js.svg, MIT, credited): the yellow square, its
+     letters black as the file leaves them. It holds on either ground. */
+  javascript: {
+    name: 'JavaScript',
+    credit:
+      'JS logo (logo.js), Copyright (c) 2011 Christopher Williams, Manuel Strehl - MIT License, https://github.com/voodootikigod/logo.js/blob/master/LICENSE',
+    box: [0, 0, 630, 630],
+    optical: 0.85,
+    art: '<rect fill="#f7df1e" width="630" height="630"/><path fill="#000" d="m 165.65,526.47375 48.2125,-29.1775 C 223.16375,513.7875 231.625,527.74 251.92,527.74 c 19.45375,0 31.71875,-7.60975 31.71875,-37.21 l 0,-201.3 59.20375,0 0,202.1375 c 0,61.32 -35.94375,89.23125 -88.385,89.23125 -47.36125,0 -74.8525,-24.52875 -88.8075,-54.13"/><path fill="#000" d="m 375,520.13 48.20625,-27.91125 c 12.69,20.72375 29.1825,35.9475 58.36125,35.9475 24.53125,0 40.17375,-12.26475 40.17375,-29.18125 0,-20.29875 -16.06875,-27.48875 -43.135,-39.32625 l -14.7975,-6.3475 c -42.715,-18.18125 -71.05,-41.0175 -71.05,-89.2275 0,-44.40375 33.83125,-78.2375 86.695,-78.2375 37.6375,0 64.7025,13.11125 84.15375,47.36625 l -46.09625,29.60125 c -10.15,-18.1825 -21.1425,-25.37125 -38.0575,-25.37125 -17.33875,0 -28.335,10.995 -28.335,25.37125 0,17.7625 10.99625,24.9525 36.3675,35.94875 l 14.8,6.3425 c 50.325,21.56875 78.66,43.5575 78.66,93.03375 0,53.2875 -41.86625,82.465 -98.11,82.465 -54.97625,0 -90.5,-26.2175 -107.83625,-60.47375"/>',
   },
   /* The W3C's HTML5 logo (w3.org/html/logo, HTML5_Badge.svg, CC BY 3.0), the
      shield without the word, credited as its licence asks. Its alias is HTML. */
@@ -293,6 +304,24 @@ const BRANDS = {
     art: '<path fill="#0B0D0E" d="M729.872 487.327a50.86 50.86 0 0 0-.464 5.033h75.879c-.265-.518-.621-.985-.98-1.442-12.972-16.769-19.95-15.315-29.932-15.741-3.328-.137-5.585-.192-18.832-.192-7.09 0-14.798.018-22.304.038.737-1.746 1.6-3.419 2.525-5.061-2.885 5.106-4.865 10.771-5.805 16.789l.891-4.397c.007-.031.018-.063.024-.094h38.883v5.067h-39.885zM805.885 497.432h-76.438c.08 1.352.206 2.686.388 4.002h70.571c3.146 0 4.907-1.786 5.479-4.002zM733.851 515.257a52.226 52.226 0 0 1-1.98-4.997c6.608 19.89 25.328 34.251 47.433 34.251 20.205 0 37.566-12.007 45.452-29.254h-90.905zM729.38 492.915c-.018.531-.08 1.055-.08 1.589 0 .538.063 1.059.08 1.59v-3.179zM824.77 515.229z"/><path fill="#0B0D0E" d="M779.303 444.505c-18.682 0-34.939 10.265-43.524 25.439 6.709-.014 19.775-.022 19.775-.022h.003v-.005c15.444 0 16.018.069 19.035.195l1.868.069c6.507.217 14.505.916 20.798 5.68 3.416 2.584 8.348 8.287 11.288 12.35 2.718 3.758 3.5 8.078 1.652 12.217-1.701 3.804-5.361 6.073-9.793 6.073H730.85l-.884-4.201c.426 2.707 1.037 5.344 1.879 7.886h94.914a49.863 49.863 0 0 0 2.546-15.682c.001-27.611-22.386-49.999-50.002-49.999z"/>',
     dark: '<path fill="#fff" d="M729.872 487.327a50.86 50.86 0 0 0-.464 5.033h75.879c-.265-.518-.621-.985-.98-1.442-12.972-16.769-19.95-15.315-29.932-15.741-3.328-.137-5.585-.192-18.832-.192-7.09 0-14.798.018-22.304.038.737-1.746 1.6-3.419 2.525-5.061-2.885 5.106-4.865 10.771-5.805 16.789l.891-4.397c.007-.031.018-.063.024-.094h38.883v5.067h-39.885zM805.885 497.432h-76.438c.08 1.352.206 2.686.388 4.002h70.571c3.146 0 4.907-1.786 5.479-4.002zM733.851 515.257a52.226 52.226 0 0 1-1.98-4.997c6.608 19.89 25.328 34.251 47.433 34.251 20.205 0 37.566-12.007 45.452-29.254h-90.905zM729.38 492.915c-.018.531-.08 1.055-.08 1.589 0 .538.063 1.059.08 1.59v-3.179zM824.77 515.229z"/><path fill="#fff" d="M779.303 444.505c-18.682 0-34.939 10.265-43.524 25.439 6.709-.014 19.775-.022 19.775-.022h.003v-.005c15.444 0 16.018.069 19.035.195l1.868.069c6.507.217 14.505.916 20.798 5.68 3.416 2.584 8.348 8.287 11.288 12.35 2.718 3.758 3.5 8.078 1.652 12.217-1.701 3.804-5.361 6.073-9.793 6.073H730.85l-.884-4.201c.426 2.707 1.037 5.344 1.879 7.886h94.914a49.863 49.863 0 0 0 2.546-15.682c.001-27.611-22.386-49.999-50.002-49.999z"/>',
   },
+  /* Microsoft's own Azure icon, from its Azure architecture icons
+     (learn.microsoft.com/azure/architecture/icons, Azure_Public_Service_Icons
+     V24, other/10018-icon-service-Azure-A.svg), its gradients and inner shade
+     as drawn. Mahyar, 2026-09-25: "Azure doesnt have logo." Microsoft's terms
+     there allow its icons in architecture diagrams, training materials and
+     documentation, uncropped and unchanged, the product's name near, each only
+     for the product it was drawn for. A stack row documents what a system was
+     built with, the name beside the icon, and a label that names two, such as
+     'Azure OpenAI', gets none. The set has one version for either ground: on
+     the dark tag its navy side sinks (1.5:1) and its sky-blue side holds (4:1
+     to 7:1), and a new colour would be the change the terms rule out. */
+  azure: {
+    name: 'Azure',
+    box: [0.32, 0.82, 17.36, 16.36],
+    optical: 0.95,
+    defs: '<linearGradient id="{id}-p0" x1="6.07512" y1="1.38476" x2="0.738178" y2="17.1514" gradientUnits="userSpaceOnUse"><stop stop-color="#114A8B"/><stop offset="1" stop-color="#0669BC"/></linearGradient><linearGradient id="{id}-p1" x1="10.3402" y1="11.4564" x2="9.107" y2="11.8734" gradientUnits="userSpaceOnUse"><stop stop-opacity="0.3"/><stop offset="0.0711768" stop-opacity="0.2"/><stop offset="0.321031" stop-opacity="0.1"/><stop offset="0.623053" stop-opacity="0.05"/><stop offset="1" stop-opacity="0"/></linearGradient><linearGradient id="{id}-p2" x1="9.45858" y1="1.38467" x2="15.3168" y2="16.9926" gradientUnits="userSpaceOnUse"><stop stop-color="#3CCBF4"/><stop offset="1" stop-color="#2892DF"/></linearGradient>',
+    art: '<path fill="url(#{id}-p0)" d="M5.33492 1.37491C5.44717 1.04229 5.75909 0.818359 6.11014 0.818359H11.25L5.91513 16.6255C5.80287 16.9581 5.49095 17.182 5.13991 17.182H1.13968C0.579936 17.182 0.185466 16.6325 0.364461 16.1022L5.33492 1.37491Z"/><path fill="#0078D4" d="M13.5517 11.4546H5.45126C5.1109 11.4546 4.94657 11.8715 5.19539 12.1037L10.4005 16.9618C10.552 17.1032 10.7515 17.1819 10.9587 17.1819H15.5453L13.5517 11.4546Z"/><path fill="url(#{id}-p1)" d="M6.11014 0.818359C5.75909 0.818359 5.44717 1.04229 5.33492 1.37491L0.364461 16.1022C0.185466 16.6325 0.579936 17.182 1.13968 17.182H5.13991C5.49095 17.182 5.80287 16.9581 5.91513 16.6255L6.90327 13.6976L10.4005 16.9617C10.552 17.1032 10.7515 17.1818 10.9588 17.1818H15.5454L13.5517 11.4545H7.66032L11.25 0.818359H6.11014Z"/><path fill="url(#{id}-p2)" d="M12.665 1.37478C12.5528 1.04217 12.2409 0.818237 11.8898 0.818237H6.13629H6.16254C6.51358 0.818237 6.82551 1.04217 6.93776 1.37478L11.9082 16.1021C12.0872 16.6324 11.6927 17.1819 11.133 17.1819H11.0454H16.8603C17.42 17.1819 17.8145 16.6324 17.6355 16.1021L12.665 1.37478Z"/>',
+  },
   /* Models and APIs */
   /* Anthropic press kit (anthropic.com/press-kit): Claude Spark - Clay.svg.
      "Anthropic Claude" names Claude, not Anthropic. */
@@ -436,16 +465,14 @@ function viewBox({ box: [x, y, w, h], optical = 1 }: Brand): string {
 /**
  * Tools the site names that have no mark, each for its reason in the header.
  * None is drawn, but each still counts as a name, so a label that pairs one
- * with a brand gets no mark: 'Azure OpenAI' is Microsoft's, not OpenAI's.
+ * with a brand gets no mark: 'Node.js / MySQL' is not all Node's.
  */
 const UNMARKED = [
-  'JavaScript',
   'Server-sent events',
   'SSE',
   'XGBoost',
   'UMAP',
   'TMLS',
-  'Azure',
   'HL7',
   'FHIR',
   'MySQL',
