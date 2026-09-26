@@ -1,6 +1,7 @@
 import ProjectCard from '@/components/lucent/ProjectCard';
 import Section from '@/components/lucent/Section';
 import CardArt, { cardArtClass } from '@/components/work/CardArt';
+import Cameo from '@/components/work/Cameo';
 import { projects } from '@/content/projects';
 import { sections } from '@/content/site';
 
@@ -11,7 +12,8 @@ const { work } = sections;
  * with a page is a real screenshot (or a diagram of the idea), a status label with
  * a glyph, the name and one line, and its case study is one click away. A project
  * with nothing to show yet is a "soon" card that opens nothing: its name, its
- * status, and a line only if it has one, over art that says nothing about it.
+ * status, and a line only if it has one, over art that says nothing about it;
+ * tapped, it can only say so, through a character of its own (its cameo).
  *
  * Filter chips are a SkillChip filter group: cards filtered out fade and shrink
  * in dur-exit, the rest glide over dur-morph, returners fade in. With an odd
@@ -48,7 +50,11 @@ export default function Work() {
             feature={featureFirst && i === 0}
             art={<CardArt project={p} priority={i === 0} />}
             artClassName={cardArtClass(p)}
-          />
+          >
+            {p.page === 'none' && p.cameo && (
+              <Cameo label={`${p.name}, ${p.status.label.toLowerCase()}`} cameo={p.cameo} />
+            )}
+          </ProjectCard>
         ))}
       </div>
     </Section>

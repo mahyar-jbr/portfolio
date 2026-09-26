@@ -598,7 +598,8 @@ const tacticalDna: CaseStudyProject = {
 /**
  * The co-founded product MoneyMind grew into, shown by name since 2026-09-23 as a
  * low-key "Coming soon" card and nothing more. Its banner is the product's face,
- * the gator at his desk, which Mahyar chose to show (2026-09-23). Still never a
+ * the gator at his desk, which Mahyar chose to show (2026-09-23), and a tap on
+ * it brings up its moose to say it's too early (2026-09-25). Still never a
  * screenshot or a detail, and no page, so /work/moneymind 404s until `heldBack`
  * replaces this at launch.
  */
@@ -618,6 +619,14 @@ const moneymind: SoonProject = {
     width: 1280,
     height: 720,
     description: 'A gator in a suit reads The Swamp Times at his desk, behind a nameplate that says A. Gator.',
+  },
+  // Tapped, the card has no page to open, so MoneyMind's moose (Mahyar's cutout,
+  // m-moose-coffee.cutout.webp, 2026-09-25) comes up with his coffee to say so:
+  // "its too early and dont rush", in Mahyar's words. The no-break spaces keep
+  // the dash off the start of a line and "I" with its verb when the bubble wraps.
+  cameo: {
+    image: { src: '/work/moneymind/moose.webp', width: 243, height: 512 },
+    line: 'Too early. Don’t rush\u00a0— I\u00a0haven’t finished my coffee.',
   },
 };
 

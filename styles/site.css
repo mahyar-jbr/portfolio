@@ -950,6 +950,165 @@ html:not(.js) .art-video video {
   --lscale: 1;
 }
 
+/* ---- A soon card's cameo (components/work/Cameo.tsx) ----
+   A tap on MoneyMind's card brings its moose up from behind the caption, cup in
+   hand, to say it's too early. Cameo places him and his bubble for the card's
+   size (--cameo-*) and drives his rise; this is how they look and come and go. */
+
+/* The card answers a tap now, so it takes the kit's hover and press back (hover
+   only where there is a pointer to hover with, or a tap would leave it lifted),
+   but still no arrow: it opens nothing. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .lu-card.is-soon:has(> .cameo-hit):hover {
+    --lift: -4px;
+    box-shadow: var(--shadow-lift);
+  }
+  .lu-card.is-soon:has(> .cameo-hit):hover .lu-card-art {
+    transform: scale(1.03);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lu-card.is-soon:has(> .cameo-hit):active {
+    --lscale: 0.99;
+  }
+}
+/* the button is the whole card; the card clips anything drawn outside it, so
+   the focus ring is the card's own */
+.cameo-hit {
+  appearance: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.cameo-hit:focus-visible {
+  outline: none;
+}
+.lu-card:has(> .cameo-hit:focus-visible) {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+/* He and his bubble are on the art, under the caption and the status label. */
+.cameo-stage {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+.cameo-figure {
+  position: absolute;
+  left: var(--cameo-x);
+  top: var(--cameo-y);
+  width: auto;
+  height: var(--cameo-h);
+  max-width: none;
+  visibility: hidden;
+  user-select: none;
+}
+.cameo-stage[data-state] .cameo-figure {
+  visibility: visible;
+}
+/* His bubble is drawn in the banner's own ink on its paper, which stays white in
+   both themes (the light theme's --surface and --ink), with a line as heavy as
+   the drawing's. */
+.cameo-say {
+  --say-paper: #fff;
+  --say-ink: #191918;
+  position: absolute;
+  left: var(--cameo-bx);
+  top: var(--cameo-by);
+  isolation: isolate;
+  box-sizing: border-box;
+  width: max-content;
+  max-width: min(var(--cameo-room, 100%), 17em);
+  margin: 0;
+  padding: 10px 14px;
+  font: 600 15px/20px var(--font-text);
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--say-ink);
+  transform-origin: var(--cameo-tip, 50% 100%);
+  opacity: 0;
+  transform: scale(0.8);
+  visibility: hidden;
+  transition:
+    opacity var(--dur-exit) var(--ease-exit),
+    transform var(--dur-exit) var(--ease-exit),
+    visibility 0s linear var(--dur-exit);
+}
+.cameo-say-shape {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: var(--say-paper);
+  stroke: var(--say-ink);
+  stroke-width: 1.5px;
+  stroke-linejoin: round;
+}
+/* it grows out of its tail as he arrives */
+.cameo-stage[data-state='in'] .cameo-say {
+  opacity: 1;
+  transform: none;
+  visibility: visible;
+  transition:
+    opacity var(--dur-jelly) var(--ease-settle) 180ms,
+    transform var(--dur-jelly) var(--ease-jelly) 180ms,
+    visibility 0s linear 180ms;
+}
+/* while he talks, he is the status: the label steps out and back */
+.lu-card:has(> .cameo-hit) .lu-card-label {
+  transition: opacity var(--dur-jelly) var(--ease-settle);
+}
+.lu-card:has(> .cameo-stage[data-state='in']) .lu-card-label {
+  opacity: 0;
+  transition: opacity var(--dur-exit) var(--ease-exit);
+}
+/* Reduced motion: no rise and no growing, only fades of 150ms. */
+@media (prefers-reduced-motion: reduce) {
+  .cameo-figure {
+    opacity: 0;
+    transition:
+      opacity 150ms ease,
+      visibility 0s linear 150ms;
+  }
+  .cameo-stage[data-state='in'] .cameo-figure {
+    opacity: 1;
+    transition: opacity 150ms ease;
+  }
+  .cameo-say {
+    transform: none;
+    transition:
+      opacity 150ms ease,
+      visibility 0s linear 150ms;
+  }
+  .cameo-stage[data-state='in'] .cameo-say {
+    transition: opacity 150ms ease;
+  }
+  .lu-card:has(> .cameo-hit) .lu-card-label,
+  .lu-card:has(> .cameo-stage[data-state='in']) .lu-card-label {
+    transition: opacity 150ms ease;
+  }
+}
+/* On the dark page the banner is dimmed a touch (above); he and his bubble are
+   part of it, so they dim with it. */
+:root[data-theme='dark'] .cameo-stage {
+  filter: brightness(0.92);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .cameo-stage {
+    filter: brightness(0.92);
+  }
+}
+
 /* ---------- Case study header (kit CaseStudy template) ---------- */
 .case-hero {
   /* the kit's clamp(56px, 8vw, 88px), plus room for the floating nav */

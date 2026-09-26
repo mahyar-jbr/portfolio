@@ -186,6 +186,17 @@ export interface SoonProject extends Omit<ProjectCard, 'cardLine' | 'year'> {
    * Mahyar chose to show: a character, never a screenshot of the product.
    */
   video?: CardVideo;
+  /**
+   * What a tap on the card gets, since it opens nothing: a character rises into
+   * the banner, says one line and goes again. Like `video`, only a character,
+   * never the product. Without scripts the card stays inert and he never shows.
+   */
+  cameo?: {
+    /** A transparent cutout of him standing, head to feet. `width` and `height` are the file's pixels. */
+    image: { src: string; width: number; height: number };
+    /** What he says, in his own voice. Short: it sits in a speech bubble on the card, and is read out. */
+    line: string;
+  };
 }
 
 /** A soon card's banner loop. The files are cut to loop cleanly and carry no audio track. */

@@ -10,7 +10,9 @@ import type { ProjectStatus } from '@/content/types';
  *
  * Soon: a card with no href has nowhere to go yet, so it is a plain block rather
  * than a link — no arrow, no hover lift, no press dip (site.css .is-soon) — and
- * must not look clickable.
+ * must not look clickable. One that holds something to tap (its `children`: a
+ * cameo, components/work/Cameo.tsx) gets the hover and the press back once
+ * that is there, but never the arrow: it still goes nowhere.
  */
 
 /** Which glyph carries each kind of status (kit: store, flask, timer; spark for a soon card). */
@@ -42,6 +44,11 @@ interface Props {
   tags?: string;
   feature?: boolean;
   className?: string;
+  /**
+   * What a soon card holds besides its art and caption: a cameo. A link card
+   * leaves it out, since nothing inside a link may answer a tap of its own.
+   */
+  children?: ReactNode;
 }
 
 export default function ProjectCard({
@@ -54,6 +61,7 @@ export default function ProjectCard({
   tags,
   feature,
   className,
+  children,
 }: Props) {
   const soon = !href;
   const cls = [
@@ -91,6 +99,7 @@ export default function ProjectCard({
     return (
       <div className={cls} data-tags={tags}>
         {body}
+        {children}
       </div>
     );
   }
