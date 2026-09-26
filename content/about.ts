@@ -57,7 +57,8 @@ export const about = {
 
 /**
  * The About section on the home page, right after the hero, told as a story
- * (2026-09-22): Travel → Play → Train → Build, then a coda with his paragraph.
+ * (2026-09-22): Travel → Play → Train → Build, then a coda: his portrait
+ * (2026-09-25) beside his paragraph.
  *
  * Mahyar gave the chapters as Play, Train, Travel, Build. Travel leads because
  * it is the strongest opening image: Preikestolen is 1350×2400 with him
@@ -92,6 +93,9 @@ export interface StoryPhoto {
   caption: { text: string; kind: 'place' | 'sport' | 'training' | 'event' };
 }
 
+/** A photo without a caption: the story's last frame, which is not a chapter. */
+export type StoryPortrait = Omit<StoryPhoto, 'caption'>;
+
 export interface StoryChapter {
   id: string;
   label: string;
@@ -99,7 +103,13 @@ export interface StoryChapter {
   photos: StoryPhoto[];
 }
 
-export const aboutSection: { kicker: string; title: string; chapters: StoryChapter[]; paragraph: string } = {
+export const aboutSection: {
+  kicker: string;
+  title: string;
+  chapters: StoryChapter[];
+  portrait: StoryPortrait;
+  paragraph: string;
+} = {
   kicker: 'About',
   title: 'A bit about me',
   chapters: [
@@ -172,6 +182,23 @@ export const aboutSection: { kicker: string; title: string; chapters: StoryChapt
       ],
     },
   ],
+  /**
+   * The story's last frame, beside his paragraph (Mahyar, 2026-09-25: "put this
+   * photo ... in the last part when paragraph shows up"). Him on a dock in
+   * Norway, July 2026, smiling at the camera: the one photo where he looks
+   * straight at you, so it answers the paragraph's "Now here I am". It replaced
+   * a contact sheet of the five story photos, which only repeated what had just
+   * scrolled past. No caption, since it isn't a chapter; the place stays general.
+   * Made from his 3208×4284 HEIC: sRGB, 1440px wide (its largest frame, about
+   * 690px in the one-column layout just under 761px, at 2x), no metadata.
+   */
+  portrait: {
+    src: '/about/norway-dock.jpg',
+    width: 1440,
+    height: 1923,
+    alt: 'Mahyar standing on a wooden dock by the water in Norway, with mountains behind him',
+    position: '50% 55%',
+  },
   paragraph:
     'My journey started in Grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here I am, always building something to keep my inner child happy. Thanks for reading.',
   // No "Also into" line (Mahyar, 2026-09-22): the story says it.

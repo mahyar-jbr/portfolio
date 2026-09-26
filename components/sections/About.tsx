@@ -6,8 +6,8 @@ import Glyph, { type GlyphName } from '@/components/lucent/Glyph';
 import { aboutSection as about, type StoryPhoto } from '@/content/about';
 
 /**
- * About — a short story: Travel, Play, Train, Build, then a coda with his
- * paragraph (order and why: content/about.ts). Built from the kit's page primitives; photo frames
+ * About — a short story: Travel, Play, Train, Build, then a coda: his portrait
+ * beside his paragraph (order and why: content/about.ts). Built from the kit's page primitives; photo frames
  * are styled like the kit's shots.
  *
  * One set of markup, two layouts (styles/site.css "About"):
@@ -16,10 +16,10 @@ import { aboutSection as about, type StoryPhoto } from '@/content/about';
  *   photo cross-fades into the frame as its line takes over, under the kit's
  *   Liquid Glass segmented control (Travel · Play · Train · Build), whose lens
  *   follows along and can be used to jump between steps (StoryScroll). Each
- *   photo carries a small glass caption, like Apple Photos Memories. The coda turns the frame
- *   into a contact sheet of every photo beside the paragraph.
+ *   photo carries a small glass caption, like Apple Photos Memories. The coda
+ *   ends the frame on his portrait, uncaptioned, beside the paragraph.
  * - Resting (phones, reduced motion, no script): the same story as a plain
- *   sequence — photo, line; photo, line — then the paragraph.
+ *   sequence — photo, line; photo, line — then the portrait and the paragraph.
  *
  * It arrives the way every section does: as it scrolls into view, each part
  * rises in (the kit's data-reveal).
@@ -34,7 +34,6 @@ const CAPTION_GLYPH: Record<StoryPhoto['caption']['kind'], GlyphName> = {
 export default function About() {
   const { chapters } = about;
   const coda = chapters.length;
-  const every = chapters.flatMap((c) => c.photos);
   const step = (i: number) => ({ '--i': i }) as CSSProperties;
 
   return (
@@ -75,13 +74,18 @@ export default function About() {
                   })}
                 </figure>
               ))}
-              {/* the coda: every photo at once, like a contact sheet */}
-              <figure className="story-fig is-sheet" data-step={coda} style={step(coda)} aria-hidden="true">
-                {every.map((ph) => (
-                  <span className="story-ph" key={ph.src}>
-                    <Image src={ph.src} alt="" fill sizes="240px" style={{ objectPosition: ph.position }} />
-                  </span>
-                ))}
+              {/* the coda: his portrait alone, the story's last frame. It has no caption: it isn't a
+                  chapter, just him, beside "Now here I am" (content/about.ts) */}
+              <figure className="story-fig" data-step={coda} data-reveal="" style={step(coda)}>
+                <span className="story-ph">
+                  <Image
+                    src={about.portrait.src}
+                    alt={about.portrait.alt}
+                    fill
+                    sizes="(max-width: 760px) 100vw, 480px"
+                    style={{ objectPosition: about.portrait.position }}
+                  />
+                </span>
               </figure>
             </div>
 
