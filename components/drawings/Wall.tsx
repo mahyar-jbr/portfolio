@@ -8,11 +8,13 @@ import type { Series } from './shared';
  * Each piece sits on its paper mat at its own aspect ratio, never cropped, and
  * the pieces in a row share one height, so their tops and feet line up and
  * nothing is left over at the ends (each takes width in proportion to its
- * aspect ratio: site.css, Drawings). Portraits hang together, then the two
- * landscapes. On phones a row has room for two portraits at most: the first
- * two hang as a pair, Coronation hangs alone at their height (a portrait
- * beside a landscape would come out a stamp), and each landscape takes the
- * width.
+ * aspect ratio: site.css, Drawings). The six hang in two rows of three, two
+ * portraits and a landscape each, the second row mirroring the first; their
+ * aspect ratios add up alike (2.79 and 2.80), so the two rows come out within
+ * a pixel of one height at every width. On phones a row has room for two
+ * portraits at most, and a portrait beside a landscape would come out a stamp:
+ * the portraits hang in pairs, top and bottom, and each landscape takes the
+ * width between them.
  *
  * Godfall closes the wall as what it is: one work, a story in five panels, on
  * one sheet in reading order, numbered as it is read (the same numbers the

@@ -9,8 +9,8 @@
  *      shipping "Grade 12" anywhere on this site lowers the read. The work
  *      keeps its medium and year, which is all it needed.
  *
- * Six units, not ten: five titled standalone pieces plus Godfall, which is one
- * five-panel series rather than five separate entries.
+ * Seven units, not eleven: six titled standalone pieces plus Godfall, which is
+ * one five-panel series rather than five separate entries.
  */
 
 /**
@@ -46,6 +46,13 @@ export interface ArtPiece {
 export const intro =
   'Ink and digital work, mostly made between 2022 and 2025. There is less time for it now — most of that energy goes into what I build instead.';
 
+/**
+ * In the order they hang (Wall): by rhythm, not by year. Two rows of three,
+ * each two portraits and a landscape, so the rows come out one height; each row
+ * carries one of the heavy black pieces (Unspoken, Fracture), and the two
+ * cloaked swordsmen on the same A4 canvas, Unspoken and What Remains, hang
+ * apart. Nightmare, the exhibited piece, still opens the wall.
+ */
 export const pieces: ArtPiece[] = [
   {
     title: 'Nightmare',
@@ -58,24 +65,15 @@ export const pieces: ArtPiece[] = [
     note: 'The monsters we’re taught to fear wear the same clothes we do.',
   },
   {
-    title: 'What Remains',
+    // From Mahyar's Procreate export (2026-09-25), kept greyscale as drawn, its metadata stripped; the year is
+    // the export's own date (2026-08-04).
+    title: 'Unspoken',
     medium: 'Digital',
-    year: '2025',
-    image: '/artwork/art-2.png',
+    year: '2026',
+    image: '/artwork/art-11.png',
     width: 2480,
     height: 3508,
-    timelapse: { src: '/artwork/web/art-2-timelapse.mp4', width: 680, height: 960, duration: 29.83 },
-    note: 'Power doesn’t corrupt. It empties.',
-  },
-  {
-    title: 'Coronation',
-    medium: 'Digital',
-    year: '2023',
-    image: '/artwork/art-3.jpg',
-    width: 1577,
-    height: 1955,
-    timelapse: { src: '/artwork/web/art-3-timelapse.mp4', width: 612, height: 780, duration: 29.93 },
-    note: 'They forged him a crown. He forged himself into a weapon.',
+    note: 'He wore the mask to keep it in. His eyes let it out.',
   },
   {
     title: 'The Pilgrim',
@@ -96,6 +94,26 @@ export const pieces: ArtPiece[] = [
     height: 1150,
     timelapse: { src: '/artwork/web/art-10-timelapse.mp4', width: 1392, height: 1082, duration: 30.73 },
     note: 'Half of him wanted to be saved. The other half already won.',
+  },
+  {
+    title: 'Coronation',
+    medium: 'Digital',
+    year: '2023',
+    image: '/artwork/art-3.jpg',
+    width: 1577,
+    height: 1955,
+    timelapse: { src: '/artwork/web/art-3-timelapse.mp4', width: 612, height: 780, duration: 29.93 },
+    note: 'They forged him a crown. He forged himself into a weapon.',
+  },
+  {
+    title: 'What Remains',
+    medium: 'Digital',
+    year: '2025',
+    image: '/artwork/art-2.png',
+    width: 2480,
+    height: 3508,
+    timelapse: { src: '/artwork/web/art-2-timelapse.mp4', width: 680, height: 960, duration: 29.83 },
+    note: 'Power doesn’t corrupt. It empties.',
   },
 ];
 
