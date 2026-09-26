@@ -21,11 +21,11 @@ export const about = {
 
   /** The main story. Three paragraphs; short on purpose. */
   story: [
-    'For three years I worked the floor at Pet Valu, and ended up running it as Assistant Manager. Most of that time I was watching people try to make a decision they didn’t have enough information for — which food, which brand, what their dog actually needs. I had the AI and ML background to do something about it, so I did. BowlWise runs on the tablets in two of those stores now.',
+    'For three years I worked the floor at Pet Valu, and ended up running it as Assistant Manager. Most of that time I was watching people try to make a decision they didn’t have enough information for: which food, which brand, what their dog actually needs. I had the AI and ML background to do something about it, so I did. BowlWise runs on the tablets in two of those stores now.',
 
-    'That’s the reason I moved toward agents. Not because the technology is impressive — because it’s the most capable thing I have for making something genuinely useful. I care more about whether someone’s day got easier than whether the architecture was clever. The clever part only counts if the person on the other end notices a difference.',
+    'That’s the reason I moved toward agents. Not because the technology is impressive, but because it’s the most capable thing I have for making something genuinely useful. I care more about whether someone’s day got easier than whether the architecture was clever. The clever part only counts if the person on the other end notices a difference.',
 
-    'The other half of me draws. In grade 11 and 12 I had the highest art mark in my school, and my piece Nightmare was exhibited in Aurora. There’s less time for it now, and most of that creative energy goes into what I build instead. It’s the same instinct either way — that a thing should feel right, not just work.',
+    'The other half of me draws. In grade 11 and 12 I had the highest art mark in my school, and my piece Nightmare was exhibited in Aurora. There’s less time for it now, and most of that creative energy goes into what I build instead. It’s the same instinct either way: a thing should feel right, not just work.',
   ],
 
   /**
@@ -37,7 +37,7 @@ export const about = {
     {
       label: 'Retail floor to Assistant Manager',
       detail:
-        'Three years at Pet Valu — sales, operating under pressure, leading a team, and talking to people all day. It’s also where BowlWise came from.',
+        'Three years at Pet Valu: sales, operating under pressure, leading a team, and talking to people all day. It’s also where BowlWise came from.',
     },
     {
       label: 'Exhibited artist',

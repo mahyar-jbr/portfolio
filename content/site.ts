@@ -18,7 +18,7 @@ export const identity: Identity = {
   // signals curiosity rather than resume-assembly — which suits a site whose job is
   // credibility, not conversion.
   tagline:
-    'I build AI agent systems and full-stack products — with occasional detours into football data.',
+    'I build AI agent systems and full-stack products, with occasional detours into football data.',
 
   location: 'Aurora, ON',
   email: 'jaberi.mahyar@gmail.com',
@@ -99,12 +99,12 @@ export const sections = {
  * search result, and the link preview drift apart and nobody notices for months.
  */
 export const meta: SiteMeta = {
-  title: 'Mahyar Jaberi — AI Agent & Full-Stack Engineer',
+  title: 'Mahyar Jaberi · AI Agent & Full-Stack Engineer',
   // 2026-08-08 it read "Starting September 2026", because he hadn't started and a
   // description cannot run ahead of the facts. He started in September 2026.
   description:
     'I build AI agent systems and full-stack products. AI Solution Engineer co-op at FGF Brands.',
-  ogImageAlt: 'Mahyar Jaberi — AI Agent & Full-Stack Engineer',
+  ogImageAlt: 'Mahyar Jaberi, AI Agent & Full-Stack Engineer',
 };
 
 /**

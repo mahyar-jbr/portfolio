@@ -6,7 +6,7 @@ import { identity } from '@/content/site';
    ground, the dot canvas, one hairline sigmoid, the mark as the page icon, then
    the name. Light-theme Lucent values — a link preview has no theme. */
 
-export const alt = `${identity.fullName} — ${identity.roleTitle}`;
+export const alt = `${identity.fullName}, ${identity.roleTitle}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 

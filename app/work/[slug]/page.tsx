@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!p) return {};
   const description = p.page === 'case-study' ? p.oneLiner : p.lede;
   return {
-    title: `${p.name} — ${identity.fullName}`,
+    title: `${p.name} · ${identity.fullName}`,
     description,
     openGraph: { title: p.name, description },
   };

@@ -90,7 +90,7 @@ const bowlwise: CaseStudyProject = {
   ],
 
   oneLiner:
-    'A dog food recommendation engine that scores 260 products against veterinary nutrition standards — live on tablets in two Pet Valu stores.',
+    'A dog food recommendation engine that scores 260 products against veterinary nutrition standards, live on tablets in two Pet Valu stores.',
 
   badges: ['Live in production', 'Solo build', 'BowlWise Inc.'],
 
@@ -110,13 +110,13 @@ const bowlwise: CaseStudyProject = {
   ],
 
   problem:
-    'Dog food labels can’t be compared to each other. A raw food that’s 70% moisture prints 11% protein on the bag; a kibble prints 26%. Normalized to a dry-matter basis the raw is actually 37% — the higher of the two. Nothing on the shelf tells an owner that, and the comparison tools that exist are either brand-sponsored or blind to format. I spent three years at Pet Valu watching people make a several-hundred-dollar-a-year decision with no way to see what they were actually buying.',
+    'Dog food labels can’t be compared to each other. A raw food that’s 70% moisture prints 11% protein on the bag; a kibble prints 26%. Normalized to a dry-matter basis the raw is actually 37%, the higher of the two. Nothing on the shelf tells an owner that, and the comparison tools that exist are either brand-sponsored or blind to format. I spent three years at Pet Valu watching people make a several-hundred-dollar-a-year decision with no way to see what they were actually buying.',
 
   approach:
-    'A deterministic scoring engine, not a model. Every product is normalized to dry-matter basis at import, so the engine compares like with like, then scored 0–100 across six weighted factors drawn from AAFCO, NRC and WSAVA guidance — activity and weight goal, nutritional quality, life stage, formulation integrity, format suitability, and price value — with additive penalties for diagnosed conditions applied last. Allergens and breed/kibble-size mismatches are hard filters that return zero before scoring runs. Owners answer an eight-step profile, with no account required.',
+    'A deterministic scoring engine, not a model. Every product is normalized to dry-matter basis at import, so the engine compares like with like, then scored 0–100 across six weighted factors drawn from AAFCO, NRC and WSAVA guidance (activity and weight goal, nutritional quality, life stage, formulation integrity, format suitability, and price value), with additive penalties for diagnosed conditions applied last. Allergens and breed/kibble-size mismatches are hard filters that return zero before scoring runs. Owners answer an eight-step profile, with no account required.',
 
   result:
-    'Launched publicly on April 4, 2026 and running on customer tablets in Pet Valu Oak Ridges and Aurora. In its first measured month it drew 224 visitors and 707 page views, 54% from Canada, with 9% of sessions on tablets. Built and shipped solo — 133 commits across backend, frontend, catalog, CI, and the legal pages — and incorporated as BowlWise Inc.',
+    'Launched publicly on April 4, 2026 and running on customer tablets in Pet Valu Oak Ridges and Aurora. In its first measured month it drew 224 visitors and 707 page views, 54% from Canada, with 9% of sessions on tablets. Built and shipped solo (133 commits across backend, frontend, catalog, CI, and the legal pages) and incorporated as BowlWise Inc.',
 
   metrics: [
     {
@@ -154,7 +154,7 @@ const bowlwise: CaseStudyProject = {
   decisions: [
     {
       decision: 'A deterministic scoring engine instead of a model',
-      why: 'Rule-based scoring is the cold start — a model needs behavioural data that a launch-day product doesn’t have yet. It also means every score can be explained to the owner line by line, which matters when you’re asking someone to trust a recommendation about their dog’s health. ML is gated behind 500+ tracked purchases, and until then calling this “AI-powered” would be false.',
+      why: 'Rule-based scoring is the cold start: a model needs behavioural data that a launch-day product doesn’t have yet. It also means every score can be explained to the owner line by line, which matters when you’re asking someone to trust a recommendation about their dog’s health. ML is gated behind 500+ tracked purchases, and until then calling this “AI-powered” would be false.',
     },
     {
       decision: 'Normalize to dry-matter basis at import, not per request',
@@ -162,11 +162,11 @@ const bowlwise: CaseStudyProject = {
     },
     {
       decision: 'Never impute missing nutrition data',
-      why: 'If moisture is missing, the converter returns null rather than assuming a default. Fabricating a plausible number would produce a confident score built on an invented input — the failure mode most likely to make the whole engine untrustworthy. Unpublished values score neutral, so brands that are transparent about gaps aren’t punished for it.',
+      why: 'If moisture is missing, the converter returns null rather than assuming a default. Fabricating a plausible number would produce a confident score built on an invented input, the failure mode most likely to make the whole engine untrustworthy. Unpublished values score neutral, so brands that are transparent about gaps aren’t punished for it.',
     },
     {
       decision: 'Strip health conditions from the recommendations response',
-      why: 'That endpoint is public and unauthenticated — anyone with a pet’s share link can curl it. Health conditions are PIPEDA-classified health data, so the profile is split into an internal object the engine scores against and a public object the API returns, and the health fields never make the round trip.',
+      why: 'That endpoint is public and unauthenticated: anyone with a pet’s share link can curl it. Health conditions are PIPEDA-classified health data, so the profile is split into an internal object the engine scores against and a public object the API returns, and the health fields never make the round trip.',
     },
     {
       decision: 'Magic-link auth, with the token stored only as a SHA-256 hash',
@@ -178,12 +178,12 @@ const bowlwise: CaseStudyProject = {
     },
     {
       decision: 'A frozen regression baseline for the scoring engine',
-      why: 'Scoring changes are easy to make and hard to evaluate — a tweak that helps one profile can quietly wreck another. Fifty frozen (profile, product, score) tuples across five representative dogs get re-scored on demand and the run exits pass, yellow, or red on how many drifted.',
+      why: 'Scoring changes are easy to make and hard to evaluate: a tweak that helps one profile can quietly wreck another. Fifty frozen (profile, product, score) tuples across five representative dogs get re-scored on demand and the run exits pass, yellow, or red on how many drifted.',
     },
   ],
 
   contribution: {
-    role: 'Solo — founder and sole engineer',
+    role: 'Founder and sole engineer',
     teamSize: 1,
     owned: 'Backend, frontend, scoring engine, catalog, CI, deployment, and the privacy and terms pages',
   },
@@ -232,13 +232,13 @@ export const heldBack: CaseStudyProject = {
   ],
 
   problem:
-    'Every budgeting app remembers your transactions. None of them remember you. Telling Mint that you’re bulking this month, or that there’s a birthday party this week, is impossible — so the advice stays generic and the app stays passive, waiting for you to open it and read a pie chart you already understand.',
+    'Every budgeting app remembers your transactions. None of them remember you. Telling Mint that you’re bulking this month, or that there’s a birthday party this week, is impossible, so the advice stays generic and the app stays passive, waiting for you to open it and read a pie chart you already understand.',
 
   approach:
-    'A single agent with a memory of the person, not just the ledger. Behavioural observations are written as first-class "memories," embedded with Voyage AI at 1024 dimensions and retrieved by vector search on MongoDB Atlas, so the agent recalls context by meaning rather than keyword. It runs as a LangGraph ReAct loop over 18 purpose-built tools — memory, goals, budgets, interventions, analytics — plus read-only MongoDB access through MCP, and streams its answer back through three services on a single asyncio event loop. Statements arrive as CSV or PDF and are parsed by a separate Gemini multimodal pass.',
+    'A single agent with a memory of the person, not just the ledger. Behavioural observations are written as first-class "memories," embedded with Voyage AI at 1024 dimensions and retrieved by vector search on MongoDB Atlas, so the agent recalls context by meaning rather than keyword. It runs as a LangGraph ReAct loop over 18 purpose-built tools (memory, goals, budgets, interventions, analytics) plus read-only MongoDB access through MCP, and streams its answer back through three services on a single asyncio event loop. Statements arrive as CSV or PDF and are parsed by a separate Gemini multimodal pass.',
 
   result:
-    'Built in 19 days for the Google Cloud Rapid Agent Hackathon on the MongoDB track, and verified end to end on live infrastructure before the code freeze — Clerk sign-in through to a real Gemini reply grounded in real Atlas data. I wrote 156 of the 201 commits and owned the agent layer, the deployment, and the streaming path across all three services.',
+    'Built in 19 days for the Google Cloud Rapid Agent Hackathon on the MongoDB track, and verified end to end on live infrastructure before the code freeze, from Clerk sign-in through to a real Gemini reply grounded in real Atlas data. I wrote 156 of the 201 commits and owned the agent layer, the deployment, and the streaming path across all three services.',
 
   metrics: [
     {
@@ -254,19 +254,19 @@ export const heldBack: CaseStudyProject = {
     {
       value: '19',
       label: 'Days from first commit to freeze',
-      source: 'git log — 2026-05-21 to 2026-06-08, 201 commits',
+      source: 'git log: 2026-05-21 to 2026-06-08, 201 commits',
     },
     {
       value: '78%',
       label: 'Of commits mine',
-      source: 'git log author counts — 156 of 201',
+      source: 'git log author counts: 156 of 201',
     },
   ],
 
   decisions: [
     {
       decision: 'Plain-text chunked streaming instead of SSE',
-      why: 'SSE buys named events, auto-reconnect and event IDs — none of which a single-turn response stream that closes when the agent finishes actually uses. The one place it earns its keep is statement ingest, which takes 5–30 seconds; there the progress events are the difference between a visible pipeline and a spinner the user assumes has hung.',
+      why: 'SSE buys named events, auto-reconnect and event IDs, none of which a single-turn response stream that closes when the agent finishes actually uses. The one place it earns its keep is statement ingest, which takes 5–30 seconds; there the progress events are the difference between a visible pipeline and a spinner the user assumes has hung.',
     },
     {
       decision: 'Tools never call other tools',
@@ -278,18 +278,18 @@ export const heldBack: CaseStudyProject = {
     },
     {
       decision: 'Bucket spending anomalies in Python, not with Mongo $dateTrunc',
-      why: 'The Mongo aggregation would have been cleaner, but the mock driver the test suite runs on doesn’t implement $dateTrunc — so every affected test would have had to hit real Atlas at roughly 30 seconds a run instead of under one. Hermetic tests were worth the uglier query.',
+      why: 'The Mongo aggregation would have been cleaner, but the mock driver the test suite runs on doesn’t implement $dateTrunc, so every affected test would have had to hit real Atlas at roughly 30 seconds a run instead of under one. Hermetic tests were worth the uglier query.',
     },
     {
       decision: 'Read from the database before the graph runs, never inside the prompt builder',
-      why: 'This one came out of a bug. The prompt builder runs inside an already-running event loop, and the async Mongo driver binds cursors to the loop that created them — so a read from inside it fails with "future attached to a different loop" on the second message. Pre-fetching everything at the entry point and passing it through graph state made the prompt builder pure and the failure impossible.',
+      why: 'This one came out of a bug. The prompt builder runs inside an already-running event loop, and the async Mongo driver binds cursors to the loop that created them, so a read from inside it fails with "future attached to a different loop" on the second message. Pre-fetching everything at the entry point and passing it through graph state made the prompt builder pure and the failure impossible.',
     },
   ],
 
   contribution: {
     role: 'Agent architecture and deployment',
     teamSize: 3,
-    owned: 'The agent layer end to end — tools, LangGraph wiring, MCP integration, prompt — plus the container deploy and the streaming path across all three services',
+    owned: 'The agent layer end to end (tools, LangGraph wiring, MCP integration, prompt), plus the container deploy and the streaming path across all three services',
   },
 };
 
@@ -643,7 +643,7 @@ const moneymind: SoonProject = {
   // the dash off the start of a line and "I" with its verb when the bubble wraps.
   cameo: {
     image: { src: '/work/moneymind/moose.webp', width: 243, height: 512 },
-    line: 'Too early. Don’t rush\u00a0— I\u00a0haven’t finished my coffee.',
+    line: 'Too early. Don’t rush. I\u00a0haven’t finished my coffee.',
   },
 };
 

@@ -44,7 +44,7 @@ export interface ArtPiece {
 }
 
 export const intro =
-  'Ink and digital work, mostly made between 2022 and 2025. There is less time for it now — most of that energy goes into what I build instead.';
+  'Ink and digital work, mostly made between 2022 and 2025. There is less time for it now. Most of that energy goes into what I build instead.';
 
 /**
  * In the order they hang (Wall), which the room pages through: for the wall's

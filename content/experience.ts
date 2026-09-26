@@ -78,7 +78,7 @@ export const roles: Role[] = [
       { title: 'Retail Sales Associate', since: 'Aug 2023' },
     ],
     context:
-      'Three years on the retail floor, promoted to Assistant Manager — and the reason BowlWise exists.',
+      'Three years on the retail floor, promoted to Assistant Manager, and the reason BowlWise exists.',
     bullets: [
       'Trained new staff on service, nutrition basics, store routines, safety and the POS, and helped plan schedules and tasks.',
       'Tracked weekly sales patterns and adjusted product placement, signage and recommendations to match.',
