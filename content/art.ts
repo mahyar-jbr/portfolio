@@ -16,8 +16,8 @@
 /**
  * A recording of the piece being drawn. `src` is the web copy in
  * public/artwork/web/, re-encoded (2026-09-24, AVFoundation) from Mahyar's
- * original export beside the drawing (art-N-timelaps.mp4), which the page
- * never loads: H.264 High at constant quality 0.6 (0.58 for The Pilgrim), at
+ * original exports (art-N-timelaps.mp4, kept out of the repo since 2026-09-25):
+ * H.264 High at constant quality 0.6 (0.58 for The Pilgrim), at
  * the original's own size, no sound, fast start, a keyframe every 2s, under
  * 3 MB each. Coronation's two lone blank frames near the end, an export
  * glitch, hold the frame before instead. `width`, `height` and `duration`
