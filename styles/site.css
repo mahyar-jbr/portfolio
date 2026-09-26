@@ -717,6 +717,9 @@ html.hero-intro-again .site-hero {
   html.hero-intro .site-hero :is(.hero-name, .hero-actions) {
     animation: none;
   }
+  /* the blur clears on a plain ease-out, not the settle curve: settle is
+     sharp by a quarter of the way in, while the ink is still faint, and a
+     crisp grey ghost reads as a slow font rather than a focus pull */
   html.hero-intro .site-hero .hero-line > span {
     animation:
       hero-drop 880ms var(--ease-hero) backwards,
