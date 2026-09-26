@@ -21,7 +21,7 @@ import { prefersReducedMotion } from '@/lib/lucent';
 const KEY = 'lucent:theme';
 type Theme = 'light' | 'dark';
 
-/* Lucent `bg` in each theme, for the browser chrome (app/layout.tsx viewport). */
+/* Lucent `bg` in each theme, for the browser chrome (app/layout.tsx viewport and BOOT). */
 const GROUND: Record<Theme, string> = { light: '#fbfbfa', dark: '#191919' };
 
 const darkQuery = () => matchMedia('(prefers-color-scheme: dark)');
@@ -63,7 +63,13 @@ export default function ThemeToggle() {
     const mq = darkQuery();
     const onSystem = () => setDark(current() === 'dark');
     mq.addEventListener('change', onSystem);
-    return () => mq.removeEventListener('change', onSystem);
+    /* it shows only from here on (styles/site.css): a tap before this would be lost */
+    const root = document.documentElement;
+    root.classList.add('theme-wired');
+    return () => {
+      mq.removeEventListener('change', onSystem);
+      root.classList.remove('theme-wired');
+    };
   }, []);
 
   function toggle() {

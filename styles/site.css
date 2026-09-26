@@ -35,6 +35,15 @@ body {
 img {
   max-width: 100%;
 }
+/* Phones. Every control here answers a tap itself (the kit's soft press, the
+   tiles' and rows' own), so the system's tap box, grey on iOS and blue on
+   Android, would be a second answer: it goes. And turning an iPhone on its
+   side mustn't inflate the text: 100%, never none, so page zoom still works. */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
 
 /* Every interactive element shows the kit's focus ring: 3px accent, offset 3px.
    :where() keeps this at zero specificity so the kit's own rules win. */
@@ -88,22 +97,62 @@ img {
 /* ---------- Theme toggle (components/lucent/ThemeToggle.tsx) ----------
    The kit's glass icon button, fixed in the top-right corner level with the
    nav capsule; on phones, where the capsule takes the width, it floats in the
-   bottom-right corner instead. It only appears when scripts run. */
+   bottom-right corner instead. It appears once ThemeToggle has mounted
+   (html.theme-wired): shown before that, on a slow phone, a tap would be lost.
+   With scripts blocked it never appears. */
 .site-theme {
   position: fixed;
   z-index: var(--layer-nav);
   top: calc(env(safe-area-inset-top, 0px) + 28px);
   right: calc(env(safe-area-inset-right, 0px) + 28px);
   color: var(--ink);
+  /* the kit's own button fades, plus coming and going */
+  transition: background var(--dur-jelly) var(--ease-settle), color var(--dur-jelly) var(--ease-settle),
+    opacity var(--dur-jelly) var(--ease-settle), scale var(--dur-jelly) var(--ease-settle), visibility 0s;
 }
-html:not(.js) .site-theme {
-  display: none;
+html:not(.theme-wired) .site-theme {
+  visibility: hidden;
+  opacity: 0;
 }
 @media (max-width: 720px) {
   .site-theme {
     top: auto;
     bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-5));
     right: calc(env(safe-area-inset-right, 0px) + var(--space-4));
+  }
+  /* On a phone that corner is over the content, and the toggle is the thing
+     on screen needed least (the page follows the system's theme). So it sits
+     out the opening, where it would cover the details card, and steps aside
+     while the nav is compact, that is while the visitor reads on down (the
+     kit's navScroll); any scroll back up brings both back, as Safari's own bar
+     does. A state that answers the scroll's direction, not scroll-linked
+     motion. Scale, not transform: the kit's press owns the transform. */
+  .name-in-view .site-theme,
+  :root:has(.site-nav .lu-nav.is-compact) .site-theme {
+    visibility: hidden;
+    opacity: 0;
+    scale: 0.9;
+    transition: opacity var(--dur-exit) var(--ease-exit), scale var(--dur-exit) var(--ease-exit),
+      visibility 0s var(--dur-exit);
+  }
+}
+/* After a tap, a touch screen keeps :hover on the button, and the kit's 8%
+   hover tint would leave it see-through over whatever scrolls under it until
+   something else is tapped: there it keeps its glass. */
+@media (hover: none) {
+  .site-theme.lu-btn.is-glass:hover {
+    background: var(--glass-fill);
+  }
+}
+/* In dark, the clear glass over white paper or a bright screenshot turns mid
+   grey and the moon all but vanishes (2.4:1): this one button takes the
+   regular glass there. */
+:root[data-theme='dark'] .site-theme {
+  --glass-fill: var(--glass-fill-strong);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .site-theme {
+    --glass-fill: var(--glass-fill-strong);
   }
 }
 .theme-glyph {
@@ -152,6 +201,14 @@ html:not(.js) .site-theme {
   .theme-bite,
   .theme-rays {
     transition: none;
+  }
+  .site-theme {
+    transition: background 150ms ease, color 150ms ease, opacity 150ms ease, visibility 0s;
+  }
+  .name-in-view .site-theme,
+  :root:has(.site-nav .lu-nav.is-compact) .site-theme {
+    scale: none;
+    transition: opacity 150ms ease, visibility 0s 150ms;
   }
 }
 /* The new theme spreads from the button as a circle; the kit's theme
@@ -325,13 +382,22 @@ a > svg.site-out {
   color: var(--ink-secondary);
   transition: transform var(--dur-jelly) var(--ease-settle), color var(--dur-jelly) var(--ease-settle);
 }
-a:hover > svg.site-out {
-  transform: translate(1px, -1px);
-  color: var(--ink);
+@media (hover: hover) {
+  a:hover > svg.site-out {
+    transform: translate(1px, -1px);
+    color: var(--ink);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   a:hover > svg.site-out {
     transform: none;
+  }
+}
+/* a plain text link has no press of its own, and the system's tap box is gone
+   (Page): on a touch screen it dims while pressed */
+@media (hover: none) {
+  a:has(> svg.site-out):active {
+    opacity: 0.6;
   }
 }
 
@@ -1935,7 +2001,9 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
    - over 800px, every tile on one row;
    - 480–800px, the email tile takes the row and the others pair up under it
      (a last odd one takes its row too);
-   - phones, under 480px, one to a row, the link tiles lying down. */
+   - phones, under 480px, one to a row, the link tiles lying down;
+   - phones on their side, the link tiles lying down in pairs, so the email and
+     both links fit one short screen instead of each link standing 180px tall. */
 .site-contact {
   grid-template-columns: 2fr;
   grid-auto-columns: 1fr;
@@ -1972,6 +2040,8 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   .site-contact {
     grid-template-columns: minmax(0, 1fr);
   }
+}
+@media (max-width: 479px), (orientation: landscape) and (max-height: 500px) {
   .site-contact > a.lu-contact-tile {
     grid-template-columns: 40px minmax(0, 1fr);
     grid-template-rows: auto auto;
@@ -1989,6 +2059,11 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   }
   .site-contact > a.lu-contact-tile .lu-contact-value {
     grid-row: 2;
+  }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  .site-contact > .contact-email {
+    min-height: 0;
   }
 }
 /* the kit cuts a value short with an ellipsis; here, if one ever runs out of
@@ -2043,8 +2118,10 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   border-radius: 6px;
   outline-offset: 2px;
 }
-.contact-address:hover {
-  text-decoration-color: currentColor;
+@media (hover: hover) {
+  .contact-address:hover {
+    text-decoration-color: currentColor;
+  }
 }
 /* Copy: the kit's small button, as a tint of paper on the ink tile */
 .lu-btn.contact-copy {
@@ -2056,12 +2133,34 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   color: var(--on-accent);
   background: color-mix(in srgb, var(--on-accent) 16%, transparent);
 }
-.lu-btn.contact-copy:hover {
-  background: color-mix(in srgb, var(--on-accent) 24%, transparent);
+@media (hover: hover) {
+  .lu-btn.contact-copy:hover {
+    background: color-mix(in srgb, var(--on-accent) 24%, transparent);
+  }
 }
 .lu-btn.contact-copy svg {
   width: 16px;
   height: 16px;
+}
+/* Copied (components/lucent/CopyEmail.tsx): for as long as the toast stays, the
+   button itself says so, where a phone's eye and thumb already are. The two
+   words share one cell, so the pill keeps its width and nothing moves. */
+.copy-words {
+  display: grid;
+}
+.copy-words > * {
+  grid-area: 1 / 1;
+}
+.contact-copy :is(.copy-word, .copy-glyph, .copy-done) {
+  transition: opacity var(--dur-exit) var(--ease-exit);
+}
+.contact-copy .copy-done,
+.contact-copy[data-copied] :is(.copy-word, .copy-glyph) {
+  opacity: 0;
+}
+.contact-copy[data-copied] .copy-done {
+  opacity: 1;
+  transition: opacity var(--dur-jelly) var(--ease-settle);
 }
 /* the capsule stays the kit's 36px, but it takes a tap across a full 44px */
 .lu-btn.contact-copy::after {
@@ -2084,6 +2183,17 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   .lu-btn.contact-copy {
     z-index: 1;
   }
+  /* the tile dips while pressed, as the project cards do: the system's tap box
+     is gone (Page), and it only ever outlined the address, not the tile */
+  .site-contact a.lu-contact-tile,
+  .contact-email {
+    transition: box-shadow var(--dur-jelly) var(--ease-settle), background var(--dur-jelly) var(--ease-settle),
+      scale var(--dur-press) var(--ease-press);
+  }
+  .site-contact a.lu-contact-tile:active,
+  .contact-email:has(.contact-address:active) {
+    scale: 0.98;
+  }
 }
 /* on the ink tile an ink ring would vanish: its controls ring in paper */
 .contact-email :focus-visible {
@@ -2101,18 +2211,27 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   .site-contact .lu-contact-tile,
   .site-contact .lu-contact-go,
   .lu-btn.contact-copy,
+  .contact-copy :is(.copy-word, .copy-glyph, .copy-done),
   .contact-address {
     transition-duration: 150ms;
     transition-timing-function: ease;
+  }
+  /* pressed, a tile changes shade instead of size */
+  .site-contact a.lu-contact-tile:active,
+  .contact-email:has(.contact-address:active) {
+    scale: none;
+  }
+  .site-contact a.lu-contact-tile:active {
+    background: var(--surface-raised);
   }
 }
 
 /* ---------- Footer (components/lucent/Footer.tsx) ----------
    Small print the way Apple sets it: a hairline across the page column, then
    one quiet line, the facts on the left and the one action on the right. It
-   stands a section's rhythm below the last content. On phones it ends clear of
-   the theme toggle, which floats in the bottom-right corner there (and only
-   appears when scripts run). */
+   stands a section's rhythm below the last content. On phones the two stack on
+   the left, as apple.com sets them on an iPhone, so Back to top is never under
+   the theme toggle floating in the bottom-right corner there. */
 /* On a page shorter than the screen (the 404) the small print keeps to the foot
    of the screen, not halfway up it: the page is at least a screen tall and
    <main> takes up the slack. Nothing else in <body> is in the flow (the nav,
@@ -2160,8 +2279,16 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   position: absolute;
   inset: -13px calc(var(--space-2) * -1);
 }
-.site-footer-top:hover {
-  color: var(--ink);
+@media (hover: hover) {
+  .site-footer-top:hover {
+    color: var(--ink);
+  }
+}
+/* no tap box on touch (Page): it dims while pressed */
+@media (hover: none) {
+  .site-footer-top:active {
+    opacity: 0.6;
+  }
 }
 .site-footer-top svg {
   width: 13px;
@@ -2174,9 +2301,25 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   }
 }
 @media (max-width: 720px) {
-  .js .lu-footer.site-footer {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + var(--space-5) * 2 + 44px);
+  .site-footer-row {
+    flex-direction: column;
+    align-items: flex-start;
   }
+}
+/* The 404 (app/not-found.tsx) fits one screen: its message sits in the middle
+   of the space above the small print rather than at the top of it, and there is
+   no top to go back to. */
+main:has(> .site-route > .site-404) {
+  display: flex;
+  flex-direction: column;
+}
+main:has(> .site-route > .site-404) > .site-route {
+  display: grid;
+  flex-grow: 1;
+  align-content: center;
+}
+.lu-root:has(.site-404) .site-footer-top {
+  display: none;
 }
 
 /* ---------- Drawings (components/sections/Drawings.tsx, components/drawings/*) ----------

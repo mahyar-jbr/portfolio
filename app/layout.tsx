@@ -48,7 +48,9 @@ export const viewport: Viewport = {
    form from the first frame instead of switching after hydration:
    - `js`: scripts run.
    - `data-theme`: the light or dark theme the visitor chose with the toggle
-     (components/lucent/ThemeToggle.tsx), so a remembered choice never flashes.
+     (components/lucent/ThemeToggle.tsx), so a remembered choice never flashes;
+     the browser's bar takes the same ground (the theme-color metas above, the
+     same two colours as the viewport export and ThemeToggle's GROUND).
    - `name-in-view` (home only): the hero's name is on screen, so the nav
      capsule doesn't repeat it (components/hero/NavHandoff.tsx keeps it true).
    - `pin`: the About story can pin and step (motion allowed, screen tall
@@ -67,7 +69,7 @@ export const viewport: Viewport = {
      it starts if it never finishes. A tab opened in the background waits
      until it is first shown. */
 const BOOT = `(function(){var d=document.documentElement;d.classList.add('js');
-try{var t=localStorage.getItem('lucent:theme');if(t==='light'||t==='dark')d.setAttribute('data-theme',t);}catch(e){}
+try{var t=localStorage.getItem('lucent:theme');if(t==='light'||t==='dark'){d.setAttribute('data-theme',t);document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.content=t==='dark'?'#191919':'#fbfbfa';});}}catch(e){}
 try{var n=performance.getEntriesByType('navigation')[0];if(n&&n.type==='reload'&&location.pathname==='/'){history.scrollRestoration='manual';if(location.hash)history.replaceState(history.state,'',location.pathname+location.search);addEventListener('load',function(){scrollTo(0,0);setTimeout(function(){history.scrollRestoration='auto';},0);});}}catch(e){}
 if(location.pathname==='/')d.classList.add('name-in-view');
 if(window.matchMedia&&matchMedia('(prefers-reduced-motion: no-preference) and (min-height: 600px)').matches)d.classList.add('pin');
@@ -77,8 +79,11 @@ try{if(location.pathname==='/'&&!location.hash){var nv=performance.getEntriesByT
 
 /* Inter stands in for Apple's system faces on every other device (styles/site.css,
    "Type on non-Apple devices"). Its opsz axis carries the Display cut. It is
-   exposed as --font-inter on :root, where the kit's font tokens are defined. */
-const inter = Inter({ subsets: ['latin'], axes: ['opsz'], display: 'swap' });
+   exposed as --font-inter on :root, where the kit's font tokens are defined.
+   Not preloaded: Apple devices never reach it in the stack, so a preload made
+   every iPhone fetch 73KB it doesn't use; elsewhere it loads with the first
+   text, behind next/font's size-matched fallback. */
+const inter = Inter({ subsets: ['latin'], axes: ['opsz'], display: 'swap', preload: false });
 
 const navItems = [sections.work, sections.experience, sections.drawings, sections.contact].map((s) => ({
   id: s.id,

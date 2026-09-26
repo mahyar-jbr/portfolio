@@ -1,4 +1,5 @@
 import BrandIcon, { brandFor } from './BrandIcon';
+import CopyEmail from './CopyEmail';
 import LinkOut from './LinkOut';
 
 /**
@@ -18,11 +19,11 @@ import LinkOut from './LinkOut';
  *   it is there to read or type on another device, and its own context menu
  *   (right-click, a long press) offers to copy it. It works with scripts blocked.
  *   On a touch screen it reaches over the rest of the tile (styles/site.css).
- * - Copy, where the tile's arrow would be: Lucent.auto() copies the address and
- *   shows the "Email copied" toast, or, if the clipboard is refused, shows the
- *   address itself. It needs the kit's runtime, so it only appears once
- *   Lucent.auto() has wired it: not with scripts blocked, nor if the bundle
- *   fails to load.
+ * - Copy, where the tile's arrow would be (CopyEmail): it copies the address,
+ *   says "Copied" on itself and shows the kit's "Email copied" toast, or, if the
+ *   clipboard is refused, shows the address itself. It needs the kit's runtime,
+ *   so it only appears once Lucent.auto() has wired it: not with scripts
+ *   blocked, nor if the bundle fails to load.
  *
  * The other tiles are LinkOuts: GitHub and LinkedIn open in a new tab and say so
  * to screen readers; the tile's own ↗ is the sighted cue, so LinkOut adds none.
@@ -84,19 +85,7 @@ export default function ContactTiles({
         {/* last in the source, drawn in the top corner (styles/site.css): a screen
             reader hears "Email", the address, then Copy, and Tab reaches the
             address, the way in that always works, before the extra */}
-        <button
-          type="button"
-          className="lu-btn is-small contact-copy"
-          data-copy={email.address}
-          data-toast="Email copied"
-          aria-label="Copy email address"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <rect x="8" y="8" width="13" height="13" rx="3" />
-            <path d="M16 8V6a3 3 0 0 0-3-3H6a3 3 0 0 0-3 3v7a3 3 0 0 0 3 3h2" />
-          </svg>
-          Copy
-        </button>
+        <CopyEmail address={email.address} />
       </div>
       {links.map((l) => (
         <LinkOut
