@@ -1099,19 +1099,16 @@ html.hero-intro-again .site-hero {
 .site-journey .story-text.is-coda {
   transition: none;
 }
-/* Reduced motion: no drift, a 150ms fade, and the transition over with it:
-   the browser's own group animation (250ms) held it, the clicks it takes and
-   the move of focus 100ms longer. */
-@media (prefers-reduced-motion: reduce) {
-  .site-journey::view-transition-old(root) {
-    animation: site-journey-out 150ms ease both;
-  }
-  .site-journey::view-transition-new(root) {
-    animation: site-fade 150ms ease both;
-  }
-  .site-journey::view-transition-group(root) {
-    animation: none;
-  }
+/* Leaving the hero, the lens comes on under the item the reader chose at
+   once, its label white with it (coming back, both go at once). Faded in, the
+   lens (200ms) and its label (dur-jelly) passed through a grey label on a grey
+   pill as the page cross-faded under them. The lens is already under the item
+   (lib/journey.ts holdLens), and an item's padding still morphs. */
+.site-journey[data-journey-handoff] .site-nav .lu-lens {
+  transition: none;
+}
+.site-journey[data-journey-handoff] .site-nav .lu-nav-item {
+  transition-duration: 0s, var(--dur-morph);
 }
 
 /* ---------- Projects ---------- */

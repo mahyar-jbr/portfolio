@@ -19,7 +19,7 @@
  *   stay put, live, over it (styles/site.css, "Navigation journey"). Without
  *   view transitions the page dips out and back instead, as the kit's page
  *   swap does without them, and is set down just as short.
- * - Reduced motion: the page is simply there, under a fade of 150ms at most.
+ * - Reduced motion: the page is simply there, as the kit's own scrollTo does.
  *
  * Either way the lens goes straight to the section's item. Once the page has
  * landed, the section takes focus (keyboards and screen readers continue from
@@ -256,7 +256,8 @@ function focusOn(el: HTMLElement): void {
  * moves it through every section the page passes, is held off until the page
  * lands. The spy only holds off for 900ms after a nav click, and not at all
  * after the hero's buttons. To #top there is no item: the lens stays where it
- * is and fades as the hero comes back (NavHandoff). */
+ * is and goes as the hero comes back (NavHandoff). While the hero hides it,
+ * it moves under the item at once, to come on there rather than slide in. */
 let hold: { lens: Lucent.LensApi; select: Lucent.LensApi['select'] } | null = null;
 
 const navLens = () => document.querySelector<Nav>('.site-nav .lu-nav')?.__luLens ?? null;
@@ -267,7 +268,8 @@ function holdLens(el: HTMLElement): void {
   const lens = navLens();
   if (!lens) return;
   const item = lens.items.find((it) => it.getAttribute('href') === `#${el.id}`) ?? null;
-  if (item && lens.current !== item) lens.select(item);
+  const hidden = root().classList.contains('hero-in-view');
+  if (item && (hidden || lens.current !== item)) lens.select(item, hidden);
   const select = lens.select;
   /* the spy calls the lens's select; a click on an item calls the kit's own */
   lens.select = (it, instant) => {
@@ -412,7 +414,7 @@ function stop(): void {
   dip = null;
   if (d) {
     d.cancel();
-    if (!f) root().classList.remove('site-journey');
+    if (!f) unmark();
   }
   unlisten();
   releaseLens();
@@ -554,21 +556,32 @@ function settleInView(from: number, to: number) {
   });
 }
 
-/* Runs `update` under the journey's cross-fade (styles/site.css), as the
-   journey's own: input hands the page back through it, and the capsule takes
-   clicks through it (onClick). */
-function fade(update: () => void): ViewTransition {
+/* A far journey is under way (styles/site.css, "Navigation journey"): which
+   way the page goes, for the old view's drift, and whether the lens comes on
+   with it, leaving the hero, or goes, coming back to it. */
+function mark(el: HTMLElement, dir: number) {
   const html = root();
   html.classList.add('site-journey');
+  html.dataset.journey = dir > 0 ? 'down' : 'up';
+  html.toggleAttribute('data-journey-handoff', html.classList.contains('hero-in-view') !== (el.id === 'top'));
+}
+function unmark() {
+  const html = root();
+  html.classList.remove('site-journey');
+  delete html.dataset.journey;
+  html.removeAttribute('data-journey-handoff');
+}
+
+/* Runs `update` under the journey's cross-fade, as the journey's own: input
+   hands the page back through it, and the capsule takes clicks through it
+   (onClick). */
+function fade(update: () => void): ViewTransition {
   listen();
   const vt = document.startViewTransition(update);
   fold = vt;
   vt.finished.finally(() => {
     if (fold === vt) fold = null;
-    if (!fold) {
-      html.classList.remove('site-journey');
-      delete html.dataset.journey;
-    }
+    if (!fold && !dip) unmark();
     idle();
   });
   return vt;
@@ -585,8 +598,7 @@ function travel(el: HTMLElement, to: number) {
   const id = course;
   const { dir, stretch } = shortOf(to);
   const start = to - dir * stretch;
-  /* the way the old view drifts off (styles/site.css) */
-  root().dataset.journey = dir > 0 ? 'down' : 'up';
+  mark(el, dir);
   const vt = fade(() => {
     /* a journey begun since (a second click within a frame) has the page */
     if (course !== id) return;
@@ -613,7 +625,7 @@ function dipTo(el: HTMLElement, to: number) {
   const main = document.querySelector<HTMLElement>('main') ?? document.body;
   const { dir, stretch } = shortOf(to);
   const start = to - dir * stretch;
-  html.classList.add('site-journey');
+  mark(el, dir);
   listen();
   const out = main.animate({ opacity: [1, 0] }, { duration: 140, easing: 'ease-in', fill: 'forwards' });
   dip = out;
@@ -631,7 +643,7 @@ function dipTo(el: HTMLElement, to: number) {
         () => {
           if (dip !== back) return;
           dip = null;
-          if (!fold) html.classList.remove('site-journey');
+          if (!fold) unmark();
           idle();
         },
         () => {},
@@ -641,22 +653,17 @@ function dipTo(el: HTMLElement, to: number) {
   );
 }
 
-/** Reduced motion: no travel, the page is there (a fade of at most 150ms). */
+/**
+ * Reduced motion: no travel, the page is simply there, as with the kit's own
+ * scrollTo (and its page swap, which plays no transition then). A fade would
+ * be allowed, but a view transition takes every click on the page while it
+ * lasts.
+ */
 function jump(el: HTMLElement, to: number) {
   stop();
-  const id = course;
   holdLens(el);
-  if (canFade()) {
-    delete root().dataset.journey;
-    fade(() => {
-      if (course === id) scrollToY(to);
-    }).finished.finally(() => {
-      if (course === id) land(el);
-    });
-  } else {
-    scrollToY(to);
-    land(el);
-  }
+  scrollToY(to);
+  land(el);
 }
 
 /** Takes the page to `el`, a section (or #top). */
