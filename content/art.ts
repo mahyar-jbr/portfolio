@@ -47,11 +47,13 @@ export const intro =
   'Ink and digital work, mostly made between 2022 and 2025. There is less time for it now — most of that energy goes into what I build instead.';
 
 /**
- * In the order they hang (Wall): by rhythm, not by year. Two rows of three,
- * each two portraits and a landscape, so the rows come out one height; each row
- * carries one of the heavy black pieces (Unspoken, Fracture), and the two
- * cloaked swordsmen on the same A4 canvas, Unspoken and What Remains, hang
- * apart. Nightmare, the exhibited piece, still opens the wall.
+ * In the order they hang (Wall), which the room pages through: for the wall's
+ * rhythm, not by year. Two rows of three, each two portraits and a landscape,
+ * the second mirroring the first, so the rows come out one height. Nightmare,
+ * the exhibited piece, opens the wall and the newest hangs beside it, in the
+ * first row seen; the two heavy-inked cloaked figures on the same A4 canvas,
+ * Unspoken and What Remains, hang in different rows, and pale Coronation sits
+ * between the two dark pieces of the second.
  */
 export const pieces: ArtPiece[] = [
   {
@@ -65,15 +67,15 @@ export const pieces: ArtPiece[] = [
     note: 'The monsters we’re taught to fear wear the same clothes we do.',
   },
   {
-    // From Mahyar's Procreate export (2026-09-25), kept greyscale as drawn, its metadata stripped; the year is
-    // the export's own date (2026-08-04).
+    // Added 2026-09-25 from Mahyar's own export, full size: drawn in greys only, so a greyscale PNG holds it
+    // pixel for pixel, with the file's metadata stripped. The year is the file's own date, 4 August 2026.
     title: 'Unspoken',
     medium: 'Digital',
     year: '2026',
     image: '/artwork/art-11.png',
     width: 2480,
     height: 3508,
-    note: 'He wore the mask to keep it in. His eyes let it out.',
+    note: 'The mask kept him silent. His eyes never learned how.',
   },
   {
     title: 'The Pilgrim',

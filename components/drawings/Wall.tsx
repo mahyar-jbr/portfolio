@@ -10,8 +10,8 @@ import type { Series } from './shared';
  * nothing is left over at the ends (each takes width in proportion to its
  * aspect ratio: site.css, Drawings). The six hang in two rows of three, two
  * portraits and a landscape each, the second row mirroring the first; their
- * aspect ratios add up alike (2.79 and 2.80), so the two rows come out within
- * a pixel of one height at every width. On phones a row has room for two
+ * aspect ratios add up alike (2.79 and 2.80), so the two rows come out a pixel
+ * apart in height at most, at the widest. On phones a row has room for two
  * portraits at most, and a portrait beside a landscape would come out a stamp:
  * the portraits hang in pairs, top and bottom, and each landscape takes the
  * width between them.

@@ -1941,11 +1941,13 @@ html:not(.js) .wall-open:hover .wall-mat {
     display: none;
   }
 }
-/* and on the narrowest (320px phones), the title alone */
-@container (max-width: 124px) {
-  .wall-piece figcaption > span {
-    display: none;
-  }
+/* and where the title and year don't both fit (What Remains on a 320px phone,
+   the narrow portraits just above 600px), the year gives way rather than the
+   title: it wraps onto a second line, which the caption doesn't show */
+.wall-piece figcaption {
+  flex-wrap: wrap;
+  height: 20px;
+  overflow: hidden;
 }
 
 /* Hung on the line. Each piece takes a share of its row in proportion to its
