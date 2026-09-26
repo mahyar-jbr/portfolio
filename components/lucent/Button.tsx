@@ -9,8 +9,9 @@ import TransitionLink from './TransitionLink';
  * over imagery · is-quiet: tertiary, text only. Labels start with a verb, in
  * sentence case. Never two filled buttons side by side.
  *
- * With `href` it renders a link (internal ones get the page swap and smooth
- * in-page scroll; ones to other sites open in a new tab); without, a <button>.
+ * With `href` it renders a link (internal ones get the page swap, or the journey
+ * to a section of this page; ones to other sites open in a new tab); without, a
+ * <button>.
  * `external` is for a link the router can't take, such as the resume PDF.
  */
 type Variant = 'filled' | 'glass' | 'quiet';

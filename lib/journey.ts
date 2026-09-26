@@ -697,8 +697,9 @@ export function journeyTo(el: HTMLElement): void {
  */
 export function warm(el: HTMLElement): void {
   const vh = viewport();
-  const top = destination(el) - vh * LAND;
-  const bottom = destination(el) + vh * 1.5;
+  const to = destination(el);
+  const top = to - vh * LAND;
+  const bottom = to + vh * 1.5;
   document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((img) => {
     const r = img.getBoundingClientRect();
     const y = r.top + window.scrollY;
