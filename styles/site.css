@@ -284,14 +284,14 @@ html:not(.js) .site-theme {
   }
 }
 @media (prefers-reduced-motion: no-preference) {
-  html:is(.hero-intro, .hero-intro-again) [data-enter] {
+  html.hero-intro [data-enter] {
     animation: site-enter var(--dur-enter) var(--ease-settle) backwards;
     animation-delay: calc(var(--enter-i, 0) * 70ms);
   }
 }
 /* Reduced motion: springs jump to rest, everything else is a fade of ≤150ms. */
 @media (prefers-reduced-motion: reduce) {
-  html:is(.hero-intro, .hero-intro-again) [data-enter] {
+  html.hero-intro [data-enter] {
     animation: site-fade 150ms ease backwards;
   }
 }
@@ -632,9 +632,8 @@ a:hover > svg.site-out {
    1.24s. Only opacity, filter, translate and scale move (and the one label
    colour), so nothing lays out again, a press still combines with the kit's
    soft press (transform), and the nav's watch on the h1 never sees it move.
-   app/layout.tsx picks the class before first paint: hero-intro the first
-   time in a tab session, hero-intro-again for a reload (a quick refocus), and
-   neither on a return inside the site. hero-end is the sentinel it waits on
+   app/layout.tsx sets hero-intro before first paint on every load of the home
+   page, reloads included, and not on a return inside the site. hero-end is the sentinel it waits on
    to take the class away. Each keyframe gives only its starting frame, so at
    rest is the page's own style. */
 @keyframes hero-end {
@@ -678,16 +677,6 @@ a:hover > svg.site-out {
     scale: 0.975;
   }
 }
-@keyframes hero-refocus {
-  from {
-    filter: blur(min(0.025em, 4px));
-  }
-}
-@keyframes hero-reappear {
-  from {
-    opacity: 0.4;
-  }
-}
 @keyframes hero-rm {
   from {
     opacity: 0.1;
@@ -697,13 +686,9 @@ a:hover > svg.site-out {
 /* Where the full entrance doesn't play (reduced motion; forced colours, more
    contrast and print, which get no blur; a browser that can't tell), the
    first visit is one fade of the name, buttons and card together in 150ms,
-   from 10% so the name still counts from the first frame, and a reload is
-   simply at rest. :where() lets the entrance below win wherever it plays. */
+   from 10% so the name still counts from the first frame. :where() lets the entrance below win wherever it plays. */
 html.hero-intro .site-hero {
   animation: hero-end 150ms linear;
-}
-html.hero-intro-again .site-hero {
-  animation: hero-end 1ms linear;
 }
 :where(html.hero-intro .site-hero) :where(.hero-name, .hero-actions, .hero-card) {
   animation: hero-rm 150ms ease backwards;
@@ -761,18 +746,6 @@ html.hero-intro-again .site-hero {
     animation: hero-appear 600ms var(--ease-settle) 540ms backwards;
   }
 
-  /* a reload: both lines refocus at once, the rest fades up, no travel */
-  html.hero-intro-again .site-hero {
-    animation-duration: 400ms;
-  }
-  html.hero-intro-again .site-hero .hero-line > span {
-    animation:
-      hero-refocus 360ms var(--ease-settle) backwards,
-      hero-reappear 240ms var(--ease-settle) backwards;
-  }
-  html.hero-intro-again .site-hero :is(.hero-actions, .hero-card) {
-    animation: hero-appear 240ms var(--ease-settle) 60ms backwards;
-  }
 }
 
 /* ---- Sheets ----
