@@ -35,35 +35,37 @@ export const roles: Role[] = [
     // React added by Mahyar (2026-09-25): he builds the chat agents' frontend too.
     stack: ['Python', 'FastAPI', 'React', 'Azure', 'Docker'],
   },
-  // Sources: content/sources/GraphRetrieval_PORTFOLIO_BRIEF.md, plus (per field) its private repo and the paper.
+  // Sources: the project's portfolio brief of 2026-11-02, copied to
+  // content/sources/GraphRetrieval_PORTFOLIO_BRIEF.md with the results withheld. The same teaser
+  // rule as its project page (Mahyar, 2026-11-02: "lowkey and suspicious"): process facts only, no
+  // result or correctness figure (not even the benchmark paper's), and nothing the page copy doesn't
+  // say, until he clears it.
   {
     company: 'York Data Mining Lab',
     // Title and dates as on his resume (2026-11-02). Was "Directed Studies, EECS 4070" and "Fall 2026"
-    // (README.md:3, CLAUDE.md:3, as on the project page).
+    // (README.md:3, as on the project page).
     title: 'Undergraduate Researcher (Directed Studies)',
     period: 'Sep 2026 – Present',
     location: 'Toronto, ON',
     subline: 'York Data Mining Lab · Prof. Manos Papagelis',
     monogram: 'YU',
     logo: { src: '/experience/york.png', width: 104, height: 104 },
-    // source: brief §1 (README.md:1-8)
-    context: 'Research on retrieval for LLM agents that answer clinical questions over FHIR health records.',
-    // Setup, not results: the tool isn't built and nothing has run yet, so rewrite these
-    // once there are numbers. "Records" and "links", not FHIR's "resources" and
-    // "references", so the row speaks as the project page does. U+2011, a non-breaking
-    // hyphen, keeps the benchmark's and the dataset's names whole; U+00A0 keeps "2,931
-    // questions" together, so "questions." never sits alone on the last line.
+    // source: brief, Page copy (the lede's first half, word for word)
+    context: 'Research into why AI agents get lost in linked health records.',
+    // "Records" and "links", not FHIR's "resources" and "references", so the row speaks as the
+    // project page does. U+2011, a non-breaking hyphen, keeps the benchmark's name whole.
     bullets: [
-      // source: CLAUDE.md:14-15; brief §4 (the benchmark's tools fetch a whole type, or one ID, per call)
-      'Building a graph traversal tool that lets clinical LLM agents follow the links between a patient’s FHIR records, instead of fetching each linked record themselves.',
-      // source: brief §7 (notes/log/2026-09-23.md:12-13). "Every ground-truth record", not the log's "all
-      // 42,702 IDs": that count repeats an ID once for each question that uses it.
-      'Setting up FHIR‑AgentBench on the MIMIC‑IV FHIR demo: 928,935 records of 13 types, checksum-verified, including every ground-truth record behind the benchmark’s 2,931 questions.',
-      // source: CLAUDE.md:14-15, :40; Lee et al., PMLR 297 (ML4H 2025), §5.1 and Table 3 (0.50, o4-mini). A
-      // reference point, not the comparison: that model retires on Oct 23, 2026 (CLAUDE.md:35-36).
-      'Comparing the same agent with and without the tool; for reference, the benchmark paper’s best agent reaches 50% answer correctness (Lee et al., ML4H 2025).',
+      // source: brief, Page copy ("I built a tool that follows those links for the agent", "like a
+      // prescription pointing to its drug"); the brief's table under it dates the build
+      'Built a tool that lets an AI agent follow the links between a patient’s FHIR records, like a prescription pointing to its drug.',
+      // source: brief, Page copy ("I tested it the strict way: a plan fixed before the main runs, and 1,489
+      // agent runs on a public benchmark") and §0: every one of the 1,489 ran under a plan fixed before it ran
+      'Tested it the strict way: 1,489 agent runs on FHIR‑AgentBench, under a test plan fixed before the main runs.',
+      // source: brief, Page copy (status: "Results under wraps"); Mahyar's direction of 2026-11-02, as the
+      // brief records it
+      'Keeping the results under wraps for now.',
     ],
-    // source: brief §6
+    // source: brief §0 and §7 (the project page adds BLAZE and the OpenAI API)
     stack: ['Python', 'FHIR', 'LiteLLM', 'pandas'],
   },
   {
