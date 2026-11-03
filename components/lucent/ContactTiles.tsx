@@ -32,6 +32,8 @@ export interface ContactLink {
   label: string;
   value: string;
   href: string;
+  /** For a file to keep (the resume): the name it saves as. LinkOut makes it a download. */
+  download?: string;
 }
 
 function GlyphFor({ label }: { label: string }) {
@@ -91,6 +93,7 @@ export default function ContactTiles({
         <LinkOut
           className="lu-contact-tile"
           href={l.href}
+          download={l.download}
           key={l.label}
           aria-label={`${l.label}: ${l.value}`}
           arrow={false}

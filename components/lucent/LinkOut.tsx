@@ -13,9 +13,14 @@ import Glyph from './Glyph';
  * readers hear "(opens in a new tab)" after the name, and sighted visitors see
  * the arrow out after the label.
  *
- * Everything else (mailto:, a file on this site) stays a plain link in the same
- * tab. TransitionLink hands any off-site href here, so every link on the site
- * follows this one rule.
+ * A file on this site that is there to keep, the resume, comes with `download`
+ * (the name it saves as): it downloads, and where a browser won't download
+ * (some in-app browsers), it opens in a new tab rather than in place of the
+ * portfolio (Mahyar, 2026-11-02). Screen readers hear "(downloads)" unless the
+ * link's own label already says so.
+ *
+ * Everything else (mailto:) stays a plain link in the same tab. TransitionLink
+ * hands any off-site href here, so every link on the site follows these rules.
  */
 
 const NEW_TAB_NOTE = '(opens in a new tab)';
@@ -38,9 +43,11 @@ type Props = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> & {
 
 export default function LinkOut({ href, arrow = true, children, 'aria-label': label, ...rest }: Props) {
   if (!isOffsite(href)) {
+    const file = rest.download !== undefined;
     return (
-      <a href={href} aria-label={label} {...rest}>
+      <a href={href} aria-label={label} {...rest} {...(file && { target: '_blank', rel: 'noopener' })}>
         {children}
+        {file && !label && <span className="sr-only"> (downloads)</span>}
       </a>
     );
   }

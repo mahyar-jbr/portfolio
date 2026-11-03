@@ -12,7 +12,8 @@ import TransitionLink from './TransitionLink';
  * With `href` it renders a link (internal ones get the page swap, or the journey
  * to a section of this page; ones to other sites open in a new tab); without, a
  * <button>.
- * `external` is for a link the router can't take, such as the resume PDF.
+ * `external` is for a link the router can't take, such as the resume PDF;
+ * `download` (the name to save it as) makes it a download (LinkOut).
  */
 type Variant = 'filled' | 'glass' | 'quiet';
 
@@ -21,15 +22,16 @@ interface Props {
   small?: boolean;
   href?: string;
   external?: boolean;
+  download?: string;
   children: ReactNode;
   'aria-label'?: string;
 }
 
-export default function Button({ variant, small, href, external, children, ...aria }: Props) {
+export default function Button({ variant, small, href, external, download, children, ...aria }: Props) {
   const className = `lu-btn is-${variant}${small ? ' is-small' : ''}`;
   if (href && external) {
     return (
-      <LinkOut className={className} href={href} {...aria}>
+      <LinkOut className={className} href={href} download={download} {...aria}>
         {children}
       </LinkOut>
     );

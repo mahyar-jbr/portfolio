@@ -151,8 +151,16 @@ export const contact = {
     // Live since 2026-11-02: public/resume.pdf is his November resume with the
     // phone number taken out of the header. The June one carried it and his
     // postal code. Experience's "Resume, PDF" button shows while this is live.
-    { label: 'Resume', value: 'Download PDF', href: '/resume.pdf', status: 'live' },
-  ] satisfies (ExternalLink & { value: string })[],
+    // Both download it as `download` (Mahyar, 2026-11-02: "when people click on
+    // resume, it downloads for them or opens in a new tab").
+    {
+      label: 'Resume',
+      value: 'Download PDF',
+      href: '/resume.pdf',
+      download: 'Mahyar_Jaberi_Resume.pdf',
+      status: 'live',
+    },
+  ] satisfies (ExternalLink & { value: string; download?: string })[],
 };
 
 /**

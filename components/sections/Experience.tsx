@@ -23,7 +23,7 @@ export default function Experience() {
       reveal
       aside={
         resume && (
-          <Button variant="quiet" href={resume.href} external>
+          <Button variant="quiet" href={resume.href} external download={resume.download}>
             Resume, PDF
           </Button>
         )
