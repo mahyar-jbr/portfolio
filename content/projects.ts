@@ -11,6 +11,8 @@ import type { BriefProject, CaseStudyProject, Project, SoonProject } from './typ
  *     anything private or unreleased withheld, and every fact re-checked against the
  *     project's repo and its live links on 2026-09-23. A `source:` comment names the
  *     file in that project's repo that proves the field beside it.
+ *   - Palimpsest: its portfolio brief, portfolio-assets/PORTFOLIO_BRIEF.md in its own
+ *     private repo (Nov 2, 2026), where every fact cites a file:line. Not copied here.
  *   - The MoneyMind card: only what Mahyar has stated. Its verified write-up,
  *     `heldBack`, comes from content/sources/MoneyMindHackathon_PORTFOLIO_EXTRACT.md
  *     and stays unrendered.
@@ -122,7 +124,12 @@ const bowlwise: CaseStudyProject = {
   // The card's crop of home.png: x 327-2527, y 150-1800 (2200x1650, exactly 4:3). It drops
   // the homepage's own nav bar, which sat right where the card's status label goes, and
   // keeps the whole hero with even margins. Cut with sharp, then stripped to IHDR, IDAT, IEND.
-  cover: '/work/bowlwise/cover.png',
+  cover: {
+    src: '/work/bowlwise/cover.png',
+    width: 2200,
+    height: 1650,
+    alt: 'The BowlWise homepage: a headline, a box for a dog’s name, and an Orijen bag in a score ring reading 99 of 100 for a sample dog named Troy.',
+  },
 
   // source: brief §2 (README.md:3-8; A1; backend/connector.py:108)
   oneLiner:
@@ -900,14 +907,246 @@ const graphRag: BriefProject = {
 };
 
 /**
- * Display order is `order`, derived rather than hand-maintained — a hand-kept list
- * once silently dropped Maridian. Six cards, two of each kind, so the grid reads in
- * pairs by kind (products, prototypes, research) and no card is featured; with an
- * odd count the lowest order would span both columns.
+ * Palimpsest: solo research with a working prototype. Written from its portfolio
+ * brief (Palimpsest repo, portfolio-assets/PORTFOLIO_BRIEF.md, Nov 2, 2026, at
+ * e4144f5); `source:` paths are in that repo. The repo is private (GitHub 404s
+ * signed out) and nothing is deployed, so the page links nowhere. The finding is
+ * the headline (brief §1), so it leads, and the MCP server shows as the prototype.
+ * Every visual replays the committed demo memory, whose people and bookshop are
+ * invented (demo/halloween.json); nothing comes from data/me/.
  */
-export const projects: Project[] = [bowlwise, moneymind, realest, maridian, graphRag, tacticalDna].sort(
-  (a, b) => a.order - b.order,
-);
+const palimpsest: CaseStudyProject = {
+  slug: 'palimpsest',
+  name: 'Palimpsest',
+  kind: 'research',
+  page: 'case-study',
+  depth: 'deep',
+  order: 7,
+  // source: git log, first commit be35478 (2026-10-31)
+  year: '2026',
+  // The brief's label (§1); Mahyar may change it. 'research', not 'progress': the
+  // study has its result. Both show the flask.
+  status: { label: 'Benchmarked, in progress', kind: 'research' },
+  // brief §1
+  cardLine: 'Memory for Claude that keeps dated history',
+  // The console's own icon (web/public/favicon.svg), byte-identical to portfolio-assets/logo.svg
+  mark: '/work/palimpsest/mark.svg',
+  facts: [
+    // source: git log, be35478 (2026-10-31) to e4144f5 (2026-11-01); brief §4.
+    // The year stands beside it in the summary row.
+    { label: 'Timeline', value: 'Oct 31 – Nov 1' },
+  ],
+
+  // brief §6: the demo question end to end, each beat with its source
+  steps: [
+    {
+      title: 'Extract dated facts',
+      // source: src/palimpsest/ingest.py:60; web/public/demo/halloween.events.jsonl:62
+      body: 'Claude Haiku reads the July 5 session (“moved to Vancouver last week”) and stores “moved to Vancouver” as valid from June 28.',
+    },
+    {
+      title: 'Close, don’t delete',
+      // source: src/palimpsest/invalidate.py:357-359; halloween.events.jsonl:63
+      body: 'The “lives in Toronto” fact it contradicts gets an end date, June 28, instead of being deleted.',
+    },
+    {
+      title: 'Fuse three signals',
+      // source: src/palimpsest/retrieve.py:243-270; scripts/publish_demo.py:39-42;
+      // web/public/demo/halloween.recall.jsonl:13-18
+      body: 'The recall tool ranks facts by BM25, embeddings and a Personalized PageRank walk, then fuses the lists with reciprocal rank fusion. Claude Sonnet answers: “you lived in an apartment in Toronto”.',
+    },
+  ],
+
+  // The four console screenshots, with the brief's captions and alt text (§10): a
+  // server-free build of the console replaying the committed demo, 1440x900 at 2x.
+  // Shown one to a row under the clip: paired, a whole window's text can't be read.
+  shots: [
+    {
+      // source: portfolio-assets/console-memory-forming.png (replay paused at Jul 5)
+      src: '/work/palimpsest/memory-forming.png',
+      width: 2880,
+      height: 1800,
+      alt: 'Palimpsest console replaying a demo memory: a chat session on the left, a growing knowledge graph in the middle and a timeline below.',
+      caption: 'A demo memory forming, one chat session at a time.',
+    },
+    {
+      // source: portfolio-assets/console-retrieval-three-signals.png
+      src: '/work/palimpsest/retrieval-three-signals.png',
+      width: 2880,
+      height: 1800,
+      alt: 'Palimpsest console answering a question: three ranked lists of facts and their combined ranking beside the knowledge graph.',
+      caption: 'Keywords, embeddings and a graph walk each rank facts; rank fusion combines them.',
+    },
+    {
+      // source: portfolio-assets/console-history-as-of.png. It shows the model label
+      // "claude-sonnet-5-5 · cached", which names a model it uses.
+      src: '/work/palimpsest/history-as-of.png',
+      width: 2880,
+      height: 1800,
+      alt: 'Palimpsest console answering a question about a past date, using facts that were later replaced, shown as dashed lines.',
+      caption: 'Asked as of Aug 31, it answers from a fact that later changed.',
+    },
+    {
+      // source: portfolio-assets/console-fact-history.png
+      src: '/work/palimpsest/fact-history.png',
+      width: 2880,
+      height: 1800,
+      alt: 'Palimpsest console card for a place, listing two past facts with the dates they stopped being true.',
+      caption: 'Old facts get an end date instead of being deleted.',
+    },
+  ],
+
+  // source: portfolio-assets/card.png, the brief's crop of the console for the card (§10),
+  // cut to the card's 4:3 at its right edge (x 266 to 1600): every ranked list stays whole,
+  // and only unlit graph on the left goes. Re-saved with only its image chunks.
+  cover: {
+    src: '/work/palimpsest/card.png',
+    width: 1334,
+    height: 1000,
+    alt: 'Palimpsest console: a knowledge graph with highlighted paths, beside three ranked lists of facts and their combined ranking.',
+  },
+
+  // source: portfolio-assets/console-clip.mp4, shipped as it came: 1920x1080 H.264, 15 s, no
+  // audio track, moov first. Its still is console-clip-last-frame.png (pixel for pixel the
+  // clip's last frame) as a q90 WebP with no metadata. Caption and alt are the brief's (§10).
+  clip: {
+    src: '/work/palimpsest/console.mp4',
+    still: '/work/palimpsest/console.webp',
+    width: 1920,
+    height: 1080,
+    alt: 'Palimpsest console: a chat session adds facts to a knowledge graph and closes an old one, then a question lights up graph paths and three ranked lists of facts.',
+    caption: 'A demo memory forms, then answers a question with three ranked lists.',
+  },
+
+  // source: src/palimpsest/mcp_server.py:233-275; README.md:35-42 (six tools; recall
+  // with an optional as-of date). A prototype: no deploy config, release or usage data (brief §1).
+  prototype:
+    'The prototype is an MCP server for Claude Code with six tools, among them recall, which takes an as-of date. The console below replays a demo memory; its people and bookshop are invented.',
+
+  // brief §2
+  oneLiner:
+    'A long-term memory engine for Claude Code users that keeps outdated facts as dated history, plus a 500-question study of which retrieval pieces help.',
+
+  badges: ['Research', 'Working prototype', 'Solo'],
+
+  // brief §7, most important first: pyproject.toml:5, 7, 9, 13, 14; src/palimpsest/config.py:34-39
+  // (Haiku writes the memory; Sonnet answers and judges), :53 (bge-small-en-v1.5);
+  // src/palimpsest/store.py:53 (FTS5 for BM25); src/palimpsest/retrieve.py:13 (SciPy for
+  // PageRank); src/palimpsest/mcp_server.py:225 (FastMCP); web/package.json:22-41 (the
+  // console). FastAPI, TypeScript, Vite and graphology are left off for the eight.
+  stack: [
+    'Python',
+    'Claude Haiku 5.5',
+    'Claude Sonnet 5.5',
+    'SQLite FTS5',
+    'sentence-transformers',
+    'SciPy',
+    'FastMCP',
+    'React',
+  ],
+
+  links: [
+    // NO LINKS. The repo is private: `gh repo view` says PRIVATE and github.com/mahyar-jbr/
+    // Palimpsest returns 404 signed out (brief §3). Its early history quotes personal
+    // details (BACKLOG.md:168), so it stays unlinked until Mahyar decides to publish it.
+    // Nothing is deployed and no video is published.
+  ],
+
+  // brief §5; the research question is CLAUDE.md:5 (brief §1)
+  problem:
+    'Chat assistants forget between sessions, and when a fact changes (“I moved”), a memory has to know what is true now and what was true before. The usual fix is plain RAG over old chat turns. Graph memories add extraction, graph walks and time models, but are usually reported only as a whole, so I measured which piece helps which kind of question.',
+
+  // brief §8, from results/phase-4.md (run 20261101-012006-s-500q-ABCDDXWT on LongMemEval S)
+  finding: {
+    // source: results/phase-4.md:9-11
+    summary:
+      'On the same 500 LongMemEval questions, the full system answered 437 correctly and plain RAG 422, a lead that is not significant (p = 0.14). On temporal reasoning the gain is significant, even after a Bonferroni correction: 119 against 104 of 133 questions (p = 0.006).',
+    // The no-break spaces keep each p-value whole when a line wraps.
+    metrics: [
+      {
+        value: '87.4% vs 84.4%',
+        label: 'Answered correctly, full system vs plain RAG: 437 and 422 of 500. Not significant (p = 0.14)',
+        source:
+          'results/phase-4.md:9-10: McNemar p = 0.14; 95% Wilson intervals 84 to 90% and 81 to 87%',
+      },
+      {
+        value: '119 vs 104 of 133',
+        label: 'Temporal reasoning questions answered correctly. Significant (p = 0.006)',
+        source: 'results/phase-4.md:11: McNemar p = 0.006, significant after a Bonferroni correction',
+      },
+      {
+        value: '1,704 vs 6,128',
+        label: 'Context tokens per question',
+        source: 'results/phase-4.md:9',
+      },
+      {
+        value: '$0.0052 vs $0.0105',
+        label: 'Cost per answer',
+        source: 'results/phase-4.md:86',
+      },
+    ],
+    // source: results/phase-4.md:51-54, each condition against the one before it. As counts:
+    // date ranges' temporal +11 −4 is not significant on its own.
+    breakdown:
+      'Five conditions answered the same questions, from plain RAG to the full system. Extracted facts alone lost 37 questions about what the assistant had said, and quoting the raw conversation won back 35. Date ranges gained 11 temporal questions and lost 4, but cost 3 knowledge-update questions. The graph walk barely moved the score: 9 questions gained, 8 lost.',
+    figure: {
+      // source: portfolio-assets/ablation-chart.png (results/phase-4.md:20-27, 36-43 and 11),
+      // light ground only, as drawn
+      src: '/work/palimpsest/ablation.png',
+      width: 2400,
+      height: 2098,
+      alt: 'Dot chart: on 500 questions the full system scores 87.4% against plain RAG’s 84.4%, with a clear gain only on temporal questions.',
+      caption: 'Accuracy on 500 LongMemEval questions, by question type, with 95% intervals.',
+    },
+  },
+
+  // brief §6. The steps above carry the detail.
+  approach:
+    'Palimpsest turns chat sessions into dated facts in a graph and keeps the raw conversation beside it. One demo question, “Where did I live before I moved to Vancouver?”, end to end:',
+
+  // source: ROADMAP.md:17-21 (phases 1 to 4 done on Nov 1; phase 5, the write-up and video,
+  // under way); results/phase-4.md:3; `uv run pytest` 204 passed, 1 skipped (Nov 2, brief §3)
+  result:
+    'Four of its five phases are done, ending with the 500-question benchmark on November 1, 2026. The fifth, a write-up and a video, is under way. Its test suite passes (204 tests, 1 skipped), and the code is private.',
+
+  decisions: [
+    {
+      decision: 'Close old facts, never overwrite them',
+      // source: CLAUDE.md:69 ("so point-in-time questions still work"); invalidate.py:357-359;
+      // README.md:42 (forget "closes a fact but keeps its history"); the as-of screenshot
+      why: 'So point-in-time questions still work: a fact that changes gets an end date and stays in the history, and a question asked as of a past date answers from what was true then. Even the forget tool closes a fact and keeps its history.',
+    },
+    {
+      decision: 'Keep the raw conversation beside the graph',
+      // source: CLAUDE.md:35 (the reason); results/phase-4.md:51, 54 (the measurement)
+      why: 'So questions about what the assistant said can fall back to the original text. The benchmark bore it out: facts alone lost 37 of those questions, and quoting the conversation won back 35.',
+    },
+  ],
+
+  // Solo: `role` fills the summary row and no "My role" section renders.
+  // source: git shortlog -sne --no-merges HEAD, one author (brief §4)
+  contribution: {
+    role: 'Solo',
+    teamSize: 1,
+    owned: 'The memory engine, the 500-question benchmark, the MCP server and the console',
+  },
+};
+
+/**
+ * Display order is `order`, derived rather than hand-maintained — a hand-kept list
+ * once silently dropped Maridian. Seven cards since Palimpsest joined the research
+ * pair (2026-11-02): an odd count, so the lowest order, BowlWise, spans both columns
+ * and the rest pair beneath it.
+ */
+export const projects: Project[] = [
+  bowlwise,
+  moneymind,
+  realest,
+  maridian,
+  graphRag,
+  tacticalDna,
+  palimpsest,
+].sort((a, b) => a.order - b.order);
 
 /** Projects with a page of their own, for routing. */
 export const pagedProjects = projects.filter(

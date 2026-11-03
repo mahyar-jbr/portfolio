@@ -1198,6 +1198,17 @@ html.hero-intro .site-hero {
   width: 72%;
   height: auto;
 }
+/* Featured (the Research filter leaves three cards, so its first spans the
+   row at 16:7), the diagram keeps the size it has in a column, centred in the
+   room above the caption, instead of stretching across the row and under it.
+   Phones keep the kit's 4:3, so they keep the column's rule. */
+@media (min-width: 721px) {
+  .lu-card.is-feature .art-diagram {
+    top: 17%;
+    left: 32%;
+    width: 36%;
+  }
+}
 /* The banner loop (CardArt LoopVideo) fills the art the way a screenshot does,
    on the kit's placeholder ground until its poster paints. Its 16:9 is cropped
    at the sides into the card's 4:3, a little right of centre where the desk is,
@@ -1490,6 +1501,22 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
 @media (prefers-reduced-motion: reduce) {
   .case-clip:is([data-state='playing'], [data-state='paused'], [data-state='ended']) .case-clip-still {
     transition-duration: 150ms;
+  }
+}
+/* The finding (CaseStudy FindingBody, Palimpsest): its numbers are the kit's
+   points, two to a row across the column, as wide as the steps and the chart
+   below them; one to a row where the steps stack too. What follows them, the
+   breakdown and the chart, takes a breath first. */
+.case-finding > .lu-points {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: none;
+}
+.case-finding > .lu-points + * {
+  margin-top: var(--space-6);
+}
+@media (max-width: 760px) {
+  .case-finding > .lu-points {
+    grid-template-columns: 1fr;
   }
 }
 .case-next .lu-card {

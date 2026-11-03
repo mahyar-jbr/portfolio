@@ -17,6 +17,13 @@ import type { Clip } from '@/content/types';
  * scripts, where the video and the button step aside (site.css). When it
  * starts, the still dissolves into the first frame rather than cutting to it.
  * The still carries the alt text, so the video is hidden from screen readers.
+ *
+ * `loop`, for a screen recording of the product (CaseStudyProject.clip): when
+ * it ends it starts again the way a replay does, its still back over the last
+ * frame and dissolving into the first, until the button pauses it. Under
+ * reduced motion it never loops: played from the button, it plays once and
+ * rests, like a demo-day clip. A product clip's caption sits under it, as its
+ * shots' do.
  */
 
 type State = 'rest' | 'loading' | 'playing' | 'paused' | 'ended';
@@ -50,7 +57,7 @@ const ICON_REPLAY = (
   </svg>
 );
 
-export default function DemoClip({ clip }: { clip: Clip }) {
+export default function DemoClip({ clip, loop = false }: { clip: Clip; loop?: boolean }) {
   const video = useRef<HTMLVideoElement>(null);
   const still = useRef<HTMLImageElement>(null);
   const [state, setState] = useState<State>('rest');
@@ -91,6 +98,15 @@ export default function DemoClip({ clip }: { clip: Clip }) {
       if (!v.ended) setState('paused');
     };
     const onEnded = () => {
+      /* a loop goes again from the top, as a replay does: the still (its last
+         frame) comes back first, so the restart dissolves too. It was playing
+         a moment ago, so it carries on wherever it is on screen. */
+      if (loop && !calm.matches) {
+        setState('loading');
+        v.currentTime = 0;
+        start();
+        return;
+      }
       want.current = 'hold';
       setState('ended');
     };
@@ -128,7 +144,7 @@ export default function DemoClip({ clip }: { clip: Clip }) {
       calm.removeEventListener('change', run);
       v.pause();
     };
-  }, []);
+  }, [loop]);
 
   /* On a replay the video can report 'playing' before the browser has styled
      the still back in, and then there is nothing to dissolve from (Chromium,
@@ -192,6 +208,7 @@ export default function DemoClip({ clip }: { clip: Clip }) {
           {busy ? ICON_PAUSE : state === 'ended' ? ICON_REPLAY : ICON_PLAY}
         </button>
       </div>
+      {clip.caption && <figcaption>{clip.caption}</figcaption>}
     </figure>
   );
 }

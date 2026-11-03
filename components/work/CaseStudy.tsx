@@ -10,7 +10,16 @@ import CardArt, { cardArtClass } from '@/components/work/CardArt';
 import DemoClip from '@/components/work/DemoClip';
 import { TeaserCredit, TeaserDiagram, TeaserNumbers } from '@/components/work/Teaser';
 import { pagedProjects } from '@/content/projects';
-import type { BriefProject, CaseStudyProject, ExternalLink, Photo, ProjectStatus, Shot } from '@/content/types';
+import type {
+  BriefProject,
+  CaseStudyProject,
+  Clip,
+  ExternalLink,
+  Finding,
+  Photo,
+  ProjectStatus,
+  Shot,
+} from '@/content/types';
 
 /**
  * CaseStudy — the read layer behind a project card, built from the kit's layout
@@ -23,6 +32,10 @@ import type { BriefProject, CaseStudyProject, ExternalLink, Photo, ProjectStatus
  * Decisions, (Demo day), Where it is now — never more than six, never the
  * solution before the problem. Demo day, a hackathon build's photos and clip,
  * comes last before Where it is now: it is the last thing that happened.
+ *
+ * Research that leads with its result (Palimpsest) adds The finding straight
+ * after the problem it answers, and its working prototype shows as The
+ * prototype, a screen recording leading its stills, in place of The product.
  */
 
 const STATUS_GLYPH: Record<ProjectStatus['kind'], GlyphName> = {
@@ -162,12 +175,40 @@ function rows(figures: (Shot | Photo)[]) {
   );
 }
 
-function Shots({ shots }: { shots: Shot[] }) {
+/**
+ * A screen recording, when there is one, leads at full width, and the stills
+ * of the same app follow it one to a row: a whole app window at half width is
+ * text too small to read.
+ */
+function Shots({ shots, clip }: { shots: Shot[]; clip?: Clip }) {
+  if (clip) {
+    return (
+      <div className="lu-shots">
+        <DemoClip clip={clip} loop />
+        {shots.map((s) => figure(s, WIDE))}
+      </div>
+    );
+  }
   const [lead, ...rest] = shots;
   return (
     <div className="lu-shots">
       {figure(lead, WIDE)}
       {rows(rest)}
+    </div>
+  );
+}
+
+/**
+ * What a study found, straight after the problem it answers: the headline in
+ * words, its numbers as points, then how it breaks down and the chart.
+ */
+function FindingBody({ summary, metrics, breakdown, figure: chart }: Finding) {
+  return (
+    <div className="case-finding">
+      <p>{summary}</p>
+      <Points glyph="chart" items={metrics.map((m) => ({ title: m.value, body: m.label }))} />
+      {breakdown && <p>{breakdown}</p>}
+      {chart && figure(chart, WIDE)}
     </div>
   );
 }
@@ -247,6 +288,7 @@ export function CaseStudy({ project: p }: { project: CaseStudyProject }) {
       ),
     });
   }
+  if (p.finding) beats.push({ title: 'The finding', body: <FindingBody {...p.finding} /> });
   beats.push({
     title: 'How it works',
     body: (
@@ -266,7 +308,17 @@ export function CaseStudy({ project: p }: { project: CaseStudyProject }) {
       </>
     ),
   });
-  if (p.shots?.length) beats.push({ title: 'The product', body: <Shots shots={p.shots} /> });
+  if (p.shots?.length || p.clip) {
+    beats.push({
+      title: p.prototype ? 'The prototype' : 'The product',
+      body: (
+        <>
+          {p.prototype && <p>{p.prototype}</p>}
+          <Shots shots={p.shots ?? []} clip={p.clip} />
+        </>
+      ),
+    });
+  }
   if (decisions.length) {
     beats.push({
       title: 'Decisions',

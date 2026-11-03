@@ -187,6 +187,27 @@ export interface Clip {
   height: number;
   /** What the clip shows, for a reader who can't see it. */
   alt: string;
+  /**
+   * One line on what it shows. Only a screen recording of the product
+   * (CaseStudyProject.clip) has one, like the shots it leads; a demo-day clip
+   * has none.
+   */
+  caption?: string;
+}
+
+/**
+ * What a study found, for a research page that leads with it: the headline in
+ * words (what it showed, and plainly what it didn't), the numbers behind it,
+ * then how the result breaks down and the chart that shows it.
+ */
+export interface Finding {
+  summary: string;
+  /** The headline's numbers, each with its source. */
+  metrics: ProjectMetric[];
+  /** How the result breaks down, read before the chart. */
+  breakdown?: string;
+  /** The results as a chart: a real figure of the data, never a mockup. */
+  figure?: Shot;
 }
 
 /** One beat of "how it works". Three of them, in order. */
@@ -312,12 +333,26 @@ export interface CaseStudyProject extends ProjectCard {
   steps?: Step[];
   shots?: Shot[];
   /**
-   * The card's own crop of shots[0], for a first shot whose top fights the card's
-   * status label (BowlWise's homepage has its nav bar where the label goes). Only
-   * cropped, never a different picture, so shots[0]'s alt still describes it.
-   * Without it the card shows shots[0], cropped from the top.
+   * The card's picture, when it isn't the first shot as it is: a crop made for
+   * the card, either of the product (Palimpsest's console, whose whole window
+   * reads as nothing at card size) or of shots[0] itself (BowlWise's homepage,
+   * whose nav bar sits where the card's status label goes). Without it the card
+   * shows shots[0], cropped from the top.
    */
-  cover?: string;
+  cover?: Omit<Shot, 'caption'>;
+  /**
+   * A short silent screen recording of the product working. It leads the
+   * shots and loops; its still is its last frame, as a demo-day clip's is.
+   */
+  clip?: Clip;
+  /**
+   * Research with a working prototype: what that prototype is, in a sentence
+   * or two. The clip and shots then show as the prototype, after this, rather
+   * than as the product.
+   */
+  prototype?: string;
+  /** What a study found. A research page leads with it, straight after the problem. */
+  finding?: Finding;
   /** Short context labels: "Course project", "Hackathon", "Live in production". */
   badges: string[];
   stack: string[];
