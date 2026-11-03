@@ -24,6 +24,17 @@ import type { BriefProject, CaseStudyProject, Project, SoonProject } from './typ
  * BowlWise's and MoneyMind's stay, verified, in their extracts in content/sources/.
  */
 
+/**
+ * BowlWise, rewritten 2026-11-02 from the project's own brief,
+ * Pet-AI-Assistant/portfolio-assets/PORTFOLIO_BRIEF.md (local main at ce2d522,
+ * production at 408fda8), which replaces the extract named above. `brief §n` and
+ * `brief An` below point into it; every claim there cites a file, a command or
+ * Mahyar. Nothing it marks private is on this page or in these comments.
+ *
+ * Mahyar's own answers (brief §12, 2026-11-02): still on tablets in both stores,
+ * launched in April 2026, no visitor totals to cite (the first-month visitors
+ * metric is gone), more than 200 dog profiles, and the work credited to him alone.
+ */
 const bowlwise: CaseStudyProject = {
   slug: 'bowlwise',
   name: 'BowlWise',
@@ -31,161 +42,189 @@ const bowlwise: CaseStudyProject = {
   page: 'case-study',
   depth: 'deep',
   order: 1,
+  // source: brief §1 (the launch year)
   year: '2026',
+  // brief §1: live at bowlwise.app, and on tablets in two Pet Valu stores (Mahyar, 2026-11-02)
   status: { label: 'Live in stores', kind: 'live' },
-  cardLine: 'Scores 260 dog foods against your dog',
-  mark: '/work/bowlwise/mark.png',
+  // source: brief §1
+  cardLine: 'Scores 265 dog foods against your dog',
+  // The product's own app icon, byte-identical to its frontend/public/icon.svg (brief §10)
+  mark: '/work/bowlwise/mark.svg',
+  // brief §0 and §12: still on tablets in both stores, and launched in April 2026 (Mahyar,
+  // 2026-11-02; ROADMAP.md:11, and commit 9ba5e15 marks the launch shipped)
   facts: [
     { label: 'In stores', value: 'Pet Valu Oak Ridges and Aurora' },
-    { label: 'Launched', value: 'April 4, 2026' },
+    { label: 'Launched', value: 'April 2026' },
   ],
 
-  // Written from `approach` below — the same facts, cut into the three beats the
-  // case study's "How it works" shows. Nothing here that approach doesn't say.
+  // brief §6: the three beats, in the order a request runs
   steps: [
     {
       title: 'Describe your dog',
-      body: 'An eight-step profile: life stage, activity, weight goal, allergies and any diagnosed conditions. No account needed.',
+      // source: brief §0 (8 steps, no sign-in: frontend/src/form/steps.js:9-12, backend/pet_routes.py:46-48),
+      // §5 (size, age, activity, allergies); the weight goal and the health conditions it asks are in the
+      // brief's own screens (results.png: "holding weight"; form-tablet.png: step 6 of 8)
+      body: 'An eight-step form: size, age, activity, weight goal, allergies and any health conditions. No account needed.',
     },
     {
-      title: 'Compare like with like',
-      body: 'Every product is normalized to a dry-matter basis at import, so a raw food and a kibble are finally measured on the same scale.',
+      title: 'Score every food',
+      // source: brief §6 (backend/on_offer.py:62-87; backend/engine.py:2059-2124, 1398-1406, 1717-1735;
+      // backend/import_products.py:273-274)
+      body: 'Complete diets for the dog’s life stage, minus any with an allergen or the wrong kibble size, are scored out of 100 on six factors, on dry‑matter values worked out at import.',
     },
     {
-      title: 'Score and explain',
-      body: 'Allergens and size mismatches are filtered out first. The rest score 0–100 on six weighted factors from AAFCO, NRC and WSAVA guidance, each explainable line by line.',
+      title: 'Ask why',
+      // source: brief §6 (backend/chat_agent.py:421, 955; backend/abilities.py:178; backend/connector.py:500)
+      body: 'Claude calls tools that run the same engine and writes its answer around their numbers: in Ask BowlWise on the site, or in Claude itself through the connector.',
     },
   ],
 
-  // Real screenshots of bowlwise.app, from the Lucent kit's Bowlwise asset group.
+  // Real screenshots from the brief's portfolio-assets (§10), taken 2026-11-02 and copied
+  // as they are (their PNGs hold no metadata). home.png is the live site; the others are a
+  // local build of ce2d522 with a made-up dog, Maple. Captions and alt text are the brief's.
+  // The card shows its own crop of the first (`cover`, below). Not used: ask-bowlwise.png, the
+  // homepage's scripted demo (the live answer below replaces it); form-tablet.png, whose
+  // 1.44 shape can't sit level in a pair and whose "143 foods fit Maple" bowl the results
+  // band already shows; card.png, a crop of food-detail.png; and the points chart, a chart
+  // rather than a screen of the product.
   shots: [
     {
-      src: '/work/bowlwise/marketing-hero.png',
-      width: 3840,
-      height: 2160,
-      alt: 'The BowlWise home page: "Stop guessing what to feed your dog", with an example match card',
-      caption: 'The home page: one question, one clear answer.',
+      src: '/work/bowlwise/home.png',
+      width: 2880,
+      height: 1800,
+      alt: 'The BowlWise homepage: a headline, a box for a dog’s name, and an Orijen bag in a score ring reading 99 of 100 for a sample dog named Troy.',
+      caption: 'The BowlWise homepage: type a dog’s name, see a food scored for a sample dog.',
     },
     {
-      src: '/work/bowlwise/petprofile.png',
-      width: 3840,
-      height: 2160,
-      alt: 'A dog profile with breed size, age, activity, goal and allergies, and its top food matches',
-      caption: 'A dog’s profile and its top matches.',
+      src: '/work/bowlwise/results.png',
+      width: 2880,
+      height: 1800,
+      alt: 'BowlWise results for a sample dog named Maple: a blue band saying 143 foods fit, then the best kibble, gently cooked, air-dried and freeze-dried food, each with a score out of 100.',
+      caption: 'Results for one dog: 143 foods fit, the best of each kind first.',
     },
     {
-      src: '/work/bowlwise/foodcard.png',
-      width: 3840,
-      height: 2160,
-      alt: 'One food in detail: match score, match reasons, nutrition bars and guaranteed analysis',
-      caption: 'One food in detail: the score, the reasons, and the nutrition behind them.',
+      src: '/work/bowlwise/food-detail.png',
+      width: 2880,
+      height: 1800,
+      alt: 'An opened food: an Acana bag in a six-part score ring, 99 of 100 for Maple, 1st of 83, and the 99 points split by part.',
+      caption: 'One food opened: its score for this dog and where each point comes from.',
     },
     {
-      src: '/work/bowlwise/marketing-brands.png',
-      width: 3840,
-      height: 2160,
-      alt: 'The brands BowlWise scores, and its three-step explainer',
-      caption: 'The brands it scores, and how it works in three steps.',
+      // A real answer: one model call on the local server (brief §10, §12 question 9).
+      // The panel is scrolled to the end of the answer, so the question is out of view.
+      src: '/work/bowlwise/ask-bowlwise-live.png',
+      width: 2880,
+      height: 1800,
+      alt: 'The BowlWise results page for a sample dog named Maple, with the Ask BowlWise panel open on the right. The answer lists the points an Acana food earned on each part and says it lost 1 point on price. A card below shows its score of 99 out of 100.',
+      caption: 'Ask BowlWise answering a real question about a sample dog, next to that dog’s results.',
     },
   ],
+  // The card's crop of home.png: x 327-2527, y 150-1800 (2200x1650, exactly 4:3). It drops
+  // the homepage's own nav bar, which sat right where the card's status label goes, and
+  // keeps the whole hero with even margins. Cut with sharp, then stripped to IHDR, IDAT, IEND.
+  cover: '/work/bowlwise/cover.png',
 
+  // source: brief §2 (README.md:3-8; A1; backend/connector.py:108)
   oneLiner:
-    'A dog food recommendation engine that scores 260 products against veterinary nutrition standards, live on tablets in two Pet Valu stores.',
+    'For dog owners in Canada: BowlWise scores 265 dog foods for your dog, explains each score, and answers questions on its site or in Claude.',
 
   badges: ['Live in production', 'Solo build', 'BowlWise Inc.'],
 
-  stack: ['React', 'Vite', 'FastAPI', 'Python', 'Pydantic', 'MongoDB', 'Docker'],
+  // brief §7, its first six items in its order (Clerk sign-in and the Vercel and Railway
+  // hosting left off). Docker is gone: it now only rehearses the build and runs the test
+  // database (brief §0, §7).
+  stack: ['Python', 'FastAPI', 'Claude API', 'MCP', 'MongoDB Atlas', 'React', 'Vite', 'Pydantic'],
 
   links: [
-    // Verified serving 2026-08-08: HTTP 200 on / and /scoring. This is the only live
-    // link on the entire site, so it is worth re-checking before any redeploy.
+    // Checked 2026-11-02 (brief A9): 200 on /, /claude and /scoring.
     { label: 'bowlwise.app', href: 'https://bowlwise.app', status: 'live' },
-    // No public repo. Highest-ROI fix available: extract the scoring engine to a
-    // standalone public repo with its tests — it's the most interesting code here
-    // and the only thing currently unviewable.
-    //
-    // KNOWN ISSUE on the live site (not ours to fix, but it undercuts this link):
-    // /scoring says "191 products and 9 brands"; the catalog is 260 across 15. It is
-    // the page whose entire purpose is trust.
+    // No repo link: the GitHub repo is private and 404s to visitors (brief §3). No link to
+    // the connector's listing either: it answers a script with a bot check (403), so it
+    // can't be verified here; bowlwise.app/claude links it.
   ],
 
+  // source: brief §5 (README.md:3-4; frontend/src/components/home/HomeHero.jsx:168; backend/utils/dmb.py:3-6).
+  // "Dry-matter" in this entry's copy has U+2011, a non-breaking hyphen, so it never splits across lines.
   problem:
-    'Dog food labels can’t be compared to each other. A raw food that’s 70% moisture prints 11% protein on the bag; a kibble prints 26%. Normalized to a dry-matter basis the raw is actually 37%, the higher of the two. Nothing on the shelf tells an owner that, and the comparison tools that exist are either brand-sponsored or blind to format. I spent three years at Pet Valu watching people make a several-hundred-dollar-a-year decision with no way to see what they were actually buying.',
+    'Dog owners in Canada have to choose one food among many brands and formats, for a dog with its own size, age, activity and allergies. So they guess, or compare labels whose as-fed numbers mislead: a food that is 70% moisture reads 11% protein, which is 37% on a dry‑matter basis.',
 
+  // source: brief §9.1 (backend/abilities.py:18-19: "so the chat, the connector and the page agree");
+  // §0: a Claude agent with 15 tools (backend/chat_agent.py:101, 301-375), a read-only MCP server with
+  // 7 (backend/connector.py:257-260, 279, 290), health data never reaches the chat (held by tests)
   approach:
-    'A deterministic scoring engine, not a model. Every product is normalized to dry-matter basis at import, so the engine compares like with like, then scored 0–100 across six weighted factors drawn from AAFCO, NRC and WSAVA guidance (activity and weight goal, nutritional quality, life stage, formulation integrity, format suitability, and price value), with additive penalties for diagnosed conditions applied last. Allergens and breed/kibble-size mismatches are hard filters that return zero before scoring runs. Owners answer an eight-step profile, with no account required.',
+    'One scoring engine, three ways in: the results page, Ask BowlWise (the chat on the site), and a connector inside Claude. Ask BowlWise is a Claude agent with 15 tools; the connector is a read-only MCP server with 7. Both read every number from the engine, so all three agree. A dog’s health details never reach the chat.',
 
+  // source: brief §3 (bowlwise.app 200; the chat switched on, GET /api/chat/texts enabled: true);
+  // §0 and §12 (on tablets in two Pet Valu stores; listed in Claude's connector directory, Mahyar,
+  // 2026-11-02); §4 (solo: every commit is his). "In Claude's connector directory", never a partnership.
   result:
-    'Launched publicly on April 4, 2026 and running on customer tablets in Pet Valu Oak Ridges and Aurora. In its first measured month it drew 224 visitors and 707 page views, 54% from Canada, with 9% of sessions on tablets. Built and shipped solo (133 commits across backend, frontend, catalog, CI, and the legal pages) and incorporated as BowlWise Inc.',
+    'Live at bowlwise.app and on tablets in two Pet Valu stores. Ask BowlWise answers questions on the site, and the connector is listed in Claude’s connector directory, so an owner can get the same scores inside Claude. I built it alone, from the engine to the connector.',
 
+  // brief §8, plus the dog profiles Mahyar gave (§12). Nothing private: no store, chat or
+  // connector counts.
   metrics: [
     {
-      value: '260',
-      label: 'Products scored, 15 brands',
-      source: 'Counted from backend/product_data.csv with csv.DictReader',
+      value: '265',
+      label: 'Dog foods scored, from 15 brands',
+      source:
+        'backend/product_data.csv counted with csv.DictReader: 265 rows, 15 brands (brief A1); live GET /api/home agreed, 2026-11-02',
     },
     {
-      value: '121',
-      label: 'Automated tests, all passing',
-      source: 'pytest tests/ -v → 121 passed; the same command CI runs',
+      value: 'More than 200',
+      label: 'Dog profiles created',
+      source: 'Mahyar, production count, November 2026 (brief §0 and §12, question 3: “more than 200”)',
     },
     {
-      value: '20',
-      label: 'API endpoints, 14 rate-limited',
-      source: 'Counted from @app decorators in backend/main.py',
+      value: '111 of 111',
+      label: 'Chat eval cases passed',
+      source:
+        'The eval run of 2026-10-14, played as 189 conversations; the agent, its tools, the engine and the catalog are unchanged since (brief §0, A8)',
     },
     {
-      value: '224',
-      label: 'Visitors in first measured month',
-      source: 'Vercel Analytics, Apr 1 – May 1 2026 (707 page views, 57% bounce)',
+      value: '30 of 30',
+      label: 'Claude answers passed the connector’s checks',
+      source:
+        'Commit 18d79da (2026-10-11): 30 of 30 with the server’s instructions, 29 of 30 with the tools alone; the connector is unchanged since (brief §0)',
     },
     {
-      value: '2',
-      label: 'Pet Valu stores running it',
-      source: 'Oak Ridges + Aurora; published on the live site’s trust badges',
+      value: '14 ms',
+      label: 'Median time to score all 265 foods',
+      source:
+        'engine.score_catalog over the 265 foods, 1,000 timed runs after a warm-up, no network or database: median 14.07 ms, p95 20.70 ms (brief A7, 2026-11-02)',
     },
     {
-      value: '100%',
-      label: 'Of commits written solo',
-      source: 'git shortlog -sne → 133 commits, one author',
+      value: '6,393',
+      label: 'Public backend tests passing',
+      source: 'pytest tests/ on 2026-11-02, counting the public tests only (brief §8, A3)',
+    },
+    {
+      value: '35',
+      label: 'Public API routes, all rate-limited',
+      source:
+        'Routes counted as backend/tests/app_files.app_routes() does, each with its own rate limit (brief §0, A5; backend/tests/test_routes_stay.py:27-67)',
     },
   ],
 
+  // brief §9, both decisions as it gives them
   decisions: [
     {
-      decision: 'A deterministic scoring engine instead of a model',
-      why: 'Rule-based scoring is the cold start: a model needs behavioural data that a launch-day product doesn’t have yet. It also means every score can be explained to the owner line by line, which matters when you’re asking someone to trust a recommendation about their dog’s health. ML is gated behind 500+ tracked purchases, and until then calling this “AI-powered” would be false.',
+      decision: 'One engine behind every number',
+      // source: backend/abilities.py:18-19 (343f3e0); backend/chat_agent.py:217-218, 42-45, 104-105
+      why: 'The chat and the connector read every number through one module over the results page’s engine, so the chat, the connector and the page agree. The model only writes words: its instructions forbid stating a score or number from memory, and the cards beside an answer are built from tool results, never from its text. The trade-off is tool calls: up to 6 model calls and 8 tool calls a turn.',
     },
     {
-      decision: 'Normalize to dry-matter basis at import, not per request',
-      why: 'The conversion is the whole point of the product, and doing it once at import lets the scoring engine read protein_dmb and fat_dmb directly instead of repeating the maths on every request.',
-    },
-    {
-      decision: 'Never impute missing nutrition data',
-      why: 'If moisture is missing, the converter returns null rather than assuming a default. Fabricating a plausible number would produce a confident score built on an invented input, the failure mode most likely to make the whole engine untrustworthy. Unpublished values score neutral, so brands that are transparent about gaps aren’t punished for it.',
-    },
-    {
-      decision: 'Strip health conditions from the recommendations response',
-      why: 'That endpoint is public and unauthenticated: anyone with a pet’s share link can curl it. Health conditions are PIPEDA-classified health data, so the profile is split into an internal object the engine scores against and a public object the API returns, and the health fields never make the round trip.',
-    },
-    {
-      decision: 'Magic-link auth, with the token stored only as a SHA-256 hash',
-      why: 'No passwords to manage or leak, and if the database were breached the stored tokens would be unusable. The raw token exists only in the email.',
-    },
-    {
-      decision: 'No login wall anywhere in the recommendation flow',
-      why: 'Requiring an account before showing any value kills conversion. Guests get a per-pet session token and full results; the account prompt comes after they’ve seen something worth saving.',
-    },
-    {
-      decision: 'A frozen regression baseline for the scoring engine',
-      why: 'Scoring changes are easy to make and hard to evaluate: a tweak that helps one profile can quietly wreck another. Fifty frozen (profile, product, score) tuples across five representative dogs get re-scored on demand and the run exits pass, yellow, or red on how many drifted.',
+      decision: 'Dry matter at import, not per request',
+      // source: backend/utils/dmb.py:1-10 (a4a0f2f), :25-28 ("We never invent moisture")
+      why: 'As-fed numbers make wet foods look low in protein, so every nutrient is converted to a dry‑matter basis when the catalog is imported, and converting once spares the engine the work on every request. A food with no moisture figure gets no dry‑matter value: moisture is never invented.',
     },
   ],
 
+  // Solo: `role` fills the summary row and no "My role" section renders. source: brief §4, §12
+  // question 7 (every commit is his; only Mahyar is credited)
   contribution: {
     role: 'Founder and sole engineer',
     teamSize: 1,
-    owned: 'Backend, frontend, scoring engine, catalog, CI, deployment, and the privacy and terms pages',
+    owned: 'Everything: the scoring engine, Ask BowlWise and the connector, the backend and frontend, the catalog, CI and deployment',
   },
 };
 
@@ -854,7 +893,10 @@ export const pagedProjects = projects.filter(
  *
  * Verified against source, the lineup contains exactly one agent system, and it is
  * a single agent:
- *   - BowlWise  — zero AI. A deterministic scoring function. No model in the request path.
+ *   - BowlWise  — ONE agent (updated 2026-11-02). The scoring engine has no model in it;
+ *                 Ask BowlWise, the chat, is a single Claude agent over 15 tools (the only
+ *                 code that imports the Anthropic SDK), and the connector is an MCP server
+ *                 that the user's own Claude calls. One agent, never "multi-agent".
  *   - MoneyMind — ONE agent. A single create_react_agent call, no StateGraph, no
  *                 sub-agents, no supervisor, no handoffs. Its own docs say so plainly:
  *                 "Three layers. One agent."
@@ -870,6 +912,6 @@ export const pagedProjects = projects.filter(
  * tool wiring, chained by a hand-written sequential orchestrator. So "multi-agent" is
  * now supportable, but ONLY about Maridian, and only alongside the contribution note:
  * Mahyar did not write the agents. Never let the phrase migrate to MoneyMind (one
- * agent), BowlWise (no AI), Realest (voice agents he didn't write), or to a general
+ * agent), BowlWise (one chat agent), Realest (voice agents he didn't write), or to a general
  * claim about him in the hero or About.
  */

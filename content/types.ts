@@ -284,6 +284,13 @@ export interface CaseStudyProject extends ProjectCard {
   facts?: MetaFact[];
   steps?: Step[];
   shots?: Shot[];
+  /**
+   * The card's own crop of shots[0], for a first shot whose top fights the card's
+   * status label (BowlWise's homepage has its nav bar where the label goes). Only
+   * cropped, never a different picture, so shots[0]'s alt still describes it.
+   * Without it the card shows shots[0], cropped from the top.
+   */
+  cover?: string;
   /** Short context labels: "Course project", "Hackathon", "Live in production". */
   badges: string[];
   stack: string[];
