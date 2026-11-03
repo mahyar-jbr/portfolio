@@ -149,30 +149,56 @@ function CaseHero({
 
 const WIDE = '(max-width: 760px) 100vw, 880px';
 const HALF = '(max-width: 760px) 100vw, 440px';
+/** A phone's screen shows at a phone's width (site.css .lu-shot.is-tall). */
+const TALL = '320px';
 
-/** A shot has its caption; a demo-day photo has none. */
+/** Taller than wide: a phone's screen. It sits level with nothing, so it keeps a row of its own. */
+const isTall = (s: Shot | Photo) => s.height > s.width;
+
+/**
+ * A shot has its caption; a demo-day photo has none. A phone's screen sits at
+ * a phone's width on the figure's ground instead of filling the column. A
+ * screen recording is the project's `clip` (Shots), not a shot.
+ */
 function figure(s: Shot | Photo, sizes: string) {
+  const tall = isTall(s);
   return (
-    <figure className="lu-shot" key={s.src}>
-      <Image src={s.src} alt={s.alt} width={s.width} height={s.height} sizes={sizes} loading="lazy" />
+    <figure className={tall ? 'lu-shot is-tall' : 'lu-shot'} key={s.src}>
+      <Image src={s.src} alt={s.alt} width={s.width} height={s.height} sizes={tall ? TALL : sizes} loading="lazy" />
       {'caption' in s && <figcaption>{s.caption}</figcaption>}
     </figure>
   );
 }
 
-/** Figures two to a row, so a pair sits level; an odd one out takes the row. */
+/**
+ * Figures two to a row, so a pair sits level; an odd one out takes the row,
+ * as does a phone's screen.
+ */
 function rows(figures: (Shot | Photo)[]) {
-  const pairs: (Shot | Photo)[][] = [];
-  for (let i = 0; i < figures.length; i += 2) pairs.push(figures.slice(i, i + 2));
-  return pairs.map((pair) =>
-    pair.length === 2 ? (
-      <div className="lu-shots is-two" key={pair[0].src}>
-        {pair.map((s) => figure(s, HALF))}
-      </div>
-    ) : (
-      figure(pair[0], WIDE)
-    ),
-  );
+  const out: ReactNode[] = [];
+  let held: Shot | Photo | undefined;
+  const single = () => {
+    if (held) out.push(figure(held, WIDE));
+    held = undefined;
+  };
+  for (const s of figures) {
+    if (isTall(s)) {
+      single();
+      out.push(figure(s, WIDE));
+    } else if (held) {
+      out.push(
+        <div className="lu-shots is-two" key={held.src}>
+          {figure(held, HALF)}
+          {figure(s, HALF)}
+        </div>,
+      );
+      held = undefined;
+    } else {
+      held = s;
+    }
+  }
+  single();
+  return out;
 }
 
 /**

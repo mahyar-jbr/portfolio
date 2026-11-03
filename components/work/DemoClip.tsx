@@ -24,6 +24,8 @@ import type { Clip } from '@/content/types';
  * reduced motion it never loops: played from the button, it plays once and
  * rests, like a demo-day clip. A product clip's caption sits under it, as its
  * shots' do.
+ * With a caption, the button ends the caption's line instead of lying over
+ * the frame, where it would cover the recorded app's own controls.
  */
 
 type State = 'rest' | 'loading' | 'playing' | 'paused' | 'ended';
@@ -172,6 +174,16 @@ export default function DemoClip({ clip, loop = false }: { clip: Clip; loop?: bo
   };
 
   const busy = state === 'playing' || state === 'loading';
+  const button = (
+    <button
+      type="button"
+      className="lu-btn is-glass is-icon is-small case-clip-button"
+      aria-label={busy ? 'Pause the clip' : state === 'ended' ? 'Play the clip again' : 'Play the clip'}
+      onClick={toggle}
+    >
+      {busy ? ICON_PAUSE : state === 'ended' ? ICON_REPLAY : ICON_PLAY}
+    </button>
+  );
   return (
     <figure className="lu-shot case-clip" data-state={state}>
       <div className="case-clip-frame" style={{ aspectRatio: `${clip.width} / ${clip.height}` }}>
@@ -199,16 +211,14 @@ export default function DemoClip({ clip, loop = false }: { clip: Clip; loop?: bo
           loading="lazy"
           decoding="async"
         />
-        <button
-          type="button"
-          className="lu-btn is-glass is-icon is-small case-clip-button"
-          aria-label={busy ? 'Pause the clip' : state === 'ended' ? 'Play the clip again' : 'Play the clip'}
-          onClick={toggle}
-        >
-          {busy ? ICON_PAUSE : state === 'ended' ? ICON_REPLAY : ICON_PLAY}
-        </button>
+        {!clip.caption && button}
       </div>
-      {clip.caption && <figcaption>{clip.caption}</figcaption>}
+      {clip.caption && (
+        <figcaption>
+          <span>{clip.caption}</span>
+          {button}
+        </figcaption>
+      )}
     </figure>
   );
 }

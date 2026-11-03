@@ -27,10 +27,20 @@ export function cardArtClass(project: Project): string | undefined {
 }
 
 export default function CardArt({ project, priority }: { project: Project; priority?: boolean }) {
-  /* a crop made for the card when the project has one (BowlWise, Palimpsest), else its first shot */
+  /* a crop made for the card when the project has one (BowlWise, Palimpsest), else its first
+     shot; `cardFocus` moves the crop where the top would cut something (Landline) */
   const shot = project.page === 'case-study' ? (project.cover ?? project.shots?.[0]) : undefined;
   if (shot) {
-    return <Image src={shot.src} alt={shot.alt} fill sizes="(max-width: 720px) 100vw, 1152px" priority={priority} />;
+    return (
+      <Image
+        src={shot.src}
+        alt={shot.alt}
+        fill
+        sizes="(max-width: 720px) 100vw, 1152px"
+        priority={priority}
+        style={shot.cardFocus ? { objectPosition: shot.cardFocus } : undefined}
+      />
+    );
   }
   if (project.page === 'none') return project.video ? <LoopVideo video={project.video} /> : null;
   return project.slug === 'graph-rag-fhir' ? <RecordLinks layout="row" className="art-diagram" /> : null;

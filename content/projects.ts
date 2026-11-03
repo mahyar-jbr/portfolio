@@ -13,6 +13,7 @@ import type { BriefProject, CaseStudyProject, Project, SoonProject } from './typ
  *     file in that project's repo that proves the field beside it.
  *   - Palimpsest: its portfolio brief, portfolio-assets/PORTFOLIO_BRIEF.md in its own
  *     private repo (Nov 2, 2026), where every fact cites a file:line. Not copied here.
+ *   - Landline: its own portfolio brief, kept in the team's repo; its entry says which facts are his.
  *   - The MoneyMind card: only what Mahyar has stated. Its verified write-up,
  *     `heldBack`, comes from content/sources/MoneyMindHackathon_PORTFOLIO_EXTRACT.md
  *     and stays unrendered.
@@ -124,10 +125,13 @@ const bowlwise: CaseStudyProject = {
   // The card's crop of home.png: x 327-2527, y 150-1800 (2200x1650, exactly 4:3). It drops
   // the homepage's own nav bar, which sat right where the card's status label goes, and
   // keeps the whole hero with even margins. Cut with sharp, then stripped to IHDR, IDAT, IEND.
+  // cardFocus: on the wide "Next project" card (16:6) the crop keeps the band with the whole
+  // headline above the caption; the 4:3 cards show the whole cover anyway.
   cover: {
     src: '/work/bowlwise/cover.png',
     width: 2200,
     height: 1650,
+    cardFocus: '50% 26%',
     alt: 'The BowlWise homepage: a headline, a box for a dog’s name, and an Orijen bag in a score ring reading 99 of 100 for a sample dog named Troy.',
   },
 
@@ -694,6 +698,222 @@ const moneymind: SoonProject = {
 };
 
 /**
+ * Landline: a team of three, a hackathon build carried on to a demo day. Written
+ * from its portfolio brief (portfolio-assets/PORTFOLIO_BRIEF.md, prepared on
+ * 2026-11-02 from 2arian3/Landline at main 5758699), which is not copied into
+ * content/sources/ because it holds unreleased notes. `source:` paths are in that
+ * repo at 5758699. Two facts are Mahyar's own (2026-11-02): it was built at the
+ * Boson AI Higgs Audio Hackathon (23 to 24 Oct 2026), and "Georgian Build North,
+ * we were finalists". Held until he confirms: third place and "of 30+ teams", the
+ * first-paint numbers, the 1.3 s re-rank and 60 fps. Its two decisions (the map's
+ * loading, push on the iPhone app) are in the brief, §9: a page gets six sections,
+ * and with My role and Demo day there is no room for a seventh.
+ *
+ * Every screenshot and the clip are from the live site's scripted demo, which
+ * dials no one (server/landline/api/demo.py:8-13). The demo puts made-up answers
+ * on real liv.rent listings, so every street address in them is blurred: the
+ * brief's -safe copies. Never the unblurred originals, media/landline-demo.gif or
+ * media/lucent-projector.png, and never the product's phone line or the API's
+ * address.
+ */
+const landline: CaseStudyProject = {
+  slug: 'landline',
+  name: 'Landline',
+  kind: 'prototype',
+  page: 'case-study',
+  depth: 'deep',
+  // Just ahead of Realest, the build it grew out of (README.md:200-202), so the two
+  // read in order. Renumber when the cards are merged.
+  order: 2.5,
+  // source: git log, first commit b577cad (2026-10-22), last 5758699 (2026-10-29)
+  year: '2026',
+  // Mahyar, 2026-11-02: "Georgian Build North, we were finalists"; BACKLOG.md:11-13 (one of ten finalists)
+  status: { label: 'Georgian Build North finalist', kind: 'hackathon' },
+  // The product's own line, under its panel in every screenshot. The brief's "Calls listing agents for
+  // Toronto renters" is nearly Realest's card line, and the two cards sit side by side.
+  cardLine: 'Toronto rentals, checked by phone',
+  // The web app's own icon, identical to web/app/icon.svg (fe68335, his)
+  mark: '/work/landline/mark.svg',
+  facts: [
+    // Mahyar, 2026-11-02; AGENTS.md:9 at 34d0236 names the event
+    { label: 'Event', value: 'Boson AI Higgs Audio Hackathon' },
+    // AGENTS.md:9 (Team AAMEL); git shortlog (three people)
+    { label: 'Team', value: '3 people' },
+  ],
+
+  // The loop in the order it runs (brief §6).
+  steps: [
+    {
+      title: 'Talk, and the map re-ranks',
+      // source: server/landline/agents/concierge/tools.py:206-218 (update_preferences inside session_tx);
+      // server/landline/orchestrator/runtime.py:234 and board.py:17-21 (each commit re-ranks the board);
+      // server/landline/api/routes.py:94 and web/lib/live.ts:133 (the page hears it)
+      body: 'The renter says what they want, like a one-bedroom up to $2,900. The voice agent saves each preference, and every save re-ranks the board on the live map.',
+    },
+    {
+      title: 'Calls in parallel',
+      // source: server/landline/voice/dispatch.py:383 (hanging up freezes the plan), :103-104 (one Caller per
+      // place, all at once up to the line cap); server/landline/voice/outbound.py:226-230 (allowlisted only)
+      body: 'Hanging up freezes the plan. Each listing then gets its own caller, dialing in parallel, and only numbers on an allowlist can be called.',
+    },
+    {
+      title: 'Facts, then a text',
+      // source: server/landline/agents/auditor/audit.py:182 (a fact stays only if its quote is in the listing
+      // agent's turns); orchestrator/handlers.py:235-245 (the outcome re-ranks the card); orchestrator/narrator.py:1
+      // and voice/dispatch.py:336 (a template text by SMS)
+      body: 'A fact counts only if its quote is in what the listing agent said. The answers re-rank the cards, and the renter gets a text with what each agent said.',
+    },
+  ],
+
+  // The live site's scripted demo on 2026-11-02, every street address blurred (the brief's -safe copies;
+  // alt text and captions from its §10). The first is also the card, which keeps its right side: the panel
+  // with the calls. calling-safe is left out (the same moment as the first), and so is map-ranked-safe:
+  // it is the clip's resting frame at 2x. With a clip, the stills show one to a row (CaseStudy's
+  // Shots), so every whole screen keeps the column's full width: at half width the panel text in
+  // results and fact-source can't be read. The phone shows at a phone's width.
+  shots: [
+    {
+      // source: portfolio-assets/landline-card-safe.png, the board mid-call drawn at 1024×640 CSS px
+      src: '/work/landline/calls.png',
+      width: 1600,
+      height: 1000,
+      alt: 'Landline’s map of Toronto with four amber pins being called, beside a live caption from one call.',
+      caption: 'Landline calls four places at once and shows each call live. From the scripted demo, with addresses blurred.',
+      cardFocus: '100% 0',
+    },
+    {
+      // source: portfolio-assets/landline-results-safe.png
+      src: '/work/landline/results.png',
+      width: 2880,
+      height: 1800,
+      alt: 'The board after the calls: four results, and pins marked booked, checked, flagged and no answer.',
+      caption: 'Each result says what the agent said, and each pin shows how the call went. The answers are scripted.',
+    },
+    {
+      // source: portfolio-assets/landline-try-phone.png, /try at 390×844 before Start: the pop-up with the
+      // phone line stays closed
+      src: '/work/landline/try-phone.png',
+      width: 780,
+      height: 1688,
+      alt: 'The Talk to Landline screen on a phone, with sample requests and a Start talking button.',
+      caption: 'On /try you talk to Landline in the browser.',
+    },
+    {
+      // source: portfolio-assets/landline-fact-source-safe.png (the address and the building's name blurred)
+      src: '/work/landline/fact-source.png',
+      width: 2880,
+      height: 1800,
+      alt: 'A listing’s details with a booked viewing and a quote from the listing agent about pets.',
+      caption: 'Every fact keeps the agent’s exact words and says who said them. The quote and the booking are scripted.',
+    },
+  ],
+
+  // source: portfolio-assets/landline-rerank-safe.mp4 (1440×900, 12.47 s, H.264, no audio track) and its
+  // last frame, landline-rerank-last-safe.png. The demo's controls change the brief in it, not speech.
+  // It leads the stills and loops, as Palimpsest's console clip does.
+  clip: {
+    src: '/work/landline/rerank.mp4',
+    still: '/work/landline/rerank.png',
+    width: 1440,
+    height: 900,
+    alt: 'A screen recording of the map and the list of Toronto rentals re-ranking twice as the budget and bedrooms change.',
+    caption: 'Each change to the brief re-ranks the map and the list. From the scripted demo, where controls stand in for the voice.',
+  },
+
+  // source: brief §2
+  oneLiner:
+    'A voice agent for Toronto renters: you talk, a live map re-ranks, then it phones the listing agents and texts you what they said.',
+
+  badges: ['Boson AI Higgs Audio Hackathon', 'Team of 3', 'Georgian Build North finalist'],
+
+  // source: brief §7: server/landline/voice/higgs.py:19,39 (Higgs Realtime, not Higgs TTS: README.md:156);
+  // voice/outbound.py:45 (Twilio); pyproject.toml:5,7,15 (Python, FastAPI, Clerk); db/migrations/0001_init.sql:4-5
+  // (PostgreSQL); web/package.json:15,17-18 (MapLibre GL, Next.js, React); mobile/package.json:8,24 (Expo)
+  stack: ['Higgs Realtime', 'Twilio', 'Python', 'FastAPI', 'PostgreSQL', 'Next.js', 'React', 'MapLibre', 'Expo', 'Clerk'],
+
+  // None until Mahyar decides (2026-11-02), not even as a held link: the live demo ends on a scripted red
+  // flag over a real, unblurred address; the live site's cover shows the product's phone line; and the
+  // team's README shows that line and the API's address (brief §11).
+  links: [],
+
+  // source: docs/slides/landline-demo-day.html:43-44, the team's own problem statement
+  problem:
+    'Toronto rental listings leave out what renters most need to know: is it still available, what does parking really cost, are dogs allowed. Renters chased agents one call at a time, and those agents work for the landlord.',
+
+  // source: brief §6 (the code path) and §7 (Higgs Realtime, Twilio); README.md:200-202 ("Landline grows out of
+  // Realest"). "We": Mahyar was on Realest's team too.
+  approach:
+    'A voice agent on Boson AI’s Higgs Realtime turns what the renter says into a brief, and the server re-ranks the board and streams each change to a live map. The calls go out in parallel over Twilio, and an auditor keeps only what the listing agent actually said. It grew out of Realest, which we built at an earlier hackathon.',
+
+  // source: Mahyar (the event and its dates, the finalist place); BACKLOG.md:11-13 (one of ten finalists);
+  // git log 27 to 29 Oct (the Build North week); the site answered 200 on 2026-11-02; demo.py:8-13;
+  // docs/PITCH_NUMBERS.md:3 (no real renter; calls only to the team's phones)
+  result:
+    'We built it at the Boson AI Higgs Audio Hackathon on October 23 and 24, 2026, and kept building it for Georgian Build North’s demo day, where we were one of ten finalists. It is still live, with a scripted demo that dials no one. No real renter has used it: its calls only ever reached the team’s own phones.',
+
+  // Only the three numbers checked for the brief (§8). Held until Mahyar confirms: first paint 3.4 s → 0.9 s
+  // (PR #8's Lighthouse runs), the 1.3 s re-rank (one run) and 60 fps; 49 of 49 quotes is the team's testing.
+  metrics: [
+    {
+      value: '7/21 → 0/21',
+      label: 'Voice sessions where the agent skipped its tools, before and after my fix',
+      source: 'PR #168 description (his), fixing a regression from #136',
+    },
+    {
+      value: '10/15 → 15/15',
+      label: 'Goodbyes in other languages that ended the call, on the tune set',
+      source:
+        'PR #222 description (his), measured on its tune set; the other 10/15 → 15/15, in docs/EVAL_FINDINGS.md:24, is a teammate’s',
+    },
+    {
+      value: '473 → 186 kB',
+      label: 'First-load JavaScript of the live board page',
+      source:
+        'next build at PR #8’s before and after commits, e29c60b and b074db4, rebuilt for the brief; the same on every device, so never "mobile"',
+    },
+  ],
+
+  contribution: {
+    // source: README.md:145 (the web app and its live map, the Expo app, the API's read side, Vercel, the video)
+    role: 'Web app, Expo app and read API',
+    teamSize: 3,
+    // source: git blame -w at 5758699, code only (brief §4): all code 20,725 lines (36%); web/ app code 7,147 (74%);
+    // mobile/ 2,340 (100%); server/landline/api/ 1,253 (63%); agents 26%, voice 15%, orchestrator and data 8% or
+    // less. "Rebuilt": a teammate committed the web app's first version (044da70). His fixes: #168, #222.
+    owned:
+      'I wrote 36% of the code: 74% of the web app, all of the Expo app and 63% of the API. That covers the rebuilt board and its detail views, judge mode on /try, the read API’s captions and outcomes, and sign-in. Voice, agents and data were mostly my teammates’ work; my part there was fixes, like the agent’s tool use and its goodbyes.',
+  },
+
+  // Mahyar's photos from the Georgian Build North final (DSC03376, DSC03364 and DSC03343, 7008×4672 Sony files),
+  // cut for the web on 2026-11-02: 1400×933, sRGB, no metadata at all (the originals carry EXIF, IPTC and XMP).
+  // He is the one wearing the "MAHYAR" name tag. A teammate's full name, a video call's "screen" label on the
+  // display behind the stage, is blurred in each. DSC03316, the About section's photo, isn't repeated. No
+  // captions, and no alt text names anyone but Mahyar.
+  demoDay: {
+    photos: [
+      {
+        src: '/work/landline/demo-phone.jpg',
+        width: 1400,
+        height: 933,
+        alt: 'Mahyar on stage, holding a phone up to the microphone, while two teammates watch the laptop.',
+      },
+      {
+        src: '/work/landline/demo-stage.jpg',
+        width: 1400,
+        height: 933,
+        alt: 'Mahyar gesturing on stage with a phone in one hand, two teammates at the laptop behind him.',
+      },
+      {
+        src: '/work/landline/demo-room.jpg',
+        width: 1400,
+        height: 933,
+        alt: 'The team on stage, seen from the audience: a teammate holds the microphone at the laptop while Mahyar stands to the right.',
+      },
+    ],
+  },
+};
+
+/**
  * Realest: a team of four, built in a day. Written from Realest_PORTFOLIO_BRIEF.md;
  * `source:` paths are in the realest repo (AamelAI/realest, main at a980bf2).
  */
@@ -1134,13 +1354,14 @@ const palimpsest: CaseStudyProject = {
 
 /**
  * Display order is `order`, derived rather than hand-maintained — a hand-kept list
- * once silently dropped Maridian. Seven cards since Palimpsest joined the research
- * pair (2026-11-02): an odd count, so the lowest order, BowlWise, spans both columns
- * and the rest pair beneath it.
+ * once silently dropped Maridian. Eight cards since Landline and Palimpsest joined
+ * (2026-11-02): an even count, so every card pairs. Under a filter with an odd
+ * count, the lowest order there spans both columns.
  */
 export const projects: Project[] = [
   bowlwise,
   moneymind,
+  landline,
   realest,
   maridian,
   graphRag,
@@ -1171,6 +1392,9 @@ export const pagedProjects = projects.filter(
  *   - Realest   — (added 2026-09-23) two ElevenLabs voice agents: one answers the
  *                 renter, the other places each call to a listing. Teammates built
  *                 them; Mahyar built the ranker and the page.
+ *   - Landline: (added 2026-11-02) a voice agent on Higgs Realtime, one caller per
+ *                 listing and an auditor, mostly his teammates' work; his part there
+ *                 was fixes (#168, #222). Never "multi-agent" about him.
  *
  * RESOLVED 2026-08-08: Maridian's six agents are REAL — Triage, Options, Scorer,
  * Decision, Batch Tracker, Recovery Planner, each a module with its own prompt file and

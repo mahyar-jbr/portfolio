@@ -1519,6 +1519,35 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
     grid-template-columns: 1fr;
   }
 }
+/* A screen recording among the shots (DemoClip with a caption, Landline's
+   re-rank loop): the button ends the caption's line, at the frame's corner
+   inset, rather than lying over the recorded app's own controls. Its margins
+   keep the caption's height. */
+.case-clip figcaption {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+.case-clip figcaption .case-clip-button {
+  position: static;
+  flex: none;
+  margin: -8px calc(var(--space-3) - var(--space-5)) -8px auto;
+}
+/* A phone's screen among the shots (CaseStudy's is-tall, Landline's /try): at a
+   phone's width with a phone screen's corners, on the figure's muted ground
+   rather than stretched across the column. The caption keeps the paper. */
+.lu-shot.is-tall {
+  background: var(--fill-muted);
+}
+.lu-shot.is-tall img {
+  width: min(320px, calc(100% - 2 * var(--space-5)));
+  margin: clamp(24px, 5vw, 48px) auto;
+  border-radius: 38px;
+  box-shadow: var(--shadow-glass);
+}
+.lu-shot.is-tall figcaption {
+  background: var(--surface);
+}
 .case-next .lu-card {
   aspect-ratio: 16 / 6;
 }

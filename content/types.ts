@@ -159,6 +159,11 @@ export interface Shot {
   alt: string;
   /** One line on what the screenshot shows. */
   caption: string;
+  /**
+   * Where a card keeps this shot when it crops it (the first shot is the card's
+   * art), as a CSS object-position. Without it the kit keeps the top centre.
+   */
+  cardFocus?: string;
 }
 
 /**
