@@ -7,8 +7,9 @@ import { useEffect } from 'react';
  * capsule doesn't repeat it (html.name-in-view); as the name scrolls up under
  * the capsule, "Mahyar" opens in it on the kit's brand transition — the name
  * shows where it went. And no nav item is "current" until its section arrives
- * (html.hero-in-view): through the hero and the About story the lens rests,
- * where the kit's scroll spy would otherwise default to Work.
+ * (html.hero-in-view): through the hero the lens rests, where the kit's scroll
+ * spy would otherwise default to the first item. That item is About since
+ * 2026-11-02; before, it was Work, and the lens rested through About too.
  *
  * app/layout.tsx sets name-in-view before first paint on "/", so the brand
  * never flashes; if this never runs, its failsafe takes the class away.
@@ -28,11 +29,14 @@ export default function NavHandoff() {
     io.observe(name);
 
     let raf = 0;
+    /* the first section the nav names, read from the nav itself, so the order
+       is only ever set in one place (content/site.ts) */
+    const href = document.querySelector('.site-nav .lu-nav-item')?.getAttribute('href') ?? '';
+    const first = href.startsWith('#') ? document.getElementById(href.slice(1)) : null;
     const spy = () => {
       raf = 0;
-      const work = document.getElementById('work');
       /* the kit's scroll spy picks a section once its top passes 45% of the screen */
-      root.classList.toggle('hero-in-view', !!work && work.getBoundingClientRect().top > window.innerHeight * 0.45);
+      root.classList.toggle('hero-in-view', !!first && first.getBoundingClientRect().top > window.innerHeight * 0.45);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(spy);

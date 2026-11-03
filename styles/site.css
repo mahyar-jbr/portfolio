@@ -238,11 +238,13 @@ html:not(.theme-wired) .site-theme {
 .site-nav .lu-nav.is-compact .lu-nav-brand {
   visibility: hidden;
 }
-/* At phone width the name gives way so four items fit on one line with no
-   horizontal scroll (390px bar) — the same trade the compact state makes. The
-   items tighten in steps so Contact (and the lens on it) stays inside the
-   capsule down to 320px, in Inter too, which runs wider than SF. The narrow
-   padding holds when compact: the kit's compact padding (12px) is wider. */
+/* At phone width the name gives way so the five items fit on one line with no
+   horizontal scroll — the same trade the compact state makes. The items
+   tighten in steps so Contact (and the lens on it) stays inside the capsule
+   down to 320px, in Inter too, which runs about 8% wider than SF. Each step is
+   set by what the five labels need in Inter (About joined the four on
+   2026-11-02). The narrow padding holds when compact: the kit's compact
+   padding (12px) is wider. */
 @media (max-width: 560px) {
   .site-nav .lu-nav-brand {
     display: none;
@@ -252,17 +254,38 @@ html:not(.theme-wired) .site-theme {
     padding-inline: 11px;
   }
 }
-@media (max-width: 374px) {
+@media (max-width: 459px) {
   .site-nav .lu-nav-item,
   .site-nav .lu-nav.is-compact .lu-nav-item {
-    padding-inline: 9px;
+    padding-inline: 8px;
+    font-size: 14px;
   }
 }
-@media (max-width: 359px) {
+@media (max-width: 409px) {
   .site-nav .lu-nav-item,
   .site-nav .lu-nav.is-compact .lu-nav-item {
     padding-inline: 6px;
-    font-size: 14px;
+  }
+}
+@media (max-width: 389px) {
+  .site-nav .lu-nav-item,
+  .site-nav .lu-nav.is-compact .lu-nav-item {
+    padding-inline: 5px;
+    font-size: 13px;
+  }
+}
+/* the smallest phones: the capsule also takes in its gutters and gaps */
+@media (max-width: 359px) {
+  .site-nav {
+    padding-inline: var(--space-2);
+  }
+  .site-nav .lu-nav {
+    gap: 2px;
+  }
+  .site-nav .lu-nav-item,
+  .site-nav .lu-nav.is-compact .lu-nav-item {
+    padding-inline: 4px;
+    font-size: 12px;
   }
 }
 /* Hover (components/lucent/NavHover.tsx): a soft pill in the kit's hover fill,
@@ -1911,6 +1934,93 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   }
 }
 
+/* ---- Education (components/experience/EducationList.tsx, 2026-11-02) ----
+   A small group after the roles, in the roll's own terms: headed like a
+   section's kicker, then one solid reading card with rows split by hairlines.
+   Each row is the credential in ink, where it is from in secondary ink under
+   it, and when, in the reading path at the right in tabular figures. No
+   icons, so the rows start at the card's edge. */
+.xp-edu {
+  margin-top: var(--space-7);
+}
+.xp-edu-title {
+  font-weight: inherit;
+}
+.xp-edu-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-2) var(--space-7);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-glass);
+}
+.xp-edu-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    'name when'
+    'org when';
+  column-gap: var(--space-5);
+  padding-block: var(--space-4);
+}
+.xp-edu-row + .xp-edu-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: var(--hairline);
+}
+.xp-edu-name {
+  grid-area: name;
+  margin: 0;
+  font: 600 17px/22px var(--font-text);
+  color: var(--ink);
+  text-wrap: balance;
+}
+.xp-edu-org {
+  grid-area: org;
+  margin: 2px 0 0;
+  font-size: 15px;
+  line-height: 20px;
+  color: var(--ink-secondary);
+}
+.xp-edu-when {
+  grid-area: when;
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  color: var(--ink-secondary);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+/* phones (the roll's break): the three lines stack, the dates last */
+@media (max-width: 734px) {
+  .xp-edu-list {
+    padding: var(--space-1) var(--space-4);
+  }
+  .xp-edu-row {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'name'
+      'org'
+      'when';
+    padding-block: var(--space-3);
+  }
+  .xp-edu-name {
+    font-size: 15px;
+    line-height: 20px;
+  }
+  .xp-edu-when {
+    margin-top: 2px;
+    font-size: 13px;
+    line-height: 18px;
+    text-align: left;
+  }
+}
+
 /* Forced colours drop backgrounds: the rail, the filled node, the bullets and
    the separators keep theirs in system colours, the Now capsule keeps an edge,
    and nothing animates. */
@@ -1927,7 +2037,8 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
     forced-color-adjust: none;
     background: CanvasText;
   }
-  .xp-entry + .xp-entry::before {
+  .xp-entry + .xp-entry::before,
+  .xp-edu-row + .xp-edu-row::before {
     forced-color-adjust: none;
     background: GrayText;
   }
@@ -2261,6 +2372,11 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
 }
 .site-footer-row p {
   margin: 0;
+}
+/* each fact stays whole (Footer.tsx), so a narrow screen breaks the line
+   between them, never inside the address or the date */
+.site-footer-facts > span {
+  display: inline-block;
 }
 .site-footer-top {
   position: relative;

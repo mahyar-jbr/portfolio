@@ -1,7 +1,8 @@
+import EducationList from '@/components/experience/EducationList';
 import RoleList from '@/components/experience/RoleList';
 import Button from '@/components/lucent/Button';
 import Section from '@/components/lucent/Section';
-import { roles } from '@/content/experience';
+import { credentials, education, highSchool, roles } from '@/content/experience';
 import { contact, sections } from '@/content/site';
 
 const { experience } = sections;
@@ -10,6 +11,7 @@ const { experience } = sections;
  * Experience — where he has worked, as one open roll led by each company's own
  * logo. The icons and titles down the left edge are the skim, and the read sits
  * right beside them; the entries rise in one after another as they arrive.
+ * Education follows the roles as a small group of its own.
  */
 export default function Experience() {
   const resume = contact.links.find((l) => l.label === 'Resume' && l.status === 'live');
@@ -28,6 +30,7 @@ export default function Experience() {
       }
     >
       <RoleList id="exp" roles={roles} />
+      <EducationList schools={[education, highSchool]} credentials={credentials} />
     </Section>
   );
 }

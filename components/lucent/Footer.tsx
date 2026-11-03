@@ -1,8 +1,12 @@
 /**
- * Footer — the page's small print, on every page: who and when, where he is
- * based, and a way back to the top. Nothing else earns a place: the nav capsule
- * is always on screen, and the ways to reach him are the Contact tiles right
- * above (and one tap away, through the nav, from a case study).
+ * Footer — the page's small print, on every page: who, his email, when the site
+ * was last updated, and a way back to the top (the email and the date since
+ * 2026-11-02, for the COOP 2100 ePortfolio). The email is plain selectable text,
+ * as on the Contact tile. The date is content/site.ts's `lastUpdated`, read as a
+ * calendar day (UTC), so no time zone moves it to the day before.
+ *
+ * Each fact stays whole on a narrow screen (styles/site.css, "Footer"), so a
+ * line breaks between them and never inside the address or the date.
  *
  * "Back to top" is a plain link to #main, the page's <main> (app/layout.tsx), so
  * it holds with scripts blocked and keyboard users go up with the view: landing
@@ -13,13 +17,32 @@
  * smooth ride back up would play the whole page past, the pinned About story
  * included.
  */
-export default function Footer({ name, year, location }: { name: string; year: number; location: string }) {
+const UPDATED = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' });
+
+export default function Footer({
+  name,
+  year,
+  email,
+  updated,
+}: {
+  name: string;
+  year: number;
+  email: string;
+  /** YYYY-MM-DD */
+  updated: string;
+}) {
   return (
     <footer className="lu-footer site-footer">
       <div className="lu-page">
         <div className="site-footer-row">
-          <p>
-            © {year} {name} · {location}
+          <p className="site-footer-facts">
+            <span>
+              © {year} {name} ·
+            </span>{' '}
+            <span>{email} ·</span>{' '}
+            <span>
+              Last updated <time dateTime={updated}>{UPDATED.format(new Date(`${updated}T00:00:00Z`))}</time>
+            </span>
           </p>
           <a className="site-footer-top" href="#main">
             Back to top

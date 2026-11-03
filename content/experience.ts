@@ -16,9 +16,11 @@ import type { Role, Education, Credential } from './types';
 export const roles: Role[] = [
   {
     company: 'FGF Brands',
-    title: 'AI Solution Engineer Co-op',
-    period: 'Sept 2026 – Present',
-    location: 'Toronto, ON (Hybrid)',
+    // Title, dates and place as on his resume (2026-11-02), which now wins over
+    // LinkedIn's "AI Solution Engineer", Sept start and Toronto (Hybrid).
+    title: 'AI Solutions Engineer Co-op',
+    period: 'Aug 2026 – Present',
+    location: 'Vaughan, ON',
     monogram: 'FG',
     logo: { src: '/experience/fgf.png', width: 104, height: 104 },
     current: true,
@@ -36,10 +38,10 @@ export const roles: Role[] = [
   // Sources: content/sources/GraphRetrieval_PORTFOLIO_BRIEF.md, plus (per field) its private repo and the paper.
   {
     company: 'York Data Mining Lab',
-    title: 'Directed Studies, EECS 4070',
-    // source: README.md:3, CLAUDE.md:3 ("3 credits", "Fall 2026"), as on the project page. Was "Fall 2026 –
-    // Winter 2027", from the Lucent kit; no source names a Winter term.
-    period: 'Fall 2026',
+    // Title and dates as on his resume (2026-11-02). Was "Directed Studies, EECS 4070" and "Fall 2026"
+    // (README.md:3, CLAUDE.md:3, as on the project page).
+    title: 'Undergraduate Researcher (Directed Studies)',
+    period: 'Sep 2026 – Present',
     location: 'Toronto, ON',
     subline: 'York Data Mining Lab · Prof. Manos Papagelis',
     monogram: 'YU',
@@ -102,10 +104,10 @@ export const roles: Role[] = [
   },
   {
     company: 'Sepantech',
-    // LinkedIn has the title and the March start; the old copy said "App Developer &
-    // Database Intern" and May.
-    title: 'Software Engineer Intern',
-    period: 'Mar – Aug 2024',
+    // Title and dates as on his resume (2026-11-02). LinkedIn says "Software Engineer
+    // Intern" from March; the resume wins.
+    title: 'App Developer & Database Intern',
+    period: 'May – Aug 2024',
     location: 'Sweden (Remote)',
     monogram: 'ST',
     logo: { src: '/experience/sepantech.jpg', width: 116, height: 116 },
@@ -120,14 +122,29 @@ export const roles: Role[] = [
   },
 ];
 
+/**
+ * The degree under way: the hero's "Studying" row and the first line of the
+ * Education group under the roles. The expected graduation is his resume's
+ * (2026-11-02); it was left off from 2026-08-08 while the date was moving.
+ */
 export const education: Education = {
   institution: 'York University',
   credential: 'Honours BA, Computer Science (Co-op)',
-  started: 'Sept 2023',
+  started: 'Sep 2023',
+  expected: 'April 2028',
   location: 'Toronto, ON',
-  // No graduation date by decision (2026-08-08): it moved and is currently unknown.
-  // Publishing a stale date on the page people cross-check against LinkedIn is a
-  // worse outcome than publishing none. Nobody reads a missing date as odd.
+};
+
+/**
+ * Where he finished high school (Mahyar, 2026-11-02: "I finished my grade 12 at
+ * Cardinal Carter, grade 11 saint eliz"). The year is his resumes' (July 2023 and
+ * Feb 2025: "Grade 12, Cardinal Carter CHS, 09/2022 - 06/2023"). No town: none
+ * of his sources gives one.
+ */
+export const highSchool: Education = {
+  institution: 'Cardinal Carter Catholic High School',
+  credential: 'Ontario Secondary School Diploma',
+  finished: '2023',
 };
 
 export const credentials: Credential[] = [

@@ -7,7 +7,7 @@ import NavBar from '@/components/lucent/NavBar';
 import ThemeToggle from '@/components/lucent/ThemeToggle';
 import Footer from '@/components/lucent/Footer';
 import LucentRuntime from '@/components/lucent/Runtime';
-import { identity, meta, sections } from '@/content/site';
+import { identity, lastUpdated, meta, sections } from '@/content/site';
 
 /* Sourced from content/site.ts rather than hardcoded. These strings were previously
    duplicated here and had already drifted from the content tab's copy — the tab title,
@@ -85,7 +85,7 @@ try{if(location.pathname==='/'&&!location.hash){var nv=performance.getEntriesByT
    text, behind next/font's size-matched fallback. */
 const inter = Inter({ subsets: ['latin'], axes: ['opsz'], display: 'swap', preload: false });
 
-const navItems = [sections.work, sections.experience, sections.drawings, sections.contact].map((s) => ({
+const navItems = [sections.about, sections.work, sections.experience, sections.drawings, sections.contact].map((s) => ({
   id: s.id,
   label: s.nav,
 }));
@@ -105,7 +105,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <NavBar brand={identity.fullName.split(' ')[0]} items={navItems} />
         <ThemeToggle />
         <main id="main">{children}</main>
-        <Footer name={identity.fullName} year={new Date().getFullYear()} location={identity.location} />
+        <Footer name={identity.fullName} year={new Date().getFullYear()} email={identity.email} updated={lastUpdated} />
         <LucentRuntime />
       </body>
     </html>

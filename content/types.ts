@@ -90,13 +90,17 @@ export interface Credential {
 export interface Education {
   institution: string;
   credential: string;
+  /** Where it is, when the institution's name alone doesn't place it. */
+  location?: string;
+  /** When it began, e.g. "Sep 2023". */
+  started?: string;
+  /** When it ended, e.g. "2023", for one that is done. */
+  finished?: string;
   /**
-   * Start year only. No expected graduation date — it moved and is currently
-   * unknown, and a wrong date on the one page people cross-check is worse than
-   * no date at all.
+   * When it should end, e.g. "April 2028", for one still underway. Matches his
+   * resume (2026-11-02); until then it was left off because the date had moved.
    */
-  started: string;
-  location: string;
+  expected?: string;
 }
 
 /** How much page a project gets. Depth is an editorial call, not a design one. */

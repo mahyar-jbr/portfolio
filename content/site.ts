@@ -39,9 +39,10 @@ export const identity: Identity = {
  * the name and the dot canvas behind it.
  *
  * The facts are this file's, not the kit's sample copy: no availability status,
- * no graduation year, Aurora rather than "Toronto area". The status slot shows
- * the role he is actually in, as plain text — in Lucent a green dot means
- * "Available for work", which he is not.
+ * Aurora rather than "Toronto area". The status slot shows the role he is
+ * actually in, as plain text — in Lucent a green dot means "Available for work",
+ * which he is not. The expected graduation joined Studying on 2026-11-02, from
+ * his resume, for the COOP 2100 ePortfolio.
  *
  * `id` names the property so the design can give it a glyph; the words are content.
  */
@@ -57,23 +58,30 @@ export const hero = {
     // September, so it now reads as the present. Plain text, NOT the kit's green
     // status tag: in Lucent a green dot means "Available for work", which under his
     // name would read as open-to-work — the opposite of the truth (2026-09-22 review).
-    { id: 'now', label: 'Now', value: 'AI Solution Engineer co-op at FGF Brands' },
-    { id: 'studying', label: 'Studying', value: `${education.credential}, ${education.institution}` },
+    // "Solutions", as on his resume (2026-11-02).
+    { id: 'now', label: 'Now', value: 'AI Solutions Engineer co-op at FGF Brands' },
+    {
+      id: 'studying',
+      label: 'Studying',
+      value: `${education.credential}, ${education.institution}, expected ${education.expected}`,
+    },
     { id: 'based', label: 'Based', value: identity.location, timeZone: 'America/Toronto' },
   ],
   ctas: [
     { label: 'View my work', href: '#work' },
     { label: 'Get in touch', href: '#contact' },
-    // Résumé stays pulled until public/resume.pdf is replaced — the current file
-    // is the June version and predates FGF entirely.
+    // No résumé button here: the resume lives in Contact's tiles and beside
+    // Experience's title.
   ],
 } as const;
 
 /**
  * Home-page section heads, and the nav labels that point at them.
  * The nav is built from this list, so a section and its nav item cannot drift.
+ * About's kicker and title live with its story, in content/about.ts.
  */
 export const sections = {
+  about: { id: 'about', nav: 'About' },
   work: {
     id: 'work',
     nav: 'Work',
@@ -103,9 +111,15 @@ export const meta: SiteMeta = {
   // 2026-08-08 it read "Starting September 2026", because he hadn't started and a
   // description cannot run ahead of the facts. He started in September 2026.
   description:
-    'I build AI agent systems and full-stack products. AI Solution Engineer co-op at FGF Brands.',
+    'I build AI agent systems and full-stack products. AI Solutions Engineer co-op at FGF Brands.',
   ogImageAlt: 'Mahyar Jaberi, AI Agent & Full-Stack Engineer',
 };
+
+/**
+ * The footer's "Last updated" date, as YYYY-MM-DD. Change it each time the site
+ * is published (COOP 2100 ePortfolio, 2026-11-02).
+ */
+export const lastUpdated = '2026-11-02';
 
 /**
  * Contact section copy.
@@ -134,9 +148,10 @@ export const contact = {
   links: [
     { label: 'GitHub', value: 'Code and experiments', href: 'https://github.com/mahyar-jbr', status: 'live' },
     { label: 'LinkedIn', value: 'Work history', href: 'https://www.linkedin.com/in/mahyar-jaberi/', status: 'live' },
-    // Pending until public/resume.pdf is replaced: the current file is the June
-    // version and predates FGF. Flip to 'live' and the tile appears.
-    { label: 'Resume', value: 'Download PDF', href: '/resume.pdf', status: 'pending' },
+    // Live since 2026-11-02: public/resume.pdf is his November resume with the
+    // phone number taken out of the header. The June one carried it and his
+    // postal code. Experience's "Resume, PDF" button shows while this is live.
+    { label: 'Resume', value: 'Download PDF', href: '/resume.pdf', status: 'live' },
   ] satisfies (ExternalLink & { value: string })[],
 };
 
