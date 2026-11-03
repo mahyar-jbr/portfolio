@@ -15,13 +15,17 @@ import type { ProjectStatus } from '@/content/types';
  * that is there, but never the arrow: it still goes nowhere.
  */
 
-/** Which glyph carries each kind of status (kit: store, flask, timer; spark for a soon card). */
+/**
+ * Which glyph carries each kind of status (kit: store, flask, timer, and lock
+ * for what is kept under wraps; spark for a soon card).
+ */
 const STATUS_GLYPH: Record<ProjectStatus['kind'], GlyphName> = {
   live: 'store',
   soon: 'spark',
   progress: 'flask',
   research: 'flask',
   hackathon: 'timer',
+  held: 'lock',
 };
 
 /**

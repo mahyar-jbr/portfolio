@@ -821,55 +821,81 @@ const realest: CaseStudyProject = {
 };
 
 /**
- * Directed studies, Fall 2026. Written from GraphRetrieval_PORTFOLIO_BRIEF.md;
- * `source:` paths are in the project's private repo. No results yet, so it gets a
- * brief page, not a case study, and nothing here may claim an outcome until one exists.
+ * Directed studies, Fall 2026: a teaser. Written from the project's portfolio
+ * brief of 2026-11-02 (its private repo's portfolio-assets/PORTFOLIO_BRIEF.md,
+ * copied to content/sources/GraphRetrieval_PORTFOLIO_BRIEF.md with the results
+ * withheld), whose "Page copy, teaser version" gives the card line, status,
+ * lede, story, numbers and credit below, word for word.
+ *
+ * Mahyar, 2026-11-02: "lets keep it lowkey and suspicious but market it well as
+ * of something very cool." So the page tells the story and hides the specifics.
+ * Every line was chosen to stay true: "no measurable difference", not "it
+ * failed"; "helped most", not "fixed it"; "a plan fixed before the main runs",
+ * not "before any results". Reword nothing, and add nothing the page copy
+ * doesn't say (no result, no figure, no method detail) until he clears it.
+ * Still underway, so it keeps a brief page.
  */
 const graphRag: BriefProject = {
   // Renamed from "Graph RAG for FHIR" (2026-09-23); the slug stays so links hold.
   slug: 'graph-rag-fhir',
-  // source: README.md:1
+  // source: brief §1 (README.md:1)
   name: 'Graph-Native Retrieval for Clinical LLM Agents',
   kind: 'research',
   page: 'brief',
   order: 5,
-  // source: git log (first commit 2026-09-23)
+  // source: brief §1, §4 (first commit 2026-09-23)
   year: '2026',
-  // source: code/src/ holds only .gitkeep; there is no results/
-  status: { label: 'In progress', kind: 'progress' },
-  // source: CLAUDE.md:3-4
-  cardLine: 'Directed studies, York Data Mining Lab',
-  // What it is and what it asks, without repeating the title; no outcome. Also the
-  // page's meta description. source: README.md:6-8
-  lede: 'Giving AI agents a way to follow the links between a patient’s FHIR records, and measuring whether it helps.',
-  // source: CLAUDE.md:4 ("Student: Mahyar Jaberi"); git log (one author)
+  // source: brief, Page copy (status label); underway (brief §3), its results kept off the page
+  status: { label: 'Results under wraps', kind: 'held' },
+  // source: brief, Page copy (card line)
+  cardLine: 'Why AI agents get lost in health records',
+  // source: brief, Page copy (lede). Also the page's meta description.
+  lede: 'Research into why AI agents get lost in linked health records, and the surprisingly small change that helped most.',
+  // source: brief §0 and §4: one author, and the page names only Mahyar (his decision, 2026-11-02)
   role: 'Student researcher (solo)',
+  // source: brief §0 (course, lab, supervisor and timeline, unchanged since September)
   facts: [
-    // source: README.md:3
     { label: 'Course', value: 'EECS 4070 Directed Studies' },
-    // source: CLAUDE.md:4
     { label: 'Lab', value: 'York Data Mining Lab' },
-    // source: README.md:4
     { label: 'Supervisor', value: 'Prof. Manos Papagelis' },
-    // source: README.md:3 and CLAUDE.md:3 ("Fall 2026"). Was "Fall 2026 – Winter 2027", from the
-    // Lucent kit; the repo names only the Fall 2026 term.
     { label: 'Timeline', value: 'Fall 2026' },
   ],
-  // source: brief §6 (code/requirements-lock.txt:1; code/FHIR-AgentBench/requirements.txt:3, 5), the same four
-  // as the York row in content/experience.ts. Not conda or the generated roadmap page: tooling around the
-  // research, not what it is built with.
-  stack: ['Python', 'FHIR', 'LiteLLM', 'pandas'],
-  building: [
-    // source: CLAUDE.md:14-15 (the research question); code/FHIR-AgentBench/tools/resource_tools.py:12-47
-    // (the benchmark's tools fetch every record of a type, or one record by ID)
-    'A tool that follows the links between FHIR records in one call, instead of the agent fetching each linked record itself.',
-    // source: CLAUDE.md:14-15, :40 (same model, judge, prompts, server and split). Not "against published
-    // baselines": that model retires on Oct 23, 2026, so published numbers are reference points (:35-36, :55).
-    // U+2011, a non-breaking hyphen: the benchmark's name never splits across lines.
-    'A test on FHIR‑AgentBench: the same agent, model, judge and questions, run with and without the tool.',
-    // source: notes/log/2026-09-23.md:10 (pinned at bbb42909), :13 (all files match SHA256SUMS.txt; 928,935
-    // resources, 100 of them Patient), recounted 2026-09-23. Dated on purpose: update it after the first run.
-    'As of September 2026: the benchmark is pinned and the data, 928,935 FHIR records for 100 patients, is checksum-verified. No results yet.',
+  // source: brief §0 and §7: BLAZE is the local FHIR server, the OpenAI API the model's, through LiteLLM.
+  // The York row in content/experience.ts keeps its four.
+  stack: ['Python', 'FHIR', 'BLAZE', 'LiteLLM', 'OpenAI API', 'pandas'],
+  // source: brief, Page copy (body); every sentence is checked in the brief's table under it
+  story:
+    'AI agents that answer clinical questions stumble when one health record only points to another, like a prescription pointing to its drug. I built a tool that follows those links for the agent. Then I tested it the strict way: a plan fixed before the main runs, and 1,489 agent runs on a public benchmark. On its own, the tool made no measurable difference. The change that did fits in one sentence. I’m keeping it under wraps until it’s confirmed.',
+  // The link from a prescription to its drug that card_teaser.png draws (brief §10), in ink: the card's
+  // art and the page's figure (components/work/RecordLinks.tsx). Its record types and field names are
+  // FHIR's own (brief §10). The caption is that picture's alt text in the brief, its first sentence.
+  diagram: {
+    alt: 'A prescription record (MedicationRequest) points to the patient (Patient) through its subject field, and to a separate drug record (Medication) through its medicationReference field.',
+    caption: 'A prescription record points to the patient and to a separate drug record.',
+  },
+  // source: brief, Page copy (facts strip), in its order; the brief's table gives each one's count. None is a result.
+  numbers: [
+    { value: '1,489', label: 'agent runs' },
+    { value: '928,935', label: 'health records for 100 patients' },
+    { value: '2,931', label: 'benchmark questions' },
+    { label: 'Test plan fixed before the main runs' },
+  ],
+  // source: brief, Page copy (credits), word for word. The data's licence asks for it wherever anything made
+  // from the data is shown, and the page shows record counts. All three links returned 200 on 2026-11-02.
+  // U+2011, a non-breaking hyphen, keeps the dataset's and the benchmark's names whole; no-break spaces
+  // keep "Lee et al." and "ML4H 2025" whole.
+  credit: [
+    'Contains information from the ',
+    {
+      label: 'MIMIC‑IV Clinical Database Demo on FHIR (v2.1.0)',
+      href: 'https://physionet.org/content/mimic-iv-fhir-demo/2.1.0/',
+      status: 'live',
+    },
+    ', which is made available here under the ',
+    { label: 'Open Database License (ODbL)', href: 'https://opendatacommons.org/licenses/odbl/1-0/', status: 'live' },
+    '. Benchmark: ',
+    { label: 'FHIR‑AgentBench', href: 'https://github.com/glee4810/FHIR-AgentBench', status: 'live' },
+    ' (Lee\u00a0et\u00a0al., ML4H\u00a02025).',
   ],
 };
 

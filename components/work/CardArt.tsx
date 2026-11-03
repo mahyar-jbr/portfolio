@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { Project } from '@/content/types';
 import LoopVideo from './LoopVideo';
+import RecordLinks from './RecordLinks';
 
 /**
  * What fills a project card. The kit's rule: real screenshots where they exist,
@@ -12,8 +13,9 @@ import LoopVideo from './LoopVideo';
  * stay off until launch.
  *
  * Diagrams are monochrome line art in ink on the dot canvas, like the kit's
- * graph-research card. Only the research brief, which has nothing built to
- * show yet, still draws one.
+ * graph-research card. Only the research teaser draws one, with nothing it
+ * may show yet: the real link between health records that its agents have to
+ * follow (RecordLinks), the same drawing as on its page.
  */
 
 /** The art container's own classes: a diagram sits on the dot canvas, a banner loop in a box of its own. */
@@ -31,24 +33,5 @@ export default function CardArt({ project, priority }: { project: Project; prior
     return <Image src={src} alt={shot.alt} fill sizes="(max-width: 720px) 100vw, 1152px" priority={priority} />;
   }
   if (project.page === 'none') return project.video ? <LoopVideo video={project.video} /> : null;
-  return project.slug === 'graph-rag-fhir' ? <Graph /> : null;
-}
-
-/** Graph retrieval: a small node graph (kit). */
-function Graph() {
-  return (
-    <svg className="art-diagram" viewBox="0 0 300 160" fill="none" aria-hidden="true">
-      <g stroke="currentColor" strokeOpacity=".35" strokeWidth="1.5">
-        <path d="M40 110L110 50L190 80L260 36M110 50L150 130L190 80M40 110L150 130M190 80L240 128" />
-      </g>
-      <g fill="currentColor">
-        <circle cx="40" cy="110" r="7" fillOpacity=".5" />
-        <circle cx="110" cy="50" r="9" />
-        <circle cx="190" cy="80" r="11" />
-        <circle cx="260" cy="36" r="6" fillOpacity=".5" />
-        <circle cx="150" cy="130" r="7" fillOpacity=".7" />
-        <circle cx="240" cy="128" r="5" fillOpacity=".4" />
-      </g>
-    </svg>
-  );
+  return project.slug === 'graph-rag-fhir' ? <RecordLinks layout="row" className="art-diagram" /> : null;
 }

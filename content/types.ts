@@ -144,10 +144,11 @@ export interface TechnicalDecision {
  * progress  — underway, no result yet
  * research  — a finished study
  * hackathon — built under a hackathon clock
+ * held      — underway, with results kept under wraps for now
  */
 export interface ProjectStatus {
   label: string;
-  kind: 'live' | 'soon' | 'progress' | 'research' | 'hackathon';
+  kind: 'live' | 'soon' | 'progress' | 'research' | 'hackathon' | 'held';
 }
 
 /** A real screenshot of the product. Never a mockup. */
@@ -257,8 +258,19 @@ export interface CardVideo {
 }
 
 /**
+ * One of a brief's numbers: a figure and what it counts ("1,489", "agent
+ * runs"). A fact with no figure in it is all `label`.
+ */
+export interface BriefNumber {
+  value?: string;
+  label: string;
+}
+
+/**
  * Work that has started but has nothing to show yet: a short page with the
- * summary row and what is being built, and no results.
+ * summary row and what is being built, and no results. Or a teaser, for work
+ * whose results are held back: the story in a paragraph, the idea as a
+ * diagram, the numbers that are no result, and the credit its data asks for.
  */
 export interface BriefProject extends ProjectCard {
   page: 'brief';
@@ -269,7 +281,22 @@ export interface BriefProject extends ProjectCard {
   /** The tools it is built with, as a case study's are. */
   stack?: string[];
   /** What is being built, one line each. */
-  building: string[];
+  building?: string[];
+  /** The story in one paragraph: what it asks, what was built, how it was tested, where it stands. */
+  story?: string;
+  /**
+   * The idea as a diagram, drawn in ink on the page (components/work), the
+   * one its card shows: what it shows, for a reader who can't see it, and
+   * one line under it.
+   */
+  diagram?: { alt: string; caption: string };
+  /** Its scale and how it was tested, none of them a result. */
+  numbers?: BriefNumber[];
+  /**
+   * A notice the data's licence asks for, at the foot of the page: its words,
+   * with a link wherever it names a source.
+   */
+  credit?: (string | ExternalLink)[];
 }
 
 export interface CaseStudyProject extends ProjectCard {

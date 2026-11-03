@@ -1529,6 +1529,205 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   }
 }
 
+/* ---------- Research teaser (components/work/Teaser.tsx, RecordLinks.tsx) ----------
+   The graph-retrieval brief, whose results are held back: its story in one
+   paragraph a step up from body size, the link between records it turns on
+   drawn in ink on the dot canvas its card uses, the numbers large and quiet
+   (no card, no colour, no weight but the figures'), and the data's credit in
+   small print at the foot, in line with the story. */
+
+/* The drawing, on the card and on the page alike: lines and type in the
+   theme's ink, the boxes filled with the canvas under them so the dots stop
+   at their edges; the record an agent has to follow the link to reach is
+   the one filled in ink. Strokes stay the same weight at any size. */
+.rl {
+  display: block;
+  overflow: visible;
+  color: var(--ink);
+}
+.rl-box {
+  fill: var(--surface-raised);
+  stroke: currentColor;
+  stroke-opacity: 0.32;
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+.rl-box.is-target {
+  fill: currentColor;
+  stroke: none;
+}
+.rl-link {
+  stroke: currentColor;
+  stroke-opacity: 0.5;
+  stroke-width: 1.25;
+  vector-effect: non-scaling-stroke;
+}
+.rl-head {
+  fill: currentColor;
+  fill-opacity: 0.5;
+}
+.rl-type {
+  fill: currentColor;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+}
+.rl-type.is-target {
+  fill: var(--surface-raised);
+}
+.rl-field {
+  fill: var(--ink-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+/* On its card (the row arrangement): centred in the art above the caption.
+   On a narrow card (phones, and two columns just past the 720px break) the
+   long name's caption leaves a strip under the status label: the drawing
+   widens to keep its type legible and rises into that strip, and the patient
+   gives way, leaving the prescription and the drug it points to. On the wide
+   card under a case study (Next project) it is sized by the card's height. */
+.lu-card-art .rl.art-diagram {
+  inset: auto;
+  top: 41%;
+  left: 50%;
+  width: 76%;
+  transform: translate(-50%, -50%);
+}
+@container card (max-width: 420px) {
+  .lu-card-art .rl.art-diagram {
+    top: 58px;
+    width: 90%;
+    transform: translateX(-50%);
+  }
+  .lu-card-art .rl-patient {
+    display: none;
+  }
+}
+@media (min-width: 721px) {
+  .case-next .lu-card-art .rl.art-diagram {
+    top: 40%;
+    width: auto;
+    height: 38%;
+  }
+}
+
+/* its long name balanced over its lines, rather than leaving "Agents" alone
+   on the last (only this page's hero: the one followed by a story) */
+.case-hero:has(~ .lu-case .case-story) h1 {
+  text-wrap: balance;
+}
+
+/* the story: one paragraph, read at a size a step up from body */
+.lu-case p.case-story {
+  max-width: 34em;
+  font-family: var(--font-display);
+  font-size: 21px;
+  line-height: 32px;
+  letter-spacing: -0.012em;
+  text-wrap: pretty;
+}
+@media (max-width: 760px) {
+  .lu-case p.case-story {
+    font-size: 19px;
+    line-height: 29px;
+  }
+}
+
+/* the diagram under it, framed as a screenshot (kit .lu-shot) on the card's canvas */
+.case-diagram {
+  margin-top: var(--space-6);
+}
+.case-diagram-canvas.lu-wall {
+  display: grid;
+  place-items: center;
+  padding: clamp(36px, 6vw, 64px) clamp(16px, 5vw, 48px);
+  background: var(--surface-raised);
+}
+.case-diagram-canvas .rl {
+  width: min(100%, 460px);
+  height: auto;
+}
+
+/* the numbers: each figure over what it counts, on hairlines, and the one
+   fact with no figure closing the row in words */
+.case-numbers ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.case-numbers li {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--hairline);
+}
+.case-numbers b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 4.6vw, 56px);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  font-variant-numeric: tabular-nums;
+}
+.case-numbers span {
+  display: block;
+  margin-top: var(--space-3);
+  font-size: 15px;
+  line-height: 21px;
+  color: var(--ink-secondary);
+}
+.lu-case .case-numbers p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: none;
+  margin: var(--space-6) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--hairline);
+  font-size: 15px;
+  line-height: 21px;
+  font-weight: 500;
+}
+.case-numbers p svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--ink-secondary);
+}
+@media (max-width: 560px) {
+  .case-numbers ul {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+/* the credit: small print at the foot, in the story's column */
+.case-credit {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: clamp(16px, 4vw, 48px);
+}
+.case-credit p {
+  grid-column: 2;
+  max-width: 72ch;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--hairline);
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--ink-secondary);
+}
+@media (max-width: 760px) {
+  .case-credit {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .case-credit p {
+    grid-column: 1;
+  }
+}
+
 /* ---------- Brand icons (components/lucent/BrandIcon.tsx) ----------
    Other companies' real marks, in their owners' own colours. Each SVG is as
    tall as its box and only as wide as its mark. In a tag it stands at the

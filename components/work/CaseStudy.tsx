@@ -8,6 +8,7 @@ import ProjectCard from '@/components/lucent/ProjectCard';
 import { ToolTag } from '@/components/lucent/Tag';
 import CardArt, { cardArtClass } from '@/components/work/CardArt';
 import DemoClip from '@/components/work/DemoClip';
+import { TeaserCredit, TeaserDiagram, TeaserNumbers } from '@/components/work/Teaser';
 import { pagedProjects } from '@/content/projects';
 import type { BriefProject, CaseStudyProject, ExternalLink, Photo, ProjectStatus, Shot } from '@/content/types';
 
@@ -30,6 +31,7 @@ const STATUS_GLYPH: Record<ProjectStatus['kind'], GlyphName> = {
   progress: 'flask',
   research: 'flask',
   hackathon: 'timer',
+  held: 'lock',
 };
 
 /** A glyph for each kind of summary fact, by its label. */
@@ -298,7 +300,12 @@ export function CaseStudy({ project: p }: { project: CaseStudyProject }) {
   );
 }
 
-/** Work underway: the summary block and what is being built. No results until there are some. */
+/**
+ * Work underway: the summary block, then what is being built. No results until
+ * there are some. A teaser, whose results are held back, tells its story
+ * instead: the paragraph and its diagram, the numbers that are no result, and
+ * at the foot the credit its data asks for (components/work/Teaser.tsx).
+ */
 export function BriefCase({ project: p }: { project: BriefProject }) {
   const meta: MetaItem[] = [
     { glyph: 'person', label: 'Role', value: p.role },
@@ -309,12 +316,32 @@ export function BriefCase({ project: p }: { project: BriefProject }) {
     <>
       <CaseHero name={p.name} lede={p.lede} meta={meta} stack={p.stack} />
       <div className="lu-page lu-case">
-        <section>
-          <h2 className="lu-title-sm">What I’m building</h2>
-          <div>
-            <Points glyph="flask" items={p.building.map((line) => ({ title: line }))} />
-          </div>
-        </section>
+        {p.story && (
+          <section data-reveal="">
+            <h2 className="lu-title-sm">The story</h2>
+            <div>
+              <p className="case-story">{p.story}</p>
+              {p.diagram && <TeaserDiagram {...p.diagram} />}
+            </div>
+          </section>
+        )}
+        {p.numbers && p.numbers.length > 0 && (
+          <section data-reveal="">
+            <h2 className="lu-title-sm">In numbers</h2>
+            <div>
+              <TeaserNumbers numbers={p.numbers} />
+            </div>
+          </section>
+        )}
+        {p.building && p.building.length > 0 && (
+          <section>
+            <h2 className="lu-title-sm">What I’m building</h2>
+            <div>
+              <Points glyph="flask" items={p.building.map((line) => ({ title: line }))} />
+            </div>
+          </section>
+        )}
+        {p.credit && <TeaserCredit credit={p.credit} />}
       </div>
       <NextProject current={p.slug} />
     </>
