@@ -133,31 +133,50 @@ export const education: Education = {
   started: 'Sep 2023',
   expected: 'April 2028',
   location: 'Toronto, ON',
+  monogram: 'YU',
+  logo: { src: '/experience/york.png', width: 104, height: 104 },
 };
 
 /**
  * Where he finished high school (Mahyar, 2026-11-02: "I finished my grade 12 at
  * Cardinal Carter, grade 11 saint eliz"). The year is his resumes' (July 2023 and
- * Feb 2025: "Grade 12, Cardinal Carter CHS, 09/2022 - 06/2023"). No town: none
- * of his sources gives one.
+ * Feb 2025: "Grade 12, Cardinal Carter CHS, 09/2022 - 06/2023"). It is the
+ * Aurora school, York Catholic DSB (he confirmed, 2026-11-02); the row names no
+ * town, as York's doesn't.
  */
 export const highSchool: Education = {
   institution: 'Cardinal Carter Catholic High School',
   credential: 'Ontario Secondary School Diploma',
   finished: '2023',
+  monogram: 'CC',
+  // The school's crest, Cardinal Carter's arms ("Pax et Lux"), from the board's own
+  // file: ycdsb.ca/wp-content/uploads/Cardinal-Carter-CHS.png (fetched 2026-11-02).
+  logo: { src: '/experience/cardinal-carter.png', width: 144, height: 144 },
 };
 
+/**
+ * Certificates, for the Education group. Their marks were fetched on 2026-11-02
+ * at his request, from the issuers' own artwork, never redrawn: the
+ * specialization wears DeepLearning.AI's ring (deeplearning.ai/dlai/assets/
+ * dlai-icon.svg), the company that runs it, which reads better in a small tile
+ * than Stanford's Block S; IBM its eight-bar logo in IBM Blue 60
+ * (assets.ibm.com/is/image/ibm/ibm-logo-2x1).
+ */
 export const credentials: Credential[] = [
   {
     name: 'Machine Learning Specialization',
     issuer: 'Stanford University & DeepLearning.AI',
     earned: null,
     inProgress: true,
+    monogram: 'DL',
+    logo: { src: '/experience/deeplearning-ai.png', width: 144, height: 144 },
   },
   {
     name: 'Python for Data Science and AI',
     issuer: 'IBM',
     earned: 'Jan 2026',
+    monogram: 'IBM',
+    logo: { src: '/experience/ibm.png', width: 144, height: 144 },
     // TODO(Mahyar): the old site linked a Credly badge — resend the URL if you
     // want it linked, otherwise this renders as plain text.
   },

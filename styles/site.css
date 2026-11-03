@@ -1701,6 +1701,17 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
 .xp-tile[data-logo='nova-ventures'] {
   --mark: 0.6;
 }
+/* the Education group's marks (its tiles are a size down): a detailed crest
+   needs most of the tile, a ring reads big, a wordmark is held by its width */
+.xp-tile[data-logo='cardinal-carter'] {
+  --mark: 0.84;
+}
+.xp-tile[data-logo='deeplearning-ai'] {
+  --mark: 0.66;
+}
+.xp-tile[data-logo='ibm'] {
+  --mark: 0.76;
+}
 .xp-tile[data-logo='pet-valu'] img {
   padding: 0;
   object-fit: cover;
@@ -1936,10 +1947,11 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
 
 /* ---- Education (components/experience/EducationList.tsx, 2026-11-02) ----
    A small group after the roles, in the roll's own terms: headed like a
-   section's kicker, then one solid reading card with rows split by hairlines.
-   Each row is the credential in ink, where it is from in secondary ink under
-   it, and when, in the reading path at the right in tabular figures. No
-   icons, so the rows start at the card's edge. */
+   section's kicker, then one solid reading card with rows split by hairlines
+   inset past the icons. Each row leads with the institution's app-icon tile,
+   a size down from the roll's, then the credential in ink, where it is from
+   in secondary ink under it, and when, in the reading path at the right in
+   tabular figures. The tile is as tall as the two lines beside it. */
 .xp-edu {
   margin-top: var(--space-7);
 }
@@ -1947,6 +1959,8 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   font-weight: inherit;
 }
 .xp-edu-list {
+  --tile: 44px;
+  --edu-gap: var(--space-4);
   list-style: none;
   margin: 0;
   padding: var(--space-2) var(--space-7);
@@ -1957,19 +1971,23 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
 .xp-edu-row {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: var(--tile) minmax(0, 1fr) auto;
   grid-template-areas:
-    'name when'
-    'org when';
-  column-gap: var(--space-5);
+    'tile name when'
+    'tile org when';
+  column-gap: var(--edu-gap);
   padding-block: var(--space-4);
+}
+.xp-edu-row > .xp-tile {
+  grid-area: tile;
+  align-self: center;
 }
 .xp-edu-row + .xp-edu-row::before {
   content: '';
   position: absolute;
   top: 0;
   right: 0;
-  left: 0;
+  left: calc(var(--tile) + var(--edu-gap));
   height: 1px;
   background: var(--hairline);
 }
@@ -1996,18 +2014,23 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
-/* phones (the roll's break): the three lines stack, the dates last */
+/* phones (the roll's break): the three lines stack beside the tile, the dates last */
 @media (max-width: 734px) {
   .xp-edu-list {
+    --tile: 40px;
+    --edu-gap: var(--space-3);
     padding: var(--space-1) var(--space-4);
   }
   .xp-edu-row {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: var(--tile) minmax(0, 1fr);
     grid-template-areas:
-      'name'
-      'org'
-      'when';
+      'tile name'
+      'tile org'
+      'tile when';
     padding-block: var(--space-3);
+  }
+  .xp-edu-row > .xp-tile {
+    align-self: start;
   }
   .xp-edu-name {
     font-size: 15px;

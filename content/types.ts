@@ -78,7 +78,17 @@ export interface Role {
   stack?: string[];
 }
 
-export interface Credential {
+/**
+ * An institution's mark for its Education row, shown in the same app-icon tile
+ * as a company's (Role.logo, Role.monogram): a web copy in public/experience/,
+ * never recoloured or redrawn. The letters stand in while it loads or if it fails.
+ */
+interface Mark {
+  monogram: string;
+  logo?: { src: string; width: number; height: number };
+}
+
+export interface Credential extends Partial<Mark> {
   name: string;
   issuer: string;
   /** e.g. "Jan 2026", or null while in progress. */
@@ -87,7 +97,7 @@ export interface Credential {
   link?: ExternalLink;
 }
 
-export interface Education {
+export interface Education extends Partial<Mark> {
   institution: string;
   credential: string;
   /** Where it is, when the institution's name alone doesn't place it. */
