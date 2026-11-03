@@ -17,9 +17,10 @@ import { aboutSection as about, type StoryPhoto } from '@/content/about';
  *   Liquid Glass segmented control (Travel · Play · Train · Build), whose lens
  *   follows along and can be used to jump between steps (StoryScroll). Each
  *   photo carries a small glass caption, like Apple Photos Memories. The coda
- *   ends the frame on his portrait, uncaptioned, beside the paragraph.
+ *   ends the frame on a last photo beside the paragraph, captioned when it
+ *   shows an event (Georgian Build North, since 2026-11-02).
  * - Resting (phones, reduced motion, no script): the same story as a plain
- *   sequence — photo, line; photo, line — then the portrait and the paragraph.
+ *   sequence — photo, line; photo, line — then the last photo and the paragraph.
  *
  * It arrives the way every section does: as it scrolls into view, each part
  * rises in (the kit's data-reveal).
@@ -50,32 +51,23 @@ export default function About() {
                   data-reveal=""
                   style={step(i)}
                 >
-                  {c.photos.map((ph) => {
-                    /* an event named for a brand (OpenAI) carries its real mark instead of the flag; only
-                       an event's caption is a name, where a place's can be a word ('Railway station') */
-                    const brand = ph.caption.kind === 'event' ? brandFor(ph.caption.text) : undefined;
-                    return (
-                      <span className="story-ph" key={ph.src}>
-                        <Image
-                          src={ph.src}
-                          alt={ph.alt}
-                          fill
-                          sizes="(max-width: 760px) 100vw, 480px"
-                          priority={i === 0}
-                          style={{ objectPosition: ph.position }}
-                        />
-                        {/* Liquid Glass over the photo: where, or what (kit: glass belongs over imagery) */}
-                        <span className="story-cap lu-glass is-clear">
-                          {brand ? <BrandIcon name={brand} /> : <Glyph name={CAPTION_GLYPH[ph.caption.kind]} />}
-                          {ph.caption.text}
-                        </span>
-                      </span>
-                    );
-                  })}
+                  {c.photos.map((ph) => (
+                    <span className="story-ph" key={ph.src}>
+                      <Image
+                        src={ph.src}
+                        alt={ph.alt}
+                        fill
+                        sizes="(max-width: 760px) 100vw, 480px"
+                        priority={i === 0}
+                        style={{ objectPosition: ph.position }}
+                      />
+                      <Caption caption={ph.caption} />
+                    </span>
+                  ))}
                 </figure>
               ))}
-              {/* the coda: his portrait alone, the story's last frame. It has no caption: it isn't a
-                  chapter, just him, beside "Now here I am" (content/about.ts) */}
+              {/* the coda: the story's last frame, beside his paragraph. Not a chapter, so its
+                  caption is optional: it names an event, not a step (content/about.ts) */}
               <figure className="story-fig" data-step={coda} data-reveal="" style={step(coda)}>
                 <span className="story-ph">
                   <Image
@@ -85,6 +77,7 @@ export default function About() {
                     sizes="(max-width: 760px) 100vw, 480px"
                     style={{ objectPosition: about.portrait.position }}
                   />
+                  {about.portrait.caption && <Caption caption={about.portrait.caption} />}
                 </span>
               </figure>
             </div>
@@ -121,5 +114,21 @@ export default function About() {
 
       <StoryScroll />
     </section>
+  );
+}
+
+/**
+ * Liquid Glass over a photo: where, or what (kit: glass belongs over imagery).
+ * An event named for a brand (OpenAI) carries its real mark instead of the
+ * flag; only an event's caption is a name, where a place's can be a word
+ * ('Railway station').
+ */
+function Caption({ caption }: { caption: StoryPhoto['caption'] }) {
+  const brand = caption.kind === 'event' ? brandFor(caption.text) : undefined;
+  return (
+    <span className="story-cap lu-glass is-clear">
+      {brand ? <BrandIcon name={brand} /> : <Glyph name={CAPTION_GLYPH[caption.kind]} />}
+      {caption.text}
+    </span>
   );
 }

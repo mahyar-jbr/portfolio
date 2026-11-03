@@ -57,8 +57,9 @@ export const about = {
 
 /**
  * The About section on the home page, right after the hero, told as a story
- * (2026-09-22): Travel → Play → Train → Build, then a coda: his portrait
- * (2026-09-25) beside his paragraph.
+ * (2026-09-22): Travel → Play → Train → Build, then a coda: a last photo beside
+ * his paragraph (his portrait from 2026-09-25; Georgian Build North since
+ * 2026-11-02).
  *
  * Mahyar gave the chapters as Play, Train, Travel, Build. Travel leads because
  * it is the strongest opening image: Preikestolen is 1350×2400 with him
@@ -93,8 +94,8 @@ export interface StoryPhoto {
   caption: { text: string; kind: 'place' | 'sport' | 'training' | 'event' };
 }
 
-/** A photo without a caption: the story's last frame, which is not a chapter. */
-export type StoryPortrait = Omit<StoryPhoto, 'caption'>;
+/** The story's last frame, which is not a chapter: its caption is optional. */
+export type StoryPortrait = Omit<StoryPhoto, 'caption'> & { caption?: StoryPhoto['caption'] };
 
 export interface StoryChapter {
   id: string;
@@ -147,14 +148,17 @@ export const aboutSection: {
       id: 'train',
       label: 'Train',
       line: 'I run and lift weights.',
+      // His gym mirror photo (2026-11-02), in place of the shirtless one after a
+      // run: "its better ... cause im not shirtless". Made from his HEIC the way
+      // the others were: sRGB, no metadata (the original carries GPS).
       photos: [
         {
-          src: '/about/run.jpg',
-          width: 1206,
-          height: 2031,
-          alt: 'Mahyar outside after a run',
-          position: '50% 55%',
-          caption: { text: 'After a run', kind: 'training' },
+          src: '/about/gym.jpg',
+          width: 1362,
+          height: 2400,
+          alt: 'Mahyar taking a mirror photo at the gym, in headphones and workout clothes',
+          position: '50% 58%',
+          caption: { text: 'At the gym', kind: 'training' },
         },
       ],
     },
@@ -183,23 +187,28 @@ export const aboutSection: {
     },
   ],
   /**
-   * The story's last frame, beside his paragraph (Mahyar, 2026-09-25: "put this
-   * photo ... in the last part when paragraph shows up"). Him on a dock in
-   * Norway, July 2026, smiling at the camera: the one photo where he looks
-   * straight at you, so it answers the paragraph's "Now here I am". It replaced
-   * a contact sheet of the five story photos, which only repeated what had just
-   * scrolled past. No caption, since it isn't a chapter; the place stays general.
-   * Made from his 3208×4284 HEIC: sRGB, 1440px wide (its largest frame, about
-   * 690px in the one-column layout just under 761px, at 2x), no metadata.
+   * The story's last frame, beside his paragraph. Since 2026-11-02 it is his
+   * team presenting at Georgian Build North, where they were finalists (Mahyar:
+   * "use this photo ... as about section last photo"), so the paragraph's new
+   * line about building agent systems sits beside him doing it. It replaced
+   * him on a dock in Norway (2026-09-25). Captioned, unlike that photo: an
+   * event needs naming, in his resume's words.
+   * Made from DSC03316 (7008×4672, 3:2), cut to the frame's own 4:5 around him
+   * and the teammate at the laptop: the frame crops there in every layout, and
+   * cut in CSS instead, a 3:2 file would show at half its resolution. 1440×1800
+   * (its largest frame, about 690px in the one-column layout just under 761px,
+   * at 2x), sRGB, no metadata.
    */
   portrait: {
-    src: '/about/norway-dock.jpg',
+    src: '/about/georgian-build-north.jpg',
     width: 1440,
-    height: 1923,
-    alt: 'Mahyar standing on a wooden dock by the water in Norway, with mountains behind him',
-    position: '50% 55%',
+    height: 1800,
+    alt: 'Mahyar presenting with his team on stage at Georgian Build North, microphone in hand',
+    position: '50% 50%',
+    caption: { text: 'Georgian Build North finalist', kind: 'event' },
   },
+  // The career goal before the sign-off is his (2026-11-02), for the COOP 2100 ePortfolio.
   paragraph:
-    'My journey started in Grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here I am, always building something to keep my inner child happy. Thanks for reading.',
+    'My journey started in Grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here I am, always building something to keep my inner child happy. Next, I want to grow into an AI engineer who builds agent systems people rely on, and one day start my own AI company. Thanks for reading.',
   // No "Also into" line (Mahyar, 2026-09-22): the story says it.
 };
