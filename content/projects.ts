@@ -702,9 +702,10 @@ const moneymind: SoonProject = {
  * from its portfolio brief (portfolio-assets/PORTFOLIO_BRIEF.md, prepared on
  * 2026-11-02 from 2arian3/Landline at main 5758699), which is not copied into
  * content/sources/ because it holds unreleased notes. `source:` paths are in that
- * repo at 5758699. Two facts are Mahyar's own (2026-11-02): it was built at the
- * Boson AI Higgs Audio Hackathon (23 to 24 Oct 2026), and "Georgian Build North,
- * we were finalists". Held until he confirms: third place and "of 30+ teams", the
+ * repo at 5758699. Three facts are Mahyar's own: it was built at the Boson AI
+ * Higgs Audio Hackathon (23 to 24 Oct 2026), and "Georgian Build North, we were
+ * finalists" (2026-11-02); it placed 3rd of 30+ teams at that hackathon (confirmed
+ * 2026-11-05, as on his resume and /coop). Held until he confirms: the
  * first-paint numbers, the 1.3 s re-rank and 60 fps. Its two decisions (the map's
  * loading, push on the iPhone app) are in the brief, §9: a page gets six sections,
  * and with My role and Demo day there is no room for a seventh.
@@ -737,6 +738,8 @@ const landline: CaseStudyProject = {
   facts: [
     // Mahyar, 2026-11-02; AGENTS.md:9 at 34d0236 names the event
     { label: 'Event', value: 'Boson AI Higgs Audio Hackathon' },
+    // Mahyar, 2026-11-05: "we placed 3rd at the Boson AI Higgs Audio Hackathon"; worded as on his resume and /coop
+    { label: 'Placed', value: '3rd of 30+ teams' },
     // AGENTS.md:9 (Team AAMEL); git shortlog (three people)
     { label: 'Team', value: '3 people' },
   ],
@@ -845,11 +848,11 @@ const landline: CaseStudyProject = {
   approach:
     'A voice agent on Boson AI’s Higgs Realtime turns what the renter says into a brief, and the server re-ranks the board and streams each change to a live map. The calls go out in parallel over Twilio, and an auditor keeps only what the listing agent actually said. It grew out of Realest, which we built at an earlier hackathon.',
 
-  // source: Mahyar (the event and its dates, the finalist place); BACKLOG.md:11-13 (one of ten finalists);
-  // git log 27 to 29 Oct (the Build North week); the site answered 200 on 2026-11-02; demo.py:8-13;
-  // docs/PITCH_NUMBERS.md:3 (no real renter; calls only to the team's phones)
+  // source: Mahyar (the event and its dates, the finalist place; 3rd of 30+ teams, confirmed 2026-11-05);
+  // BACKLOG.md:11-13 (one of ten finalists); git log 27 to 29 Oct (the Build North week); the site answered
+  // 200 on 2026-11-02; demo.py:8-13; docs/PITCH_NUMBERS.md:3 (no real renter; calls only to the team's phones)
   result:
-    'We built it at the Boson AI Higgs Audio Hackathon on October 23 and 24, 2026, and kept building it for Georgian Build North’s demo day, where we were one of ten finalists. It is still live, with a scripted demo that dials no one. No real renter has used it: its calls only ever reached the team’s own phones.',
+    'We built it at the Boson AI Higgs Audio Hackathon on October 23 and 24, 2026, and placed 3rd of 30+ teams. We kept building it for Georgian Build North’s demo day, where we were one of ten finalists. It is still live, with a scripted demo that dials no one. No real renter has used it: its calls only ever reached the team’s own phones.',
 
   // Only the three numbers checked for the brief (§8). Held until Mahyar confirms: first paint 3.4 s → 0.9 s
   // (PR #8's Lighthouse runs), the 1.3 s re-rank (one run) and 60 fps; 49 of 49 quotes is the team's testing.
