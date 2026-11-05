@@ -1784,6 +1784,153 @@ html:not(.js) .case-clip :is(video, .case-clip-button) {
   }
 }
 
+/* ---------- Co-op ePortfolio (app/coop/page.tsx) ----------
+   His COOP 2100 ePortfolio, read the way a case study is: the title and its
+   purpose as the hero, then sections whose labels stick to the left while
+   you read (the kit's .lu-case), the contents first. Each piece of evidence
+   is a reading card (the kit's .lu-prose) ending in its competency tags, each
+   a kit tag with its reason after it. Last, the footer's link to the page. */
+
+/* the purpose is two sentences where a case study's lede is one: a measure a
+   little wider than the kit's 44ch keeps it four even lines on a laptop */
+.coop-hero .lu-lede {
+  max-width: 50ch;
+  text-wrap: pretty;
+}
+
+/* Every heading the contents links to lands where a section's first line
+   sits on every page, clear of the floating nav (the case hero's top
+   padding: 144px down on a laptop, 112px on a phone), by the journey
+   (lib/journey.ts) and by a plain #anchor from a shared link alike. It takes
+   focus there; it isn't a control, so no ring. */
+.coop [id] {
+  scroll-margin-top: calc(clamp(56px, 8vw, 88px) + 56px);
+}
+.coop [id][tabindex='-1']:focus {
+  outline: none;
+}
+
+/* the contents: each name a link, the four portfolios under their goal */
+.coop-contents ul {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.coop-contents ul ul {
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0 2px;
+  padding-left: var(--space-5);
+  border-left: 1px solid var(--hairline);
+}
+.coop-note {
+  color: var(--ink-secondary);
+}
+
+/* a portfolio: its name and what it holds, then its evidence */
+.coop-portfolio {
+  margin-top: var(--space-8);
+}
+.lu-case .coop-intro {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-secondary);
+}
+/* the cards keep to the reading measure, as the case study's points do */
+.coop-artifacts {
+  display: grid;
+  gap: var(--space-4);
+  max-width: calc(64ch + 2 * clamp(20px, 3vw, 32px));
+  margin-top: var(--space-5);
+}
+.coop-artifact-title {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-display);
+  font-size: 19px;
+  line-height: 24px;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+.coop-artifact b {
+  font-weight: 600;
+}
+.coop :is(p, li) {
+  text-wrap: pretty;
+}
+.coop-points {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 64ch;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  list-style: none;
+}
+.coop-points:last-child {
+  margin-bottom: 0;
+}
+.coop-points li {
+  position: relative;
+  padding-left: var(--space-4);
+}
+.coop-points li::before {
+  content: '';
+  position: absolute;
+  top: 10.5px;
+  left: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink-secondary);
+}
+
+/* the tags: a small label, as over the case study's stack, then each
+   competency with its reason */
+.coop-tags {
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--hairline);
+}
+.lu-case .coop-tags-label {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-secondary);
+}
+.coop-tags ul {
+  display: grid;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font: var(--text-callout);
+  color: var(--ink-secondary);
+}
+/* the reason beside its tag where the line has room for it, and whole on the
+   line under it where it hasn't (phones), never trailing under the tag */
+.coop-tags li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+}
+
+/* The footer's link to this page, beside Back to top and in its style: the
+   two at the right on a wide screen, and under the facts where they stack
+   (Footer). The 404 drops Back to top (Footer); this link stays. */
+.site-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-4) var(--space-5);
+}
+.lu-root:has(.site-404) .site-footer-links > .site-footer-coop {
+  display: inline-flex;
+}
+
 /* ---------- Brand icons (components/lucent/BrandIcon.tsx) ----------
    Other companies' real marks, in their owners' own colours. Each SVG is as
    tall as its box and only as wide as its mark. In a tag it stands at the

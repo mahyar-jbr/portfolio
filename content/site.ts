@@ -119,7 +119,7 @@ export const meta: SiteMeta = {
  * The footer's "Last updated" date, as YYYY-MM-DD. Change it each time the site
  * is published (COOP 2100 ePortfolio, 2026-11-02).
  */
-export const lastUpdated = '2026-11-02';
+export const lastUpdated = '2026-11-05';
 
 /**
  * Contact section copy.

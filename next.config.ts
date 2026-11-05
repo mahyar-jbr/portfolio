@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
         source: '/resume.pdf',
         headers: [{ key: 'Content-Disposition', value: 'inline; filename="Mahyar_Jaberi_Resume.pdf"' }],
       },
+      // The same for the About Me essay on the Co-op ePortfolio (app/coop/page.tsx).
+      {
+        source: '/coop/about-me.pdf',
+        headers: [{ key: 'Content-Disposition', value: 'inline; filename="Mahyar_Jaberi_About_Me.pdf"' }],
+      },
     ];
   },
   async redirects() {
