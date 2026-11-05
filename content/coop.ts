@@ -193,7 +193,8 @@ const credentials: CoopPortfolio = {
       title: 'Recognition',
       lines: [
         'My manager has told me she is very happy with how I explain and demo my work.',
-        'My first technical proposal at work was adopted. On benchmarks, it cut an AI agent’s model cost by 81% and its build time by 56%.',
+        // His fix (2026-11-05): no FGF numbers on a public course page.
+        'My first technical proposal at work was adopted: a change to how an AI agent uses its tools that made it cheaper and faster on our benchmarks.',
         '3rd of 30+ teams at the Boson AI Higgs Audio Hackathon, and a Georgian Build North finalist.',
       ],
       tags: [
@@ -226,7 +227,8 @@ const courseProjects = {
         'Research with Prof. Manos Papagelis on how tool-calling LLM agents find information in FHIR health records.',
         {
           label: 'Reflection',
-          text: 'I built a graph-traversal tool and ran 1,489 agent episodes under a pre-registered plan. The tool alone gave no significant gain, but tracing the failures to a schema gap let one prompt line lift correctness from 25/84 to 56/84 (exploratory). This project pushed me into an area I didn’t know, which my SWOT lists as a weakness, and showed me how much I still have to learn.',
+          // His fix (2026-11-05): the results stay under wraps here too, as on the research page.
+          text: 'I built a tool that lets an agent follow the links between a patient’s records, and tested it the strict way: 1,489 agent runs under a test plan fixed before the main runs. The results are under wraps for now. This project pushed me into an area I didn’t know, which my SWOT lists as a weakness, and showed me how much I still have to learn.',
         },
       ],
       tags: [
