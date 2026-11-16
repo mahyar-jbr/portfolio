@@ -84,6 +84,20 @@ const dreams: CoopPortfolio = {
         { name: 'Life-Long Learning', why: 'it connects where I started to where I am going' },
       ],
     },
+    {
+      title: 'My Vision as an Engineer (PDF)',
+      link: { href: '/coop/my-vision.pdf', download: 'Mahyar_Jaberi_My_Vision.pdf' },
+      lines: [
+        {
+          label: 'Reflection',
+          text: 'In this essay I described the engineer I want to be: running my own company that solves people’s actual problems with AI and agents they can trust. Writing it alongside the course reading on ethics and sustainability showed me that honesty and efficiency are not extras; they are how my work serves people, the environment and the businesses that pay for it. It also turned my biggest co-op lesson into a rule for the future: raising a concern only protects people when it comes with a concrete plan.',
+        },
+      ],
+      tags: [
+        { name: 'Ethics and Equity', why: 'it puts honest answers and public welfare ahead of what sells' },
+        { name: 'Impact on Society and the Environment', why: 'it weighs the social, environmental and economic cost of the AI I build' },
+      ],
+    },
   ],
 };
 

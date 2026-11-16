@@ -23,6 +23,11 @@ const nextConfig: NextConfig = {
         source: '/coop/about-me.pdf',
         headers: [{ key: 'Content-Disposition', value: 'inline; filename="Mahyar_Jaberi_About_Me.pdf"' }],
       },
+      // And for the My Vision as an Engineer essay beside it.
+      {
+        source: '/coop/my-vision.pdf',
+        headers: [{ key: 'Content-Disposition', value: 'inline; filename="Mahyar_Jaberi_My_Vision.pdf"' }],
+      },
     ];
   },
   async redirects() {
