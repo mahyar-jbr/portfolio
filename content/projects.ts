@@ -49,8 +49,10 @@ const bowlwise: CaseStudyProject = {
   year: '2026',
   // brief §1: live at bowlwise.app, and on tablets in two Pet Valu stores (Mahyar, 2026-11-02)
   status: { label: 'Live in stores', kind: 'live' },
-  // source: brief §1
-  cardLine: 'Scores 265 dog foods against your dog',
+  // Peer feedback (2026-11-23): the card leads with the AI engineering, from the page's own facts
+  // (Ask BowlWise, a Claude agent with 15 tools; the read-only MCP connector). Was "Scores 265 dog
+  // foods against your dog" (brief §1).
+  cardLine: 'A Claude agent and MCP connector for dog food scores',
   // The product's own app icon, byte-identical to its frontend/public/icon.svg (brief §10)
   mark: '/work/bowlwise/mark.svg',
   // brief §0 and §12: still on tablets in both stores, and launched in April 2026 (Mahyar,

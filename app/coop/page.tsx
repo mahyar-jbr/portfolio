@@ -19,9 +19,10 @@ import { identity } from '@/content/site';
  * hero, then sections whose labels stick to the left while you read, the
  * contents first. Each piece of evidence is a reading card (the kit's
  * .lu-prose) that ends in its competency tags, each the kit's tag followed by
- * why. Headings: h1 the title; h2 the goal, Course Projects and the
- * Self-Assessment; h3 the four portfolios (and each course project); h4 each
- * portfolio's artifacts. The contents' anchors are the headings' ids, and
+ * why. Headings: h1 the title; h2 the goal, the Work Portfolio, Course
+ * Projects and the Self-Assessment; h3 the four portfolios (and each piece of
+ * co-op work and each course project); h4 each portfolio's artifacts. The
+ * Work Portfolio is laid out as Course Projects is. The contents' anchors are the headings' ids, and
  * each lands clear of the nav (styles/site.css, "Co-op ePortfolio").
  *
  * The cards and the closing paragraph rise in as they arrive (the kit's
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: { title: coop.title, description: coop.purpose[0] },
 };
 
-const { contents, goal, courseProjects, selfAssessment } = coop;
+const { contents, goal, workPortfolio, courseProjects, selfAssessment } = coop;
 
 /** A link in the copy: a file to keep downloads (LinkOut); the rest go through the site's own links. */
 function Anchor({ link, children }: { link: Omit<CoopLink, 'label'>; children: ReactNode }) {
@@ -103,7 +104,7 @@ function Lines({ lines }: { lines: CoopArtifact['lines'] }) {
       flush();
       out.push(
         <p key={out.length}>
-          <b>{line.label}:</b> {line.text}
+          <b>{line.label}:</b> <Text text={line.text} />
         </p>,
       );
     } else {
@@ -133,6 +134,25 @@ function Artifact({ artifact: a, heading: H }: { artifact: CoopArtifact; heading
         </div>
       )}
     </article>
+  );
+}
+
+/** A section of evidence cards under its own label: the Work Portfolio and Course Projects. */
+function Projects({ section }: { section: { id: string; title: string; intro: string; projects: CoopArtifact[] } }) {
+  return (
+    <section>
+      <h2 className="lu-title-sm" id={section.id}>
+        {section.title}
+      </h2>
+      <div>
+        <p>{section.intro}</p>
+        <div className="coop-artifacts">
+          {section.projects.map((a) => (
+            <Artifact key={a.title} artifact={a} heading="h3" />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -194,19 +214,8 @@ export default function CoopPage() {
           </div>
         </section>
 
-        <section>
-          <h2 className="lu-title-sm" id={courseProjects.id}>
-            {courseProjects.title}
-          </h2>
-          <div>
-            <p>{courseProjects.intro}</p>
-            <div className="coop-artifacts">
-              {courseProjects.projects.map((a) => (
-                <Artifact key={a.title} artifact={a} heading="h3" />
-              ))}
-            </div>
-          </div>
-        </section>
+        <Projects section={workPortfolio} />
+        <Projects section={courseProjects} />
 
         <section>
           <h2 className="lu-title-sm" id={selfAssessment.id}>

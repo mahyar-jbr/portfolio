@@ -27,10 +27,10 @@ export interface CoopLink {
 /** Words with links among them. */
 export type CoopText = string | (string | CoopLink)[];
 
-/** A line led by its label in bold: Reflection, Progress, a goal's area. */
+/** A line led by its label in bold: Reflection, Progress, a goal's area. Its words may hold a link. */
 export interface CoopLabelled {
   label: string;
-  text: string;
+  text: CoopText;
 }
 
 /** A competency the course grades, and why the work shows it, in his words. */
@@ -114,33 +114,46 @@ const interests: CoopPortfolio = {
       ],
       tags: [{ name: 'Life-Long Learning', why: 'I used the results to decide what to work on next' }],
     },
+    // Week 10 (2026-11-23): a Progress line after each goal, and the finance user guide goal dropped.
     {
-      title: 'SMART Personal Development Goals (2026 to 2027)',
+      title: 'SMART Personal Development Goals (2026 to 2027), progress as of November 2026',
       lines: [
         {
           label: 'Communication',
-          text: 'By March 26, 2027, present a short update on my work in team meetings at least every two weeks (at least 10) and ask my manager monthly how clearly I explained it. By May 28, 2027, write a plain-language user guide for the finance team on the part of the internal platform I am building.',
+          text: 'By March 26, 2027, present a short update on my work in team meetings at least every two weeks (at least 10) and ask my manager monthly how clearly I explained it.',
+        },
+        {
+          label: 'Progress',
+          text: 'Ahead of plan. I give a clear update in standup every day, and my manager has told me she is very happy with how I explain and demo my work.',
         },
         {
           label: 'Collaboration and leadership',
           text: 'By December 11, 2026, bring three evidence-backed technical proposals to my manager or team, each shaped by a teammate’s input, and track how many are adopted. By January 29, 2027, have three coffee chats with people outside my team and follow up with each.',
         },
         {
+          label: 'Progress',
+          text: 'Proposals: one of three done and adopted so far, a change that made an AI agent cheaper and faster. Coffee chats: done early, three with people outside my team.',
+        },
+        {
           label: 'Initiative and entrepreneurship',
           text: 'By August 20, 2027, take one real team problem at FGF Brands to a deployed AI tool that at least one team uses. By February 26, 2027, publicly launch the AI personal finance app I co-founded, then hold 5 user conversations by April 30.',
         },
         {
-          label: 'Progress (November 2026)',
-          text: 'communication is on track, with clear updates in standup every day. One of my three proposals is done and adopted. My initiative goal starts with choosing a real team problem by November 27.',
+          label: 'Progress',
+          text: [
+            'AI tool: done early. The app builder I took over is live for business users and now also runs on Databricks Lakebase (see ',
+            { label: 'Work Portfolio', href: '#work-portfolio' },
+            '). AI finance app: paused for now.',
+          ],
         },
         {
           label: 'Reflection',
-          text: 'I set these goals to answer my SWOT weaknesses: English as my second language, working mostly alone, and avoiding areas I don’t know yet. At the mid-point, communication is ahead of plan, and my next step is choosing a real team problem for my initiative goal by November 27.',
+          text: 'I set these goals to answer my SWOT weaknesses: English as my second language, working mostly alone, and avoiding areas I don’t know yet. Two are already done early, the coffee chats and the AI tool, and my next step is my next technical proposal.',
         },
       ],
       tags: [
         { name: 'Life-Long Learning', why: 'goals for my own development, tracked over the year' },
-        { name: 'Communication Skills', why: 'two of the six goals target it directly' },
+        { name: 'Communication Skills', why: 'my communication goal targets it directly' },
       ],
     },
   ],
@@ -193,6 +206,12 @@ const credentials: CoopPortfolio = {
       link: { href: '/work/bowlwise' },
       lines: [
         'A dog food recommendation platform I built after three years at Pet Valu. It is live on customer tablets in two Pet Valu stores.',
+        // Peer feedback (2026-11-23): how it works. Each fact is the BowlWise page's
+        // (content/projects.ts: its steps and approach).
+        {
+          label: 'How it works',
+          text: 'An owner describes their dog in an eight-step form: size, age, activity, weight goal, allergies and any health conditions. My scoring engine sets aside foods that don’t suit that dog, such as any with an allergen, and scores the rest out of 100 on six factors. Ask BowlWise, a Claude agent with 15 tools, answers questions by calling the same engine, so its numbers match the results page.',
+        },
         {
           label: 'Reflection',
           text: 'Customers kept asking me what to feed dogs with allergies, so I built a tool that answers honestly for each dog. It puts three of my values into practice: a product I can see, long-term effort, and helping people. People doubted it, but I kept going until it was live in stores.',
@@ -200,7 +219,10 @@ const credentials: CoopPortfolio = {
       ],
       tags: [
         { name: 'Design', why: 'a complete product built for real users' },
-        { name: 'Use of Engineering Tools', why: 'Python, FastAPI, React, Claude API' },
+        {
+          name: 'Use of Engineering Tools',
+          why: 'Python and FastAPI for the engine, React for the site, the Claude API for the chat agent',
+        },
       ],
     },
     {
@@ -225,6 +247,62 @@ const goal = {
   intro:
     'Before I plan my career, I want to understand what drives me, what I am good at, and where I still need to grow. These four portfolios collect the assessments, goals and work that answer those questions.',
   portfolios: [dreams, interests, values, credentials],
+};
+
+/* ---------- Work Portfolio ----------
+   Week 10 (2026-11-23): his co-op work, shared with his supervisor's approval.
+   Laid out as Course Projects is. No internal platform names (never the
+   platform's own name), no coworker names, no FGF numbers. */
+
+const workPortfolio = {
+  id: 'work-portfolio',
+  title: 'Work Portfolio: AI Solutions Engineer Co-op, FGF Brands',
+  intro:
+    'My 12-month co-op on the AI team at FGF Brands (August 2026 to August 2027), building and shipping features for the company’s internal AI agent platform. Shared with my supervisor’s approval.',
+  projects: [
+    {
+      title: 'App builder: from security review to a live tool',
+      lines: [
+        'I took over the platform’s app builder, a tool that builds a working app from a user’s prompt. I found scope and security problems, designed a new architecture, wrote up each fix, and pushed to fix them before it was shared. It is now live for business users and also runs on Databricks Lakebase.',
+        {
+          label: 'Reflection',
+          text: 'I learned that flagging a problem only helps when it comes with a plan the team can act on. It matters because a tool people rely on has to be safe before it is fast. It is the first AI tool I have taken from a real team problem to something people use, which was my initiative goal.',
+        },
+      ],
+      tags: [
+        { name: 'Design', why: 'I designed its new architecture for real users' },
+        { name: 'Professionalism', why: 'I raised the security issues before it shipped, not after' },
+      ],
+    },
+    {
+      title: 'Web search that keeps company data inside',
+      lines: [
+        'My first big task was adding web search to the platform’s AI agents. I first suggested a model’s built-in web search, but company data has to stay inside the company, so I recommended and built it on Azure’s Bing-based search instead.',
+        {
+          label: 'Reflection',
+          text: 'I learned that at a large company, data rules shape the architecture, and a rejected idea can lead to a safer design. It matters because these agents work with company information. It connects to my goal of building AI that people can trust.',
+        },
+      ],
+      tags: [
+        { name: 'Problem Analysis', why: 'I weighed the options against the company’s data rules' },
+        { name: 'Ethics and Equity', why: 'it keeps company data private' },
+      ],
+    },
+    {
+      title: 'Making an agent cheaper and faster',
+      lines: [
+        'I profiled where one of our agents wasted calls: it re-read everything on every turn. My proposal changed how it uses its tools and connects to MCP servers, and on our benchmarks it now runs much cheaper and faster. It was my first technical proposal, and the team adopted it.',
+        {
+          label: 'Reflection',
+          text: 'I learned to bring evidence, not opinions, when I propose a change. It matters because every agent call costs money and energy. It connects to my SMART goal of evidence-backed proposals and to the efficient AI I describe in My Vision.',
+        },
+      ],
+      tags: [
+        { name: 'Problem Analysis', why: 'the proposal came from profiling where the agent wasted calls' },
+        { name: 'Economics and Project Management', why: 'it cut the cost of running the agent' },
+      ],
+    },
+  ] satisfies CoopArtifact[],
 };
 
 /* ---------- Course Projects ---------- */
@@ -273,7 +351,7 @@ const courseProjects = {
 const selfAssessment = {
   id: 'self-assessment',
   title: 'Self-Assessment',
-  body: 'Where I am strong: taking projects end to end, and adapting fast when priorities change. Where I am still growing: speaking confidently in my second language, raising disagreements with a plan, and slowing down to test before I ship. My next step is my initiative goal: one AI tool that a team at work actually uses.',
+  body: 'Where I am strong: taking projects end to end, and adapting fast when priorities change. Where I am still growing: speaking confidently in my second language, raising disagreements with a plan, and slowing down to test before I ship. My initiative goal is already done: the app builder I took over is live. My next step is bringing my next evidence-backed proposal to my team.',
 };
 
 export const coop = {
@@ -283,7 +361,7 @@ export const coop = {
   /** Shown right under the title. The first sentence is also the page's description. */
   purpose: [
     'This ePortfolio shows who I am as an emerging AI engineer, the evidence behind my growth during my co-op at FGF Brands, and the goals I am working toward.',
-    'It is organized around one goal, Discover Myself, with my course projects as proof of what I can build.',
+    'It is organized around one goal, Discover Myself, with my co-op work and course projects as proof of what I can build.',
   ],
   /**
    * Descriptive and linked. About Me and Career are the home page's sections;
@@ -299,6 +377,7 @@ export const coop = {
         href: `#${goal.id}`,
         entries: goal.portfolios.map((p) => ({ label: p.title, href: `#${p.id}` })),
       },
+      { label: workPortfolio.title, href: `#${workPortfolio.id}` },
       { label: courseProjects.title, href: `#${courseProjects.id}` },
       { label: selfAssessment.title, href: `#${selfAssessment.id}` },
     ] satisfies CoopEntry[],
@@ -306,6 +385,7 @@ export const coop = {
   /** Over each artifact's competency tags. */
   tagsLabel: 'Tags',
   goal,
+  workPortfolio,
   courseProjects,
   selfAssessment,
 };

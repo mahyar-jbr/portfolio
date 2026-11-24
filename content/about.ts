@@ -207,8 +207,9 @@ export const aboutSection: {
     position: '50% 50%',
     caption: { text: 'Georgian Build North finalist', kind: 'event' },
   },
-  // The career goal before the sign-off is his (2026-11-02), for the COOP 2100 ePortfolio.
+  // The career goal before the sign-off is his (2026-11-02), for the COOP 2100 ePortfolio; the two
+  // sentences on how he got into AI before it are his too (2026-11-23, from peer feedback).
   paragraph:
-    'My journey started in Grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here I am, always building something to keep my inner child happy. Next, I want to grow into an AI engineer who builds agent systems people rely on, and one day start my own AI company. Thanks for reading.',
+    'My journey started in Grade 11, when I was forced to take computer science, and at the time I hated it. But it gave me a new way of thinking, and my creativity slowly moved from drawing imaginary creatures on paper to turning my ideas into code. Now here I am, always building something to keep my inner child happy. I got into AI about two years ago, building with Anthropic’s models before they took off. LLMs were the first tech that could answer people’s real questions, like the ones I heard every day at Pet Valu, and agents go one step further: they do the work. Next, I want to grow into an AI engineer who builds agent systems people rely on, and one day start my own AI company. Thanks for reading.',
   // No "Also into" line (Mahyar, 2026-09-22): the story says it.
 };
